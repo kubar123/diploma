@@ -1,2 +1,2 @@
-# diploma
-diploma - website, and 2 apps.
+# diploma - website
+This is the main website
