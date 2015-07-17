@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>iReviz</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <link rel="stylesheet" href="css/jquerymobile.nativedroid.css" />
+        <link rel="stylesheet" href="css/jquerymobile.nativedroid.dark.css"  id='jQMnDTheme' />
+        <link rel="stylesheet" href="css/jquerymobile.nativedroid.color.red.css" id='jQMnDColor' />
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    </head>
+    <body>
+        
+    <div data-role="page" data-theme='b'>
+
+        <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme='b'>
+            <!-- <a href="index.html" data-ajax="false"><i class='fa fa-bars'></i></a>-->
+            <p class="logoiReviz2"><a href="index.html" data-ajax="false"><img src="images/ireviz.png" width="101" height="30"></a></p>
+        </div>
+        
+        <div data-role="content">
+			<ul data-role="listview" data-inset="false" data-icon="false" data-divider-theme="b">
+	            <li data-role="list-divider">Select Topics</li>
+	        </ul>
+                <ul data-role="listview" data-inset="true">
+                    <li data-role="fieldcontain">
+                        <fieldset data-role="controlgroup">
+                            <input type="checkbox" name="checkbox-1a" id="checkbox-1ab">
+                            <label for="checkbox-1ab">JavaScript</label>
+                            <input type="checkbox" name="checkbox-2a" id="checkbox-2ab">
+                            <label for="checkbox-2ab">CSS</label>
+                            <input type="checkbox" name="checkbox-3a" id="checkbox-3ab">
+                            <label for="checkbox-3ab">HTML</label>
+                            <input type="checkbox" name="checkbox-4a" id="checkbox-4ab">
+                            <label for="checkbox-4ab">PHP</label>
+                            <input type="checkbox" name="checkbox-5a" id="checkbox-5ab">
+                            <label for="checkbox-5ab">XML</label>
+                        </fieldset>
+                    </li>
+                    <li>
+                    	<p><a href="level1a.html" data-ajax="false" data-role="button"><i class='lIcon fa fa-play'></i>START LEVEL ONE!</a></p>
+                    </li>
+                </ul>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme='b'>
+			<div data-role="navbar">
+				<ul>
+					<li><a href="settings.html" data-ajax="false"><i class='blIcon fa fa-cogs'></i>settings</a></li>
+					<li><a href="scores.html" data-ajax="false"><i class='blIcon fa fa-star'></i>scores</a></li>
+					<li><a href="help.html" data-ajax="false"><i class='blIcon fa fa-info'></i>help</a></li>
+					<li><a href="credits.html" data-ajax="false"><i class='blIcon fa fa-trophy'></i>credits</a></li>
+				</ul>
+			</div>
+		</div>
+
+    </div>
+    
+    </body>
+</html>
