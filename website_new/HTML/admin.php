@@ -18,7 +18,7 @@
 
 
 
-        <!--<script language="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>-->
+        <!--<script langua="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>-->
 <div id="loginDialog" title="Login"><p>Username</p><br><input id="txtUsername" type="text" name="txtUser" placeholder="Username" required><br><br><input id="txtPassword" type="password" name="txtPassword" placeholder="password" required><br><br><button  
 onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </div>
 <script>$('#loginDialog').hide();</script>
@@ -32,7 +32,7 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
 
         <div id="content">
           <div class="title"><span>Welcome Administrator</span><hr></div>
-         <div style="border: 3px solid black; padding:10px">
+         <div class='table-wrapper'>
             <h3>Coordinators</h3>
             <?php 
               
@@ -50,33 +50,24 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
             <br>
          </div>
          <br><br><br>
-         <div style="border: 3px solid black; padding:10px">
+         <div class='table-wrapper'>
             <h3>Subjects</h3>
-            <table>
-            <tr><th>Name</th><th>Action</th></tr>
+            <table class='subject-table'>
+            <tr><th>Name</th><th>Owner</th><th>Action</th></tr>
             <?php 
-              $subjects = show_subjects();
+              $subjects = show_subjects("all");
               foreach($subjects as $items){
             ?>
-              <tr><td><?php echo $items['name']; ?></td><td><a href='#' id='<?php echo $item['subject_ID']; ?>'> Edit</a> | Delete</td></tr>
+              <tr class='subject-row'><td id='name'><?php echo $items['name']; ?></td><td id='owner-username'><?php echo $items['username']; ?></td><td><a href='#' class='edit-subject' id='<?php echo $items['subject_ID']; ?>'> Edit</a> • <a href='#' class='delete-subject' id='<?php echo $items['subject_ID']; ?>'> Delete</a></td></tr>
             <?php
               }
             ?>
             </table>
-            
-            
-            <!-- <tr><td>1</td><td>I.T.</td><td>Edit | Delete</td></tr>
-            <tr><td>2</td><td>Project Management</td><td>Edit | Delete</td></tr>
-            <tr><td>3</td><td>Database</td><td>Edit | Delete</td></tr>
-            <tr><td>4</td><td>Networking</td><td>Edit | Delete</td></tr>
-            <tr><td>5</td><td>Java</td><td>Edit | Delete</td></tr> -->
-            </table>
-              
-
             <br>
               <button class='new-subject'>New Subject</button><br>
             <br>
-            <div class='share-wrap'>
+            <!-- ADD SUBJECT WRAP -->
+            <div class='share-wrap create-subject'>
                 <header>
                   <h2>Create subject</h2>
                 </header>
@@ -88,9 +79,8 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
                   </article>
                   <br />
                   <article class='form-section'>
-                    <form method='post'>
                       <label for='choose-coord'>Assign subject to: </label>
-                      <select name='choose-coord'>
+                      <select name='choose-coord' class='choose-coord'>
                         <?php
                           $coordList = show_coordinators();
                           foreach($coordList as $item){
@@ -103,31 +93,67 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
                       </select>
                       <br />
                       <label for='new-subject'>Subject name: </label>
-                      <input type='text' placeholder='Enter subject name...' class='new-subject' name='new-subject' />
-                    </form>
+                      <input type='text' placeholder='Enter subject name...' class='new-subject-name' value='' name='new-subject-name' />
                   </article>
                   <br />
                 
 
                 </section>
                 <footer>  
-                  <form name='run' method='post'><input type='submit' value='ADD' class='btnlike btn-share-vid' name='btnShareVidToProfile' />
-                    <input type='button' value='Cancel' class='btnlike btn-share-vid cancel-share' name='btnShareVidToProfile' />
+                  <form>
+                  <input type='button' value='ADD' class='btnlike btn-share-vid  btn-add-subject' name='btnShareVidToProfile' />
+                    <input type='button' value='Cancel' class='btnlike btn-share-vid cancel-share' name='btnShareVidToProfile' />                   
                   </form>
-                    <?php 
-                      if(isset($_POST['btn-share-vid'])){
-                        $coord = $_POST['choose-coord'];
-                        $Sname = $_POST['new-subject'];
-                        insert_subject($Sname, $coord);
-                      }
-                    ?>
                 </footer>
               </div>
          </div>
+         <!-- ADD SUBJECT WRAP ABOVE 
+              EDIT SUBJECT WRAP BELOW -->
+              <div class='share-wrap edit-subject-popup'>
+                <header>
+                  <h2>Edit subject</h2>
+                </header>
+                <section>
+                  <article class='thumb'>
+                    <?php  
+                     ?>
 
+                  </article>
+                  <br />
+                  <article class='form-section'>
+                      <label for='choose-coord-edit'>Assign subject to: </label>
+                      <select name='choose-coord-edit' class='choose-coord-edit'>
+                        <?php
+                          $coordList = show_coordinators();
+                          foreach($coordList as $item){
+                            ?>  
+                              <option value='<?php echo $item['user_ID']; ?>'><?php echo $item['username'];?></option>
+                            <?php
+                          }
 
-         <br><br><br>
-         <div style="border: 3px solid black; padding:10px">
+                        ?>
+                      </select>
+                      <br />
+                      <label for='new-subject' class='edit-subject-current'>Subject name: </label>
+                      <?php 
+                        $edit_subject_name = show_subjects("all");
+                      ?>
+                      <input type='text' class='edit-subject' value="xxx" name='edit-subject' />
+                  </article>
+                  <br />
+                
+
+                </section>
+                <footer>  
+                  <form>
+                  <input type='hidden' value='' class='edit-this-id'  />
+                  <input type='button' value='UPDATE' class='btnlike btn-share-vid  btn-edit-subject' name='btnShareVidToProfile' />
+                    <input type='button' value='Cancel' class='btnlike btn-share-vid cancel-share' name='btnShareVidToProfile' />                   
+                  </form>
+                </footer>
+              </div>
+
+                <div class='table-wrapper'>
             <h3>Users</h3>
             <table>
             <tr><th width="1%">ID</th><th>Name</th><th>Subjects</th><th>Action</th></tr>
@@ -136,9 +162,15 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
             <tr><td>3</td><td>Apple</td><td>I.T.,Java,Networking</td><td>Edit | Delete</td></tr>
             </table>
             <br>
-            <button>New coordinator</button><br>
+            <button>New user</button><br>
             <br>
          </div>
+         </div>
+
+
+
+         <br><br><br>
+       
          
 
 
@@ -148,14 +180,16 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
       <script>
       $('.new-subject').click(function(event) {
         /* Act on the event */
-        $('.share-wrap').fadeIn();
+        // $('.share-wrap').fadeIn();
+        $('.create-subject').fadeIn();
       });
       $('.cancel-share').click(function(event) {
         /* Act on the event */
         $('.share-wrap').fadeOut();
       });
-      </script>
 
+      </script>
+      <script src='../js/ajax.js'></script>
       <footer>
         <p class="left"><a href="../copyright.html">Copyright</a> <a href="../privacy.html">Privacy</a></p>
         <p class="right">&copy; Copyright 2015. All rights reserved</p>

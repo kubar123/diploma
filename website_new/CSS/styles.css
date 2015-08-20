@@ -259,3 +259,41 @@ z-index: 2;
 .share-wrap footer form input[type='button'] {
   background-color: #252629;
 }
+
+/*
+	TABLE STYLING
+	*/
+
+	table > tr:first-child{
+		text-align: left;
+	}
+	table td{
+		padding: 5px;
+	}
+	table tr{
+		text-align: left;
+		padding:5px;
+	}
+	table tr:nth-child(odd){
+		background-color:grey;
+	}
+	table tr:nth-child(even){
+		background-color:lightgrey;
+	}
+	table{
+		border-spacing:0px;
+		color: black;
+		width: 100%;
+	}
+	tbody{
+		padding: 10px;
+	}
+	.red{
+		background-color:red;
+	}
+
+	.table-wrapper h3{
+		background-color: darkgrey;
+	    padding: 20px;
+	    margin: 0px;
+	}
