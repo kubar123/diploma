@@ -1,0 +1,261 @@
+body {
+	font-family: 'Open Sans', sans-serif;
+	background-image: url(../resources/background.jpg);
+	background-repeat: repeat-y;
+	background-size:contain;
+	margin: 0;
+	padding: 0;
+	color: white;
+}
+h1,h2,h3{
+	color:#0074cf;
+
+}
+.aboutImg{
+	float:right;
+	max-width: 250px;
+}
+
+p { display: inline; margin: 0 0 0 0; }
+
+a:link, a:visited {
+	color: #0074cf;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	color: #0074cf;
+	text-decoration: none;
+}
+
+header, #container, #sidebar1, footer {
+	max-width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#sidebar1{
+	height:595px;
+}
+
+.head {
+	background-image: url(../resources/html_code.jpg);
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 960px;
+	height: 100px;
+	box-shadow: 0px 0px 10px #1f2025;
+
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.headText {
+	color: #999;
+	font-weight: bold;
+	text-align: right;
+	padding-top: 150px;
+	padding-right: 40px;
+}
+
+#container {
+	/*background-color: rgb(49, 52, 57); */
+	background-color: #43474e;
+	box-shadow: 0px 0px 10px #1f2025;
+	min-height: 552px;
+	height: 100%;
+	display: block;
+	overflow: hidden;
+}
+
+#sidebar1 {
+	float: left;
+	width: 200px;
+	min-height: inherit;
+	border-right: 1px solid;
+	color: #393631;
+	display: inline-block;
+}
+
+#gifContain {
+	width: 100px;
+	height: 100px;
+	margin-top: 15px;
+	position: relative;
+	z-index:1;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#gifContain:before{
+	content: "";
+	position: absolute;
+	background: url('../resources/pink3.png') center center;
+	background-size: contain;
+	background-repeat: no-repeat;
+	top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	opacity: 0.2;
+	z-index:-1;
+}
+
+#gifText {
+	font-weight: bold;
+  	text-align: center;
+  	top: -10%;
+  	font-size: 1.2em;
+  	position: absolute;
+	color: #0074cf;
+}
+
+#content {
+	display: inline-block;
+	width: 750px;
+	height: 100%;
+	padding: 8px 0 8px 8px;
+}
+
+.title {
+	margin-bottom: 15px;
+}
+
+.title span {
+	font-size: 1.5em;
+	font-weight: bold;
+
+}
+
+footer {
+	margin-top: 5px;
+	clear: both;
+	max-width: 940px;
+}
+.rightImgHome{
+	width:350px;
+	float:right;
+
+}
+
+footer .left { text-align: left; }
+footer .right { text-align: right; }
+footer .left p { text-weight: bold; }
+
+footer p {
+	text-weight: bold;
+	display: inline;
+	margin: 0px 0px 0px 0px;
+}
+
+.left { float: left; }
+.right { float: right; }
+
+.left {
+	display: inline-block;
+	width: 50%;
+	float: left;
+}
+
+.left form {
+	margin-left: 20px;
+}
+
+.left form select {
+	width: 148px;
+	height: 23px;
+}
+
+.left form textarea {
+	width: 312px;
+	height: 150px;
+}
+
+.right {
+	display: inline-block;
+	width: 50%;
+	float: right;
+}
+
+#map-canvas {
+	width: 100%;
+}
+
+/*
+	Below is the POPUP for adding new subject etc.
+*/
+
+.share-wrap {
+z-index: 2;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -100px;
+  transform: translate(-50%, -50%);
+  display: none;
+  position: fixed;
+  width: 453px;
+  height: 420px;
+  padding: 10px;
+  background-color: #2E2F33;
+}
+.share-wrap header {
+  text-align: center;
+  border-bottom: solid 1px #3E3E40;
+  margin-bottom: 20px;
+  color: white;
+}
+.share-wrap header h2 {
+  margin: 2px;
+  padding: 1px;
+}
+.share-wrap section {
+  padding: 5px;
+}
+.share-wrap section span {
+  color: white;
+}
+.share-wrap section .thumb {
+  height: 100%;
+  background-color: #222326;
+}
+.share-wrap section .thumb .play-thumb {
+  display: inline-block;
+}
+.share-wrap section .thumb .share-embed-title {
+  display: inline-block;
+  color: white;
+  position: absolute;
+  margin: 10px 0px 0px 10px;
+}
+.share-wrap section .form-section form {
+  float: none;
+  display: initial;
+}
+.share-wrap section .form-section textarea {
+  width: 99%;
+  resize: none;
+  background-color: white;
+  color: #3E3E40;
+  border: none;
+  border-radius: 2px;
+  height: 100px;
+}
+.share-wrap footer form {
+  float: right;
+  margin-right: 15px;
+  padding-top: 28px;
+}
+.share-wrap footer form input[type='submit'], .share-wrap footer form input[type='button'] {
+  padding: 7px;
+  background-color: #648F00;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  font-size: 15px;
+  text-transform: uppercase;
+}
+.share-wrap footer form input[type='button'] {
+  background-color: #252629;
+}
