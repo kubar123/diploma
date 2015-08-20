@@ -138,7 +138,8 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
                       <?php 
                         $edit_subject_name = show_subjects("all");
                       ?>
-                      <input type='text' class='edit-subject' value="xxx" name='edit-subject' />
+                      <input type='text' class='edit-subject-input' name='edit-subject' />
+                      <input type='hidden' class='edit-this-id'  />
                   </article>
                   <br />
                 
@@ -146,7 +147,6 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
                 </section>
                 <footer>  
                   <form>
-                  <input type='hidden' value='' class='edit-this-id'  />
                   <input type='button' value='UPDATE' class='btnlike btn-share-vid  btn-edit-subject' name='btnShareVidToProfile' />
                     <input type='button' value='Cancel' class='btnlike btn-share-vid cancel-share' name='btnShareVidToProfile' />                   
                   </form>
@@ -185,7 +185,7 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
       });
       $('.cancel-share').click(function(event) {
         /* Act on the event */
-        $('.share-wrap').fadeOut();
+        $('.create-subject').fadeOut();
       });
 
       </script>

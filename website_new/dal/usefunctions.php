@@ -39,7 +39,7 @@
 		echo "id" . $newID."    ";
 	}else{$insert = false;}
 	if($insert == true){
-		echo "insert";
+		// echo "insert";
 		edit_subject($newID, $newName, $newCoord);
 	}
 

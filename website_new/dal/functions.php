@@ -110,7 +110,8 @@
 			global $numRecords, $dbConnection, $stmt;
 			connect(); //Run connect function 
 
-			$sql = "UPDATE subject SET owner_ID=$coord, name = '$subjName' WHERE subject_ID = ". $subjId;
+			$sql = "UPDATE subject SET owner_ID=$coord, name ='$subjName' WHERE subject_ID = $subjId";
+			// $sql = "UPDATE subject SET owner_ID=$coord, name = '$subjName' WHERE subject_ID = ". $subjId;
 
 			try{
 				$stmt = $dbConnection->query($sql);
