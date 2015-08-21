@@ -1,32 +1,6 @@
-<!DOCTYPE HTML>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Drunk Panthers</title>
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" type="text/css" href="../CSS/styles.css">
-        <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
-<script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
-
-<link rel="stylesheet" href="../js/jquery-ui-1.11.4.custom/jquery-ui.min.css">
-
-<script src="../js/jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
-
-<script src="../js/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
-<script src="../js/scripts.js"></script>
-<script src='../js/jquery.custom.js'></script>
-
-
-
-        <!--<script langua="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>-->
-<div id="loginDialog" title="Login"><p>Username</p><br><input id="txtUsername" type="text" name="txtUser" placeholder="Username" required><br><br><input id="txtPassword" type="password" name="txtPassword" placeholder="password" required><br><br><button  
-onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </div>
-<script>$('#loginDialog').hide();</script>
-    </head>
-    
-    <body>
      <?php
         include "head.php";
+        
      ?>
 
 
@@ -56,11 +30,16 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
             <tr><th>Name</th><th>Owner</th><th>Action</th></tr>
             <?php 
               $subjects = show_subjects("all");
+              if($subjects == ""){
+                echo "<h4 style='text-align: center'>No subjects were found</h4>";
+                // echo "<tr class='subject-row'><td id='name'>$items['name'] </td><td id='owner-username'>$items['username']</td><td><a href='#' class='edit-subject' id='echo $items['subject_ID']'> Edit</a> • <a href='#' class='delete-subject' id='$items['subject_ID'];'> Delete</a></td></tr>";
+              }else{
               foreach($subjects as $items){
             ?>
               <tr class='subject-row'><td id='name'><?php echo $items['name']; ?></td><td id='owner-username'><?php echo $items['username']; ?></td><td><a href='#' class='edit-subject' id='<?php echo $items['subject_ID']; ?>'> Edit</a> • <a href='#' class='delete-subject' id='<?php echo $items['subject_ID']; ?>'> Delete</a></td></tr>
             <?php
               }
+            }
             ?>
             </table>
             <br>
@@ -189,11 +168,6 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
       });
 
       </script>
-      <script src='../js/ajax.js'></script>
-      <footer>
-        <p class="left"><a href="../copyright.html">Copyright</a> <a href="../privacy.html">Privacy</a></p>
-        <p class="right">&copy; Copyright 2015. All rights reserved</p>
-      </footer>
-    </body>
-
-</html>
+      <?php
+        include "footer.php";
+      ?>

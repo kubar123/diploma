@@ -29,11 +29,11 @@
 
            }); //End of ajax funct
    });
-   // var editID = "";
+    // var editID = "";
    $('.edit-subject').click(function(event) {
-    var editID = $(this).attr('id');
-    var currentName = $(this).parent().parent().find('#name').text();
-      $('.edit-this-id').val(editID);
+       var editID = $(this).attr('id');
+       var currentName = $(this).parent().parent().find('#name').text();
+       $('.edit-this-id').val(editID);
        $('.share-wrap').fadeIn();
        // $('.edit-this-id').val(editID);
        $('.edit-subject-current').text("Current name: " + currentName);
@@ -44,16 +44,16 @@
     EDIT SUBJECT AJAX FUNCTION
    */
    $('.btn-edit-subject').click(function(event) {
-      /*
+       /*
         Get updated form data
 
       */
-      var coord = $('.choose-coord-edit').val();
-      var subName = $('.edit-subject-input').val();
-      var id = $('.choose-coord-edit').val();
+       var coord = $('.choose-coord-edit').val();
+       var subName = $('.edit-subject-input').val();
+       var id = $('.choose-coord-edit').val();
 
-      var editID = $('.edit-this-id').val();
-      
+       var editID = $('.edit-this-id').val();
+
 
        $.ajax({
            type: 'POST',
@@ -68,8 +68,8 @@
            .always(function() {})
            .fail(function() {})
            .success(function(data) {
-              $('.share-wrap').fadeOut();
-              $('#'+editID).parent().parent().find('#name').text(subName);
+               $('.share-wrap').fadeOut();
+               $('#' + editID).parent().parent().find('#name').text(subName);
                // alert(data);
                // $('.share-wrap').fadeOut();
 
@@ -80,26 +80,43 @@
     DELETE SUBJECT AJAX FUNCTION
    */
    $('.delete-subject').click(function(e) {
-
        var deleteID = $(this).attr('id');
-       if (confirm("Are you sure you want to delete this subject?" + $(this).text())) {
-           $.ajax({
-               type: 'POST',
-               url: '../dal/usefunctions.php',
-               data: {
-                   deleteID: deleteID
-               }
-           })
-               .done(function() {})
-               .always(function() {})
-               .fail(function() {})
-               .success(function() {
-  
-
-               }); //End of ajax funct  
-           $(this).parent().parent().fadeOut();
-
-       }
+       var isConfirm = false;
+       // clone = $(this).clone();
+       swal({
+           title: "Are you sure you want to delete this subject?",
+           text: "You will not be able to recover this subject along with all it's QUESTIONS + ANSWERS!",
+           type: "warning",
+           showCancelButton: true,
+           confirmButtonColor: "#DD6B55",
+           confirmButtonText: "Yes, delete it!",
+           cancelButtonText: "No, cancel please!",
+           closeOnConfirm: false,
+           closeOnCancel: false
+       }, function(isConfirm) {
+           if (isConfirm) {
+               swal("Deleted!", "Your imaginary file has been deleted.", "success");
+               $.ajax({
+                   type: 'POST',
+                   url: '../dal/usefunctions.php',
+                   data: {
+                       deleteID: deleteID
+                   }
+               })
+                   .done(function() {})
+                   .always(function() {})
+                   .fail(function() {})
+                   .success(function() {
+                      $('#'+deleteID).parent().parent().fadeOut();
+                      isConfirmed = true;
+                   }); //End of ajax funct  
+                
+           } else {
+               isConfirmed = false;
+               swal("Cancelled", "The subject has not been deleted", "error");
+           }
+       });
+      
        e.preventDefault();
        return false;
    });

@@ -47,6 +47,10 @@
 
 
 	/*
+		James's functions below - Jake and Shaneil, please create your own .php file and include() it at the bottom of this one. 
+		
+	*/
+	/*
 		Subject related functions 
 	*/
 		function show_subjects($id){
@@ -64,7 +68,7 @@
 				if($stmt->rowcount() != 0){
 					return $stmt->fetchAll();
 				}else{
-					return "No subjects were found";
+					return "";
 				}
 
 			}catch (PDOException $e){
@@ -171,6 +175,13 @@
 	/*
 		Coordinator related functions 
 	*/
+	/*
+		Function to print out arrays nicely.
+	*/
+	function print_r_nice($array, $exit = true){
+		echo "<pre>".print_r($array, true)."</pre>";
+		if($exit) exit;
+	}	
 
 
 

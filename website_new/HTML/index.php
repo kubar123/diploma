@@ -18,8 +18,8 @@
 
 
         <!--<script language="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>-->
-<div id="loginDialog" title="Login"><p>Username</p><br><input id="txtUsername" type="text" name="txtUser" placeholder="Username" required><br><br><input id="txtPassword" type="password" name="txtPassword" placeholder="password" required><br><br><button  
-onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </div>
+<!-- <div id="loginDialog" title="Login"><p>Username</p><br><input id="txtUsername" type="text" name="txtUser" placeholder="Username" required><br><br><input id="txtPassword" type="password" name="txtPassword" placeholder="password" required><br><br><button  
+onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </div> -->
 <script>$('#loginDialog').hide();</script>
     </head>
     

@@ -56,9 +56,6 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
         </div>
       </div>
 
-      <footer>
-        <p class="left"><a href="../copyright.html">Copyright</a> <a href="../privacy.html">Privacy</a></p>
-        <p class="right">&copy; Copyright 2015. All rights reserved</p>
-      </footer>
-    </body>
-</html>
+     <?php
+        include "footer.php";
+      ?>
