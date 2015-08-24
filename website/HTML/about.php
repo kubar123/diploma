@@ -14,29 +14,13 @@
 
 <script src="../js/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 <script src="../js/scripts.js"></script>
-        <div id="loginDialog" title="Login"><p>Username</p><br><input id="txtUsername" type="text" name="txtUser" placeholder="Username" required><br><br><input id="txtPassword" type="password" name="txtPassword" placeholder="password" required><br><br><button  
-onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </div>
-<script>$('#loginDialog').hide();</script>
+    
     </head>
     
     <body>
-      <header>
-        <h1 class="headText">&nbsp;</h1>
-      </header>
-
-      <div id="container">
-        <div id="sidebar1">
-          <div id="gifContain">
-            <p id="gifText">Drunk Panthers</p>
-          </div>
-
-          <ul id="menuBar">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About us</a></li>
-            <li><a href="contact.html">Contact us</a></li>
-            <li id='menuLoginButton'><a href="#" onclick="showPopup();" data-rel='popup'>Login</a></li>
-          </ul>
-        </div>
+      <?php 
+        include "head.php";
+      ?>
         <div id="content">
           <div class="title"><span>About</span></div><hr>
 
@@ -56,9 +40,6 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
         </div>
       </div>
 
-      <footer>
-        <p class="left"><a href="../copyright.html">Copyright</a> <a href="../privacy.html">Privacy</a></p>
-        <p class="right">&copy; Copyright 2015. All rights reserved</p>
-      </footer>
-    </body>
-</html>
+     <?php
+        include "footer.php";
+      ?>

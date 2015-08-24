@@ -95,7 +95,7 @@
            closeOnCancel: false
        }, function(isConfirm) {
            if (isConfirm) {
-               swal("Deleted!", "Your imaginary file has been deleted.", "success");
+               swal("Deleted!", "Your subject has been deleted", "success");
                $.ajax({
                    type: 'POST',
                    url: '../dal/usefunctions.php',

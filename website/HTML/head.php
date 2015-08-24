@@ -37,6 +37,11 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
     type = the type of user. 1 for admin, 2 for coord, and 3 for user
   */
   $_SESSION['type'] = 1;
+
+  /*
+    IF YOU WANT TO ACT AS A COORDINATOR UNCOMMENT THE BELOW SESSION VARIABLE AND COMMENT OUT THE ONE ABOVE!!
+  */
+  $_SESSION['type'] = 2;
   include "../dal/functions.php";
 ?>
 <header class='head'>
@@ -55,8 +60,17 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
             <li><a href="contact.php">Contact us</a></li>
             <?php if($_SESSION['type'] == 1) { ?>
               <li><a href="admin.php">Admin</a></li>
-            <?php }else{  ?>
+              <?php
+                  }
+                  else if($_SESSION['type'] == 2) { 
+               ?>
+              <li><a href="coordinator.php">Coordinator</a></li>
+            <?php 
+              }
+              else{  ?>
               <li id='menuLoginButton'><a href="#" onclick="showPopup();" data-rel='popup'>Login</a></li>
             <?php } ?>
+
+
             </ul> 
         </div>

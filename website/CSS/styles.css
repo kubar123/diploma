@@ -37,7 +37,7 @@ header, #container, #sidebar1, footer {
 	height:595px;
 }
 
-header {
+.head {
 	background-image: url(../resources/html_code.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
@@ -179,3 +179,121 @@ footer p {
 #map-canvas {
 	width: 100%;
 }
+
+/*
+	Below is the POPUP for adding new subject etc.
+*/
+
+.share-wrap {
+z-index: 2;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -100px;
+  transform: translate(-50%, -50%);
+  display: none;
+  position: fixed;
+  width: 453px;
+  height: 420px;
+  padding: 10px;
+  background-color: #2E2F33;
+}
+.share-wrap header {
+  text-align: center;
+  border-bottom: solid 1px #3E3E40;
+  margin-bottom: 20px;
+  color: white;
+}
+.share-wrap header h2 {
+  margin: 2px;
+  padding: 1px;
+}
+.share-wrap section {
+  padding: 5px;
+}
+.share-wrap section span {
+  color: white;
+}
+.share-wrap section .thumb {
+  height: 100%;
+  background-color: #222326;
+}
+.share-wrap section .thumb .play-thumb {
+  display: inline-block;
+}
+.share-wrap section .thumb .share-embed-title {
+  display: inline-block;
+  color: white;
+  position: absolute;
+  margin: 10px 0px 0px 10px;
+}
+.share-wrap section .form-section form {
+  float: none;
+  display: initial;
+}
+.share-wrap section .form-section textarea {
+  width: 99%;
+  resize: none;
+  background-color: white;
+  color: #3E3E40;
+  border: none;
+  border-radius: 2px;
+  height: 100px;
+}
+.share-wrap footer form {
+  float: right;
+  margin-right: 15px;
+  padding-top: 28px;
+}
+.share-wrap footer form input[type='submit'], .share-wrap footer form input[type='button'] {
+  padding: 7px;
+  background-color: #648F00;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  font-size: 15px;
+  text-transform: uppercase;
+}
+.share-wrap footer form input[type='button'] {
+  background-color: #252629;
+}
+
+/*
+	TABLE STYLING
+	*/
+
+	table > tr:first-child{
+		text-align: left;
+	}
+	table td{
+		padding: 5px;
+	}
+	table tr{
+		text-align: left;
+		padding:5px;
+	}
+	table tr:nth-child(odd){
+		background-color:grey;
+	}
+	table tr:nth-child(even){
+		background-color:lightgrey;
+	}
+	table{
+		border-spacing:0px;
+		color: black;
+		width: 100%;
+	}
+	tbody{
+		padding: 10px;
+	}
+	.red{
+		background-color:red;
+	}
+
+	.table-wrapper h3{
+		background-color: darkgrey;
+	    padding: 20px;
+	    margin: 0px;
+	}
