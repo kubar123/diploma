@@ -51,10 +51,17 @@
        var coord = $('.choose-coord-edit').val();
        var subName = $('.edit-subject-input').val();
        var id = $('.choose-coord-edit').val();
-
        var editID = $('.edit-this-id').val();
 
+       // if(subName == ""){
+       //    alert("Please enter your subject name");
+       //    swal({
+       //     title: "Are you sure you want to delete this subject?",
+       //     text: "You will not be able to recover this subject along with all it's QUESTIONS + ANSWERS!",
+       //     type: "warning" });
+       // }else if(coord == ""){
 
+       // }
        $.ajax({
            type: 'POST',
            url: '../dal/usefunctions.php',
@@ -120,3 +127,7 @@
        e.preventDefault();
        return false;
    });
+
+   /*
+    ^^ JAMES' CODE ABOVE ^^ 
+   */

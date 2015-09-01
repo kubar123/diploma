@@ -41,7 +41,7 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
   /*
     IF YOU WANT TO ACT AS A COORDINATOR UNCOMMENT THE BELOW SESSION VARIABLE AND COMMENT OUT THE ONE ABOVE!!
   */
-  $_SESSION['type'] = 2;
+  // $_SESSION['type'] = 2;
   include "../dal/functions.php";
 ?>
 <header class='head'>
@@ -66,7 +66,7 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
                ?>
               <li><a href="coordinator.php">Coordinator</a></li>
             <?php 
-              }
+                  }
               else{  ?>
               <li id='menuLoginButton'><a href="#" onclick="showPopup();" data-rel='popup'>Login</a></li>
             <?php } ?>

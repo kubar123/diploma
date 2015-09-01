@@ -28,11 +28,12 @@
             <h3>Subjects</h3>
             <table class='subject-table'>
             <tr><th>Name</th><th>Owner</th><th>Action</th></tr>
+            <!-- <div style='display: none'><tr class='subject-row'><td id='name'></td><td id='owner-username'></td><td><a href='#' class='edit-subject' id=''> Edit</a> • <a href='#' class='delete-subject' id=''> Delete</a></td></tr></div> -->
             <?php 
               $subjects = show_subjects("all");
               if($subjects == ""){
                 echo "<h4 style='text-align: center'>No subjects were found</h4>";
-                // echo "<tr class='subject-row'><td id='name'>$items['name'] </td><td id='owner-username'>$items['username']</td><td><a href='#' class='edit-subject' id='echo $items['subject_ID']'> Edit</a> • <a href='#' class='delete-subject' id='$items['subject_ID'];'> Delete</a></td></tr>";
+                // echo "<tr class='subject-row'><td id='name'>$items['name'] </td><td id='owner-username'>$items['username']</td><td><a href='#' class='edit-subject' id=\"$items['subject_ID']\"> Edit</a> • <a href='#' class='delete-subject' id=\"$items['subject_ID']\"> Delete</a></td></tr>";
               }else{
               foreach($subjects as $items){
             ?>
@@ -165,6 +166,7 @@
       $('.cancel-share').click(function(event) {
         /* Act on the event */
         $('.create-subject').fadeOut();
+        $('.share-wrap').fadeOut();
       });
 
       </script>
