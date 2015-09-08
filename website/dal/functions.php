@@ -183,6 +183,7 @@
 		if($exit) exit;
 	}	
 
+include "coordinatorFunct.php";
 
 
 ?>

@@ -15,6 +15,7 @@
 
 <!-- Our own JS code -->
 <script src="../js/scripts.js"></script>
+
 <script src='../js/jquery.custom.js'></script>
 
 <!-- Sweet alert -->
@@ -38,6 +39,9 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
   */
   $_SESSION['type'] = 1;
 
+   $_SESSION['username']="alan";
+  $_SESSION['user_ID']="1";
+
   /*
     IF YOU WANT TO ACT AS A COORDINATOR UNCOMMENT THE BELOW SESSION VARIABLE AND COMMENT OUT THE ONE ABOVE!!
   */
@@ -60,11 +64,18 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
             <li><a href="contact.php">Contact us</a></li>
             <?php if($_SESSION['type'] == 1) { ?>
               <li><a href="admin.php">Admin</a></li>
+                <li><a href="coordinator.php">Teachers</a></li>
+                <li><a href="users.php">Users</a></li>
+                <li><a href="subjects.php">Subjects</a></li>
               <?php
                   }
                   else if($_SESSION['type'] == 2) { 
                ?>
               <li><a href="coordinator.php">Coordinator</a></li>
+                <!-- READ ONLY FOR COORDINATORS -->
+                <li><a href="coordinator.php">Teachers</a></li>
+                <li><a href="users.php">Users</a></li>
+
             <?php 
                   }
               else{  ?>

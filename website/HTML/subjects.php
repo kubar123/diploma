@@ -6,25 +6,7 @@
 
         <div id="content">
           <div class="title"><span>Welcome Administrator</span><hr></div>
-         <div class='table-wrapper'>
-            <h3>Coordinators</h3>
-            <?php 
-              
-            ?>
-            <table>
-            <tr><th width="1%">ID</th><th>Name</th><th>Subjects</th><th>Action</th></tr>
-            <tr><td>1</td><td>Alan</td><td>Project Management</td><td>Edit | Delete</td></tr>
-            <tr><td>2</td><td>Jack</td><td>Database</td><td>Edit | Delete</td></tr>
-            <tr><td>3</td><td>Leon</td><td>I.T.</td><td>Edit | Delete</td></tr>
-            <tr><td>4</td><td>Steve</td><td>Networking</td><td>Edit | Delete</td></tr>
-            <tr><td>5</td><td>Jim</td><td>Java</td><td>Edit | Delete</td></tr>
-            </table>
-            <br>
-            <button>New coordinator</button><br>
-            <br>
-         </div>
-         <br><br><br>
-         
+
          <div class='table-wrapper'>
             <h3>Subjects</h3>
             <table class='subject-table'>
@@ -133,22 +115,6 @@
                   </form>
                 </footer>
               </div>
-
-                <div class='table-wrapper'>
-            <h3>Users</h3>
-            <table>
-            <tr><th width="1%">ID</th><th>Name</th><th>Subjects</th><th>Action</th></tr>
-            <tr><td>1</td><td>Jake</td><td>Project Management,Database</td><td>Edit | Delete</td></tr>
-            <tr><td>2</td><td>Michael</td><td>Database</td><td>Edit | Delete</td></tr>
-            <tr><td>3</td><td>Apple</td><td>I.T.,Java,Networking</td><td>Edit | Delete</td></tr>
-            </table>
-            <br>
-            <button>New user</button><br>
-            <br>
-         </div>
-         </div>
-
-
 
          <br><br><br>
        
