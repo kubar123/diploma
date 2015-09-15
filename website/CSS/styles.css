@@ -29,7 +29,8 @@ a:hover, a:active {
 }
 
 header, #container, #sidebar1, footer {
-	max-width: 960px;
+	/*max-width: 960px;*/
+	max-width: 1300px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -41,7 +42,7 @@ header, #container, #sidebar1, footer {
 	background-image: url(../resources/html_code.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
-	width: 960px;
+	width: 1300px;
 	height: 100px;
 	box-shadow: 0px 0px 10px #1f2025;
 
@@ -111,9 +112,9 @@ header, #container, #sidebar1, footer {
 
 #content {
 	display: inline-block;
-	width: 750px;
+	width: 1050px;
 	height: 100%;
-	padding: 8px 0 8px 8px;
+	padding: 8px 8px 8px 18px;
 }
 
 .title {
