@@ -1,3 +1,4 @@
+var clone = $('.coordi-list').find('.choose-coord-edit').clone();
 
     //New subject jquery functions
     $(".new-subject").click(function(){
@@ -57,38 +58,39 @@
         $(".subject-table tr:last").after('<tr class="subject-row"><td><input id="new-subject-name" type="text"/></td><td id="new-subject-coord">'+$('<td>').append(clone).html()+'</td><td> <button class="btn-add-subject">Add</button><button class="btn-cancel-subject">Cancel</button></td></tr>');
    }
     // var editID = "";
-   $('.edit-subject').click(function(event) {
-       var editID = $(this).attr('id');
-       var currentName = $(this).parent().parent().find('#name').text();
-       $('.edit-this-id').val(editID);
-       $('.share-wrap').fadeIn();
+   $(document).on('click', '.edit-subject', function() {
+
+      //Get the current details
+      var editID = $(this).attr('id'); 
+      var currentName = $(this).parent().parent().find('#name').text();
+
+      $(this).parent().parent().find('#name').html("<input type='text' id='edited-name' placeholder='Enter subject name' />");
+      $(this).parent().parent().find('#owner-username').html(clone);
+      $(this).parent().html("<input type='button' value='save' data-id='"+editID+"' id='btn-save-edits' /> <input type='button' value='cancel' id='btn-cancel-edits' />");
+
+
        // $('.edit-this-id').val(editID);
-       $('.edit-subject-current').text("Current name: " + currentName);
-       // $('.edit-subject-popup').find('.edit-subject').val(currentName);
+       // // $('.share-wrap').fadeIn();
+       // // $('.edit-this-id').val(editID);
+       // $('.edit-subject-current').text("Current name: " + currentName);
+       // // $('.edit-subject-popup').find('.edit-subject').val(currentName);
    });
 
    /*
     EDIT SUBJECT AJAX FUNCTION
    */
-   $('.btn-edit-subject').click(function(event) {
+   $(document).on('click', '#btn-save-edits', function() {
        /*
         Get updated form data
 
       */
        var coord = $('.choose-coord-edit').val();
-       var subName = $('.edit-subject-input').val();
-       var id = $('.choose-coord-edit').val();
-       var editID = $('.edit-this-id').val();
+       var subName = $('#edited-name').val();
+       var editID = $(this).attr('data-id');
 
-       // if(subName == ""){
-       //    alert("Please enter your subject name");
-       //    swal({
-       //     title: "Are you sure you want to delete this subject?",
-       //     text: "You will not be able to recover this subject along with all it's QUESTIONS + ANSWERS!",
-       //     type: "warning" });
-       // }else if(coord == ""){
 
-       // }
+
+
        $.ajax({
            type: 'POST',
            url: '../dal/usefunctions.php',
@@ -154,6 +156,8 @@
        e.preventDefault();
        return false;
    });
+
+
 
 
     
