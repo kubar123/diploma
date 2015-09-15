@@ -15,8 +15,11 @@ function filterTopicList(){
   window.location.search = '?topic='+selectFilterTopic;
 }
 
-function deleteTopic(){
-  var deleteID=$("input[name='editDelete']:checked").val();
+//delete a topic using a specific ID
+function deleteTopic(id){
+  // var deleteID=$("input[name='editDelete']:checked").val();
+var deleteID=id;
+// alert(deleteID);
   swal({
 		   title: "Are you sure you want to delete this topic?",
 		   text: "You will not be able to recover this topic!",
@@ -56,9 +59,11 @@ function deleteTopic(){
 }
 
 function newTopic(){
-  $("#topicTable tr:last").after('<tr id="trNewTopic"><td><input id="txtTopicNew" type="text"/></td></tr>');
-  $('#btnTopicEdit').replaceWith("<button onclick='cancelNewTopic()' id='btnCancelTopic'>Cancel</button>");
-  $('#btnTopicNew').replaceWith("<button onclick='saveNewTopic()' id='btnTopicSave'>Save</button>");
+	var cancelLink="<a href='#' onclick='cancelNewTopic(); return false;' id='btnCancelTopic'>Cancel</a>";
+	var saveLink="<a href='#' onclick='saveNewTopic(); return false;' id='btnTopicSave'>Save</a>";
+  $("#topicTable tr:last").after('<tr id="trNewTopic"><td><input id="txtTopicNew" type="text"/></td><td id="newItemSpace"></td></tr>');
+  $('#newItemSpace').replaceWith(saveLink+" | "+cancelLink);
+  // $('#btnTopicNew').replaceWith("");
   
 }
 
@@ -93,13 +98,15 @@ var selectText;
 var selTextId;
 var selectTextActual;
 
-function topicEdit(){
+function topicEdit(id){
 	// check to ensure an item is selected
-	if(!atLeastOneRadio()){
-		alert("Please select something first!");
-		return;
-	}
- 	var editID=$("input[name='editDelete']:checked").val();
+	// if(!atLeastOneRadio()){
+	// 	alert("Please select something first!");
+	// 	return;
+	// }
+
+ 	// var editID=$("input[name='editDelete']:checked").val();
+ 	var editID=id;
  	// $(editID).parent().parent().text("HE");
  	selectText="#topicTxt"+editID;
  	selTextId="topicTxt"+editID;
@@ -107,8 +114,8 @@ function topicEdit(){
  	//change txt to input text
  	$(selectText).replaceWith('<input id="'+selTextId+'" type="text" value="'+$(selectText).text()+'"/>');
  	//change buttons
- 	$('#btnTopicEdit').replaceWith("<button onclick='cancelEditTopic()' id='btnCancelTopic'>Cancel</button>");
- 	$('#btnTopicNew').replaceWith("<button onclick='saveEditTopic()' id='btnTopicSave'>Save</button>");
+ 	$('#btnTopicDel'+id).replaceWith("<a href='#' onclick='cancelEditTopic("+id+"); return false;' id='btnCancelTopic'>Cancel</a>");
+ 	$('#btnTopicEdit'+id).replaceWith("<a href='#' onclick='saveEditTopic("+id+"); return false;' id='btnTopicSave'>Save</a>");
 
 }
 // $('#btnTopicEdit').click(function(){
@@ -116,9 +123,9 @@ function topicEdit(){
 
 // });
 
-function cancelEditTopic(){
-	$('#btnTopicSave').replaceWith("<button id='btnTopicNew' onclick='newTopic()'>New</button>");
-  	$('#btnCancelTopic').replaceWith("<button onclick='topicEdit()' id='btnTopicEdit'>Edit</button>");
+function cancelEditTopic(id){
+	$('#btnTopicSave').replaceWith("<a href='#' id='btnTopicEdit"+id+"' onclick='topicEdit("+id+"); return false;'>Edit</a>");
+  	$('#btnCancelTopic').replaceWith("<a href='#' onclick='deleteTopic("+id+"); return false;' id='btnTopicDel1"+id+"'>Delete</a>");
  	$(selectText).replaceWith("<td id='"+selTextId+"'>"+selectTextActual+"</td>");
   	
 }
@@ -126,8 +133,9 @@ function cancelEditTopic(){
 function atLeastOneRadio() {
     return ($('input[type=radio]:checked').size() > 0);
 }
-function saveEditTopic(){
- 	var topicID=$("input[name='editDelete']:checked").val();
+function saveEditTopic(topicID){
+ 	// var topicID=$("input[name='editDelete']:checked").val();
+ 	// var topicID=topicID;
 	var topicName=$('#topicTxt'+topicID).val();
   	var subj=$("#subjSelected :selected").attr("id");
   alert(topicName);

@@ -62,7 +62,8 @@
 					while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
 						echo "<tr>";
 						echo "<td id='topicTxt".$arrRows['topic_ID']."'>".$arrRows['topic_name']."</td>";
-						echo "<td><input type='radio' name='editDelete' value='".$arrRows['topic_ID']."'/></td>";
+						echo "<td><a href='#' id='btnTopicEdit".$arrRows['topic_ID']."' onclick='topicEdit(".$arrRows['topic_ID']."); return false;'>Edit</a> 
+						| <a href='#' id='btnTopicDel".$arrRows['topic_ID']."' onclick='deleteTopic(".$arrRows['topic_ID']."); return false;' name='editDelete' value='".$arrRows['topic_ID']."'>Delete</a></td>";
 						echo "</tr>";
 					}
 					echo "</table>";
