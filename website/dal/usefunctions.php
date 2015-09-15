@@ -19,6 +19,7 @@
 	}
 	if($insert == true){
 		insert_subject($sName, $coord);
+		// return $yo;
 	}
 /*
 	INSERT SUBJECT

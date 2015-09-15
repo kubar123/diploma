@@ -128,7 +128,11 @@
       $('.new-subject').click(function(event) {
         /* Act on the event */
         // $('.share-wrap').fadeIn();
-        $('.create-subject').fadeIn();
+        // $('.create-subject').fadeIn();
+        var $clone = $(this).parent().find('.subject-row').first();
+        $clone.find('td').first().first().html('<input type="text" id="name" placeholder="enter name" />' );
+        $('.subject-table').append($clone);
+        
       });
       $('.cancel-share').click(function(event) {
         /* Act on the event */

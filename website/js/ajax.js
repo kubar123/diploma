@@ -1,34 +1,61 @@
-   $('.btn-add-subject').click(function(event) {
-       var coord = $('.choose-coord').val();
-       var findCoord = $('.choose-coord');
-       // findCoord.each(function(index, el) {
-       //   if(findCoord.find('option').val() == coord){
-       //     var txt = findCoord.text();
-       //   }
-       // });
-       // var txt = findCoord.find('option').val(coord).text();
-       // var txtCoord = $('.choose-coord').text();
-       var subName = $('.new-subject-name').val();
+
+    //New subject jquery functions
+    $(".new-subject").click(function(){
+      $(this).fadeOut();
+      newSubj();
+    });
+
+
+    $(document).on('click', '.btn-cancel-subject', function() {
+      $(this).parent().parent().remove();
+      $(".new-subject").fadeIn();
+    });
+
+    // $('.btn-add-subject').click(function(event) {
+    $(document).on('click', '.btn-add-subject', function() {
+
+      //Get coordinator chosen
+      var coord = $('.choose-coord');
+      var subName = $('#new-subject-name').val();
+      // alert(coord + " " + subName);
+      $(this).parent().parent().remove();
+
 
        $.ajax({
            type: 'POST',
            url: '../dal/usefunctions.php',
            data: {
                subjName: subName,
-               coordiId: coord
+               coordiId: coord.val()
            }
        })
            .done(function() {})
-           .always(function() {})
+           .always(function() { $(".new-subject").fadeIn(); })
            .fail(function() {})
-           .success(function() {
-               $('.share-wrap').fadeOut();
-               var clone = $('.subject-row:first').clone();
-               clone.find('#name').text(subName);
-               $('.subject-table').append(clone);
+           .success(function(e) {
+            // alert(e);
+              $(".new-subject").fadeIn();
+
+              //Clone and append
+              var clone = $('.subject-row:first').clone();
+              clone.find('#name').text(subName);
+              clone.find('#owner-username').text(coord.text());
+              $('.subject-table').append(clone);
+
+
+
+               // $('.share-wrap').fadeOut();
+               // var clone = $('.subject-row:first').clone();
+               // clone.find('#name').text(subName);
+               // $('.subject-table').append(clone);
 
            }); //End of ajax funct
    });
+
+   function newSubj(){
+        var clone = $('.coordi-list').find('.choose-coord-edit').clone();
+        $(".subject-table tr:last").after('<tr class="subject-row"><td><input id="new-subject-name" type="text"/></td><td id="new-subject-coord">'+$('<td>').append(clone).html()+'</td><td> <button class="btn-add-subject">Add</button><button class="btn-cancel-subject">Cancel</button></td></tr>');
+   }
     // var editID = "";
    $('.edit-subject').click(function(event) {
        var editID = $(this).attr('id');
@@ -128,6 +155,8 @@
        return false;
    });
 
+
+    
    /*
     ^^ JAMES' CODE ABOVE ^^ 
    */

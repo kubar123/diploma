@@ -96,13 +96,18 @@
 		function insert_subject($name, $coordID){
 			global $numRecords, $dbConnection, $stmt;
 			connect(); //Run connect function 
+			
 
 			$sql = "insert into subject (name, owner_ID) values('$name', $coordID)";
 
 			try{
+
 				$stmt = $dbConnection->query($sql);
+				return "hi".$dbConnection->errorInfo();
+
 				if($stmt == false){
 					die("Die -> false");
+					return "hi".$dbConnection->errorInfo();
 				}
 
 			}catch (PDOException $e){
