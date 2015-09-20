@@ -51,5 +51,12 @@
 		delete_subject($_POST['deleteID']);
 	}
 
+	//Get topic list from subjects:
+	if(isset($_POST['subjID'])){
+		//Get the subjects and echo them so we can grab the DATA
+		$topics = showTopics($_POST['subjID']);
+		echo json_encode($topics);
+	}
+
 
 ?>

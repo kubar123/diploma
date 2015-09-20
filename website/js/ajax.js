@@ -130,7 +130,8 @@ var clickCounter = 0;
            }); //End of ajax funct
 
    });
-
+  
+  /* BELOW IS CODE THAT BELONGS TO THE ADD/EDIT QUESTIONS PAGE */
    //Delete subject ajax function
    $('.delete-subject').click(function(e) {
        var deleteID = $(this).attr('id');
@@ -172,6 +173,39 @@ var clickCounter = 0;
       
        e.preventDefault();
        return false;
+   });
+  
+
+  var select_menu = $('.choose-subj');
+  //Create topic menu for a subject
+  $(document).on('change', '.choose-subj', function() {
+      //Subj ID
+      $id = $(this).val();
+
+
+       $.ajax({
+           type: 'POST',
+           url: '../dal/usefunctions.php',
+           data: {
+               subjID: $id,
+           },
+           dataType: "json"
+       })
+           .done(function() {})
+           .always(function() {})
+           .fail(function() {})
+           .success(function(data) {
+            // alert(JSON.stringify(data));
+            var m = "<h2>Select topic: </h2><select name='chooe-topic'>";
+            m += '<option disabled="disabled" selected="selected">Choose topic</option>';
+            $.each(data, function(index, element) {
+
+                m+= "<option value='"+data[index]['topic_ID']+"'>"+data[index]['topic_name']+"</option>";
+            });
+              m+= "</select>";
+              $('.topic_menu').html(m);
+           }); //End of ajax funct
+
    });
 
 

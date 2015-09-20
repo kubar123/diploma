@@ -155,9 +155,8 @@
 		Subject related functions 
 	*/
 
-	/*
-		Coordinator related functions 
-	*/
+	//Coordinator related functions 
+	
 		function show_coordinators(){
 			global $numRecords, $dbConnection, $stmt;
 			connect(); //Run connect function 
@@ -176,10 +175,29 @@
 
 			}
 		}
+
+		function showTopics($id){
+			global $numRecords,$dbConnection,$stmt;
+			connect();
+			//$id=1; // <<<------- FOR TESTING ONLY
+			try{
+				$sql="SELECT * from topic where subject_ID=$id";
+				$stmt=$dbConnection->query($sql);
+				if($stmt == false)
+					die("error");
+
+				return $stmt->fetchAll();
+				
+
+			}catch (Exception $e){
+
+			}
+		}
+
+
 		
-	/*
-		Coordinator related functions 
-	*/
+	//Coordinator related functions 
+	
 	/*
 		Function to print out arrays nicely.
 	*/
@@ -189,6 +207,7 @@
 	}	
 
 include "coordinatorFunct.php";
+
 
 
 ?>
