@@ -59,8 +59,8 @@ var deleteID=id;
 }
 
 function newTopic(){
-	var cancelLink="<a href='#' onclick='cancelNewTopic(); return false;' id='btnCancelTopic'>Cancel</a>";
-	var saveLink="<a href='#' onclick='saveNewTopic(); return false;' id='btnTopicSave'>Save</a>";
+	var cancelLink="<button onclick='cancelNewTopic();' id='btnCancelTopic'>Cancel</button>";
+	var saveLink="<button onclick='saveNewTopic();' id='btnTopicSave'>Save</button>";
   $("#topicTable tr:last").after('<tr id="trNewTopic"><td><input id="txtTopicNew" type="text"/></td><td id="newItemSpace"></td></tr>');
   $('#newItemSpace').replaceWith(saveLink+" | "+cancelLink);
   // $('#btnTopicNew').replaceWith("");
@@ -114,8 +114,8 @@ function topicEdit(id){
  	//change txt to input text
  	$(selectText).replaceWith('<input id="'+selTextId+'" type="text" value="'+$(selectText).text()+'"/>');
  	//change buttons
- 	$('#btnTopicDel'+id).replaceWith("<a href='#' onclick='cancelEditTopic("+id+"); return false;' id='btnCancelTopic'>Cancel</a>");
- 	$('#btnTopicEdit'+id).replaceWith("<a href='#' onclick='saveEditTopic("+id+"); return false;' id='btnTopicSave'>Save</a>");
+ 	$('#btnTopicDel'+id).replaceWith("<button onclick='cancelEditTopic("+id+"); return false;' id='btnCancelTopic'>Cancel</button>");
+ 	$('#btnTopicEdit'+id).replaceWith("<button onclick='saveEditTopic("+id+"); return false;' id='btnTopicSave'>Save</button>");
 
 }
 // $('#btnTopicEdit').click(function(){
@@ -124,8 +124,8 @@ function topicEdit(id){
 // });
 
 function cancelEditTopic(id){
-	$('#btnTopicSave').replaceWith("<a href='#' id='btnTopicEdit"+id+"' onclick='topicEdit("+id+"); return false;'>Edit</a>");
-  	$('#btnCancelTopic').replaceWith("<a href='#' onclick='deleteTopic("+id+"); return false;' id='btnTopicDel1"+id+"'>Delete</a>");
+	$('#btnTopicSave').replaceWith("<a href='#' name='editDelete' id='btnTopicEdit"+id+"' onclick='topicEdit("+id+"); return false;'>Edit</a>");
+  	$('#btnCancelTopic').replaceWith("<a href='#' onclick='deleteTopic("+id+"); return false;' id='btnTopicDel"+id+"'>Delete</a>");
  	$(selectText).replaceWith("<td id='"+selTextId+"'>"+selectTextActual+"</td>");
   	
 }
@@ -155,8 +155,10 @@ function saveEditTopic(topicID){
   .fail(function(){})
   .success(function(data){
 	alert(data);
-	$('#topicTxt'+topicID).replaceWith("<td id='topicTxt"+topicID+"'>"+topicName+"</td>");
-	$('#btnTopicSave').replaceWith("<button id='btnTopicNew' onclick='newTopic()'>New</button>");
-  	$('#btnCancelTopic').replaceWith("<button onclick='topicEdit()' id='btnTopicEdit'>Edit</button>");
+	selectTextActual=topicName;
+	cancelEditTopic(topicID);
+	// $('#topicTxt'+topicID).replaceWith("<td id='topicTxt"+topicID+"'>"+topicName+"</td>");
+	// $('#btnTopicSave').replaceWith("<button id='btnTopicNew' onclick='newTopic()'>New</button>");
+ //  	$('#btnCancelTopic').replaceWith("<button onclick='topicEdit()' id='btnTopicEdit'>Edit</button>");
   });
 }
