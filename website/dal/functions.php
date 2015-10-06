@@ -176,10 +176,10 @@
 			}
 		}
 
+		//Show topics for a particular ID
 		function showTopics($id){
 			global $numRecords,$dbConnection,$stmt;
 			connect();
-			//$id=1; // <<<------- FOR TESTING ONLY
 			try{
 				$sql="SELECT * from topic where subject_ID=$id";
 				$stmt=$dbConnection->query($sql);
@@ -194,9 +194,65 @@
 			}
 		}
 
+		//Show questions for a topic ID
+		function showQuestions($id){
+			global $numRecords,$dbConnection,$stmt;
+			connect();
+			try{
+				$sql="SELECT * from question where topic_ID=$id";
+				$stmt=$dbConnection->query($sql);
+				if($stmt == false)
+					die("error");
+
+				return $stmt->fetchAll();
+				
+
+			}catch (Exception $e){
+
+			}
+		}
+
 
 		
-	//Coordinator related functions 
+	//Coordinator related functions   ^ 
+
+	//Add question functions
+		function addQuestion($topicID, $difficulty, $question, $answer, $opt1,$opt2,$opt3){
+			global $numRecords,$dbConnection,$stmt;
+			connect();
+			 $sql = "INSERT INTO question (topic_ID,difficulty,answer, question)
+				    VALUES($topicID,$difficulty,'$answer','$question');";
+
+			  
+			try{
+				$stmt=$dbConnection->query($sql);
+					$qID = $dbConnection->lastInsertId();
+					// die($qID);
+				if(!$stmt)
+					die("error1".$dbConnection->errorInfo());
+
+				$dbConnection->beginTransaction();
+				//Insert questions
+				$dbConnection->exec("INSERT INTO answer (question_ID, data)
+				    VALUES($qID,'$opt1');");
+				$dbConnection->exec("INSERT INTO answer (question_ID, data)
+				    VALUES($qID,'$opt2');");
+				$dbConnection->exec("INSERT INTO answer (question_ID, data)
+				    VALUES($qID,'$opt3');");
+
+
+				$dbConnection->commit();
+				if(!$dbConnection)
+					die("error2".$dbConnection->errorInfo());				
+
+			}catch (Exception $e){
+				//Rollback cos of fail
+				$dbConnection->rollback();
+				return "Error rolling back: ". $e;
+			}
+		}
+
+
 	
 	/*
 		Function to print out arrays nicely.

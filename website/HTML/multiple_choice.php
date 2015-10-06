@@ -39,6 +39,7 @@
       </select>
 
       <div class='topic_menu'></div>
+      <div class='question_table'></div>
       </div>
       <?php
         include "footer.php";

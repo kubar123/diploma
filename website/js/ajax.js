@@ -2,7 +2,7 @@ var clone = $('.coordi-list').find('.choose-coord-edit').clone();
 var edBtns = "";
 var cancelEdClone = "";
 var clickCounter = 0;
-
+$id = "";
     //New subject jquery functions
     $(".new-subject").click(function(){
       $(this).fadeOut();
@@ -175,9 +175,10 @@ var clickCounter = 0;
        return false;
    });
   
+  
 
   var select_menu = $('.choose-subj');
-  //Create topic menu for a subject
+  //Create topic menu for a subject - When the selectmenu changes run ajax function
   $(document).on('change', '.choose-subj', function() {
       //Subj ID
       $id = $(this).val();
@@ -196,17 +197,123 @@ var clickCounter = 0;
            .fail(function() {})
            .success(function(data) {
             // alert(JSON.stringify(data));
-            var m = "<h2>Select topic: </h2><select name='chooe-topic'>";
-            m += '<option disabled="disabled" selected="selected">Choose topic</option>';
-            $.each(data, function(index, element) {
+            if($.isEmptyObject(data))
+              m = "<h1>No topic found</h1><a href='coordinator.php'>Add new topic</a>";
+            else{
+              var m = "<h2>Select topic: </h2><select class='choose-topic' name='choose-topic'>";
+              m += '<option disabled="disabled" selected="selected">Choose topic</option>';
+              $.each(data, function(index, element) {
 
-                m+= "<option value='"+data[index]['topic_ID']+"'>"+data[index]['topic_name']+"</option>";
-            });
-              m+= "</select>";
+                  m+= "<option value='"+data[index]['topic_ID']+"'>"+data[index]['topic_name']+"</option>";
+              });
+                m+= "</select>";
+
+            }
               $('.topic_menu').html(m);
            }); //End of ajax funct
 
    });
+
+  //Grab questions for a topic
+  $(document).on('change', '.choose-topic', function() {
+      //Subj ID
+      $id = $(this).val();
+
+
+       $.ajax({
+           type: 'POST',
+           url: '../dal/usefunctions.php',
+           data: {
+               topicID: $id,
+           },
+           dataType: "json"
+       })
+           .done(function() {})
+           .always(function() {})
+           .fail(function() {})
+           .success(function(data) {
+            // alert(JSON.stringify(data));
+
+            if($.isEmptyObject(data))
+              m+="<h1>No questions found</h1><input type='submit' value='Add Question' class='add_new_question' />";
+            else {
+              var m= "<br /><input type='submit' value='Add New' class='add_question' />";
+              m += "<h2>Questions: </h2><table>";
+              m+= "<tr><td>Question</td><td>Answer<td></tr>";
+              $.each(data, function(index, element) {
+                  m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['answer']+"<td></tr>";
+              });
+                m+= "</table>";
+           }
+              $('.question_table').html(m);
+           }); //End of ajax funct
+
+   });
+
+  //Insert question and answers
+  $(document).on('click', '.submit_question', function() {
+    //Test id
+    var id=1;
+    //Grab form details
+    var answer = $('.correct_answer');
+    var quest = $('.new_question');
+    var op1 = $('.option1');
+    var op2 = $('.option2');
+    var op3 = $('.option3');
+    var diff = $('.questDifficulty');
+
+    $.ajax({
+             type: 'POST',
+             url: '../dal/usefunctions.php',
+             data: {
+                addQ: "true",
+                quest: quest.val(),
+                ans: answer.val(),
+                op1: op1.val(),
+                op2: op2.val(),
+                op3: op3.val(),
+                diff: diff.val(),
+                topicID: id,
+             }
+         })
+             .done(function() {})
+             .always(function() {})
+             .fail(function() {})
+             .success(function(data) {
+              // alert(data)
+              // alert(JSON.stringify(data));
+              alert("Question added successfully!");
+              answer.val("");
+              quest.val("");
+              op1.val("");
+              op2.val("");
+              op3.val("");
+
+              
+    }); //End of ajax funct
+
+
+  });
+  
+  
+  $(document).on('click', '.add_question', function() {
+
+    $.ajax({
+           type: 'POST',
+           url: '../HTML/add-question.php',
+           data: {
+               topicID: $id,
+           }
+       })
+           .done(function() {})
+           .always(function() {})
+           .fail(function() {})
+           .success(function(data) {
+            // alert(JSON.stringify(data));
+
+            
+           }); //End of ajax funct
+  });
 
 
 
