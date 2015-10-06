@@ -20,9 +20,12 @@
      <?php 
       include "head.php";
 
+
       //Get the post variables
-      // $topic_ID = $_POST['topic_ID'];
-      $topic_ID = 1;
+      $topic_ID = $_POST['t_ID'];
+      echo $topic_ID;
+
+      // $topic_ID = 1;
 
       //TESTING
       // $e = addQuestion($topic_ID, 1, "What is 1+1", "2", "3","4","-1");

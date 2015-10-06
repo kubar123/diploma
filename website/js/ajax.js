@@ -237,7 +237,7 @@ $id = "";
             if($.isEmptyObject(data))
               m+="<h1>No questions found</h1><input type='submit' value='Add Question' class='add_new_question' />";
             else {
-              var m= "<br /><input type='submit' value='Add New' class='add_question' />";
+              var m= "<br /><form action='add-question.php' method='post'><input type='submit' value='Add New' class='add_question' /><input type='hidden' value='"+$id+"' name='t_ID' class='t_ID' /></form>";
               m += "<h2>Questions: </h2><table>";
               m+= "<tr><td>Question</td><td>Answer<td></tr>";
               $.each(data, function(index, element) {
@@ -297,12 +297,12 @@ $id = "";
   
   
   $(document).on('click', '.add_question', function() {
-
+    $t_ID = $('.t_ID').val();
     $.ajax({
            type: 'POST',
            url: '../HTML/add-question.php',
            data: {
-               topicID: $id,
+               topicID: $t_ID,
            }
        })
            .done(function() {})
@@ -310,6 +310,7 @@ $id = "";
            .fail(function() {})
            .success(function(data) {
             // alert(JSON.stringify(data));
+            // window.location.href = "../HTML/add-question.php";
 
             
            }); //End of ajax funct
