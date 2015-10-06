@@ -1,129 +1,155 @@
 <?php 
 // -------------------------------------- TOPICS---------------------------------
-		function getCoordinatorSubjectList(){
-			global $numRecords,$dbConnection,$stmt;
-			connect();
-			$user=$_SESSION['user_ID'];
-			$sql="select * from subject where owner_ID=$user";
-			try{
-				$stmt=$dbConnection->query($sql);
-				if($stmt->rowcount()!=0){
-					while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
-						echo "<li>";
-						echo $arrRows['name'];
-						echo "</li>";
-					}
+
+// make li from all subject the coordinator has permissions to view
+function getCoordinatorSubjectList(){
+	global $numRecords,$dbConnection,$stmt;
+	connect();
+	$user=$_SESSION['user_ID'];
+	$sql="select * from subject where owner_ID=$user";
+	try{
+		$stmt=$dbConnection->query($sql);
+		if($stmt->rowcount()!=0){
+			while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
+				echo "<li>";
+				echo $arrRows['name'];
+				echo "</li>";
+			}
 
 
-				}else{
-					return "None";
-				}
-			}catch (PDOException $e){
-				return "Error";
+		}else{
+			return "None";
+		}
+	}catch (PDOException $e){
+		return "Error";
+	}
+}
+function showSelectSubjectQuestion(){
+	global $numRecords,$dbConnection,$stmt;
+	connect();
+	$user=$_SESSION['user_ID'];
+	$sql="select * from subject where owner_ID=$user";
+	try{
+		$stmt=$dbConnection->query($sql);
+		if($stmt->rowcount()!=0){
+			echo "<select id='subjSelectedQuestion' onchange='setSubjectFilterQuestion(this)'>";
+			echo "<option selected='selected' disabled='disabled'> Subject... </option>";
+			$rows=$stmt->fetchAll();
+			$stmt=null;
+			$dbConnection=null;
+			foreach($rows as $r){
+				// getOption($r['subject_ID']);
+				$id=$r['subject_ID'];
+				$name=$r['name'];
+				echo "<option id='$id'>$name</option>";
 			}
 		}
-
-		function showSelectSubject(){
-			global $numRecords,$dbConnection,$stmt;
-			connect();
-			$user=$_SESSION['user_ID'];
-			$sql="select * from subject where owner_ID=$user";
-			try{
-				
-				$stmt=$dbConnection->query($sql);
-				if($stmt->rowcount()!=0){
-					echo "<select id='subjSelected' onchange='setSubjectFilter(this)'>";
-					// echo "<option> Subject... </option>";
-					$rows=$stmt->fetchAll();
-					$stmt=null;
-					$dbConnection=null;
-					foreach($rows as $r){
-						// getOption($r['subject_ID']);
-						$id=$r['subject_ID'];
-						$name=$r['name'];
-						echo "<option id='$id'>$name</option>";
-					}
-				}
-				echo "</select>";
-			}catch(PDOException $e){ 	
-				echo "PDO error";
+		echo "</select>";
+	}catch(PDOException $e){ 	
+		echo "PDO error";
+	}
+}
+function showSelectSubject(){
+	global $numRecords,$dbConnection,$stmt;
+	connect();
+	$user=$_SESSION['user_ID'];
+	$sql="select * from subject where owner_ID=$user";
+	try{
+		
+		$stmt=$dbConnection->query($sql);
+		if($stmt->rowcount()!=0){
+			echo "<select id='subjSelected' onchange='setSubjectFilter(this)'>";
+			// echo "<option> Subject... </option>";
+			$rows=$stmt->fetchAll();
+			$stmt=null;
+			$dbConnection=null;
+			foreach($rows as $r){
+				// getOption($r['subject_ID']);
+				$id=$r['subject_ID'];
+				$name=$r['name'];
+				echo "<option id='$id'>$name</option>";
 			}
 		}
-		function showTopicTable($id){
-			global $numRecords,$dbConnection,$stmt;
-			connect();
-			//$id=1; // <<<------- FOR TESTING ONLY
-			try{
-				$sql="SELECT * from topic where subject_ID='$id'";
-				$stmt=$dbConnection->query($sql);
-				if($stmt->rowcount()!=0){
-					echo "<table id='topicTable'>";
-					//echo "<option>...</option>";
-					while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
-						echo "<tr>";
-						echo "<td id='topicTxt".$arrRows['topic_ID']."'>".$arrRows['topic_name']."</td>";
-						echo "<td><a href='#' id='btnTopicEdit".$arrRows['topic_ID']."' onclick='topicEdit(".$arrRows['topic_ID']."); return false;'>Edit</a> 
-						| <a href='#' id='btnTopicDel".$arrRows['topic_ID']."' onclick='deleteTopic(".$arrRows['topic_ID']."); return false;' name='editDelete' value='".$arrRows['topic_ID']."'>Delete</a></td>";
-						echo "</tr>";
-					}
-					echo "</table>";
-				}
-			}catch(PDOException $err){
-				echo "An error occured".$err->getMessage();
+		echo "</select>";
+	}catch(PDOException $e){ 	
+		echo "PDO error";
+	}
+}
+function showTopicTable($id){
+	global $numRecords,$dbConnection,$stmt;
+	connect();
+	//$id=1; // <<<------- FOR TESTING ONLY
+	try{
+		$sql="SELECT * from topic where subject_ID='$id'";
+		$stmt=$dbConnection->query($sql);
+		if($stmt->rowcount()!=0){
+			echo "<table id='topicTable'>";
+			//echo "<option>...</option>";
+			while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
+				echo "<tr>";
+				echo "<td id='topicTxt".$arrRows['topic_ID']."'>".$arrRows['topic_name']."</td>";
+				echo "<td><a href='#' id='btnTopicEdit".$arrRows['topic_ID']."' onclick='topicEdit(".$arrRows['topic_ID']."); return false;'>Edit</a> 
+				| <a href='#' id='btnTopicDel".$arrRows['topic_ID']."' onclick='deleteTopic(".$arrRows['topic_ID']."); return false;' name='editDelete' value='".$arrRows['topic_ID']."'>Delete</a></td>";
+				echo "</tr>";
 			}
+			echo "</table>";
 		}
-		// ------- DELETE TOPIC --------
-		function deleteTopic($id){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+	}catch(PDOException $err){
+		echo "An error occured".$err->getMessage();
+	}
+}
+// ------- DELETE TOPIC --------
+function deleteTopic($id){
+	global $numRecords, $dbConnection, $stmt;
+	connect(); //Run connect function 
 
-			$sql = "delete from topic where topic_ID = $id";
+	$sql = "delete from topic where topic_ID = $id";
 
-			try{
-				$stmt = $dbConnection->query($sql);
-				if($stmt == false){
-					die("Die -> false");
-				}
-
-			}catch (PDOException $e){
-				die("ERROR: ".$e->getMessage());
-			}
+	try{
+		$stmt = $dbConnection->query($sql);
+		if($stmt == false){
+			die("Die -> false");
 		}
 
-		// ------ END OF DELETE --------
-		// ------ new topic ------------
-		function newTopic($id, $subj){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+	}catch (PDOException $e){
+		die("ERROR: ".$e->getMessage());
+	}
+}
 
-			$sql="insert into topic (subject_ID, topic_name) values($subj, '$id')";
-			//echo $sql;
-			try{
-				$stmt=$dbConnection->query($sql);
-				if($stmt==false){
-					die("DIE -> false");
-				}
-				echo "Added!";
-			}catch(PDOException $e){
-				die("ERROR: ".$e->getMessage());
-			}
-		}
-		// ---------------------- edit topic ----------------
-		function editTopic($tName, $subj, $topicID){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+// ------ END OF DELETE --------
+// ------ new topic ------------
+function newTopic($id, $subj){
+	global $numRecords, $dbConnection, $stmt;
+	connect(); //Run connect function 
 
-			$sql="update topic set topic_name='$tName' where topic_ID=$topicID";
-			try{
-				$stmt=$dbConnection->query($sql);
-				if($stmt==false){
-					die("DIE -> false");
-				}
-				echo "Changed!";
-			}catch(PDOException $e){
-				die("ERROR: ".$e->getMessage());
-			}
+	$sql="insert into topic (subject_ID, topic_name) values($subj, '$id')";
+	//echo $sql;
+	try{
+		$stmt=$dbConnection->query($sql);
+		if($stmt==false){
+			die("DIE -> false");
 		}
+		echo "Added!";
+	}catch(PDOException $e){
+		die("ERROR: ".$e->getMessage());
+	}
+}
+// ---------------------- edit topic ----------------
+function editTopic($tName, $subj, $topicID){
+	global $numRecords, $dbConnection, $stmt;
+	connect(); //Run connect function 
+
+	$sql="update topic set topic_name='$tName' where topic_ID=$topicID";
+	try{
+		$stmt=$dbConnection->query($sql);
+		if($stmt==false){
+			die("DIE -> false");
+		}
+		echo "Changed!";
+	}catch(PDOException $e){
+		die("ERROR: ".$e->getMessage());
+	}
+}
 
 
 		// --------=---------------------------- end of topics -------------------------

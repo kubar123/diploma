@@ -4,9 +4,20 @@ function showTopics(){
 
 }
 var selectFilterTopic=null;
+var selectFilterTopicQuestion=null;
+
+function setSubjectFilterQuestion(s){
+	selectFilterTopicQuestion=s[s.selectedIndex].id;
+	filterTopicListQuestion();
+}
 
 function setSubjectFilter(s){
   selectFilterTopic=s[s.selectedIndex].id;
+}
+function filterTopicListQuestion(){
+	var url=window.location.href;
+	url+='?drag_topic'+selectFilterTopicQuestion;
+	window.location.search='?drag_topic='+selectFilterTopicQuestion;
 }
 function filterTopicList(){
   //alert(selectFilterTopic);
@@ -167,3 +178,55 @@ function saveEditTopic(topicID){
  //  	$('#btnCancelTopic').replaceWith("<button onclick='topicEdit()' id='btnTopicEdit'>Edit</button>");
   });
 }
+
+//Grab questions for a topic
+  // $(document).on('change', '.choose-topic', function() {
+  //     //Subj ID
+  //     $id = $(this).val();
+
+
+  //      $.ajax({
+  //          type: 'POST',
+  //          url: '../dal/usefunctions.php',
+  //          data: {
+  //              topicID: $id,
+  //          },
+  //          dataType: "json"
+  //      })
+  //          .done(function() {})
+  //          .always(function() {})
+  //          .fail(function() {})
+  //          .success(function(data) {
+  //           // alert(JSON.stringify(data));
+
+  //           if($.isEmptyObject(data))
+  //             m+="<h1>No questions found</h1><input type='submit' value='Add Question' class='add_new_question' />";
+  //           else {
+  //             var m= "<br /><form action='add-question.php' method='post'><input type='submit' value='Add New' class='add_question' /><input type='hidden' value='"+$id+"' name='t_ID' class='t_ID' /></form>";
+  //             m += "<h2>Questions: </h2><table>";
+  //             m+= "<tr><td>Question</td><td>Answer<td></tr>";
+  //             $.each(data, function(index, element) {
+  //                 m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['answer']+"<td></tr>";
+  //             });
+  //               m+= "</table>";
+  //          }
+  //             $('.question_table').html(m);
+  //          }); //End of ajax funct
+
+  //  });
+// hide question ist data at start of app - show if btn is clicked...
+$(function(){
+	// $('#QuestionAnswerSpace').hide();
+})
+//handle drag and drop
+$('#dragAndDropListBtn').click(function(){
+	// $('#QuestionAnswerSpace').show();
+	//when clicked, ask for topic
+	//$('#QuestionAnswerSpace').html("<h1>Hello</h1>");
+	var url=window.location.href;
+	window.location.href="dragAndDropQuestion.php";
+	alert(url);
+	alert(window.location);
+	// url+='?drag_topic'+selectFilterTopicQuestion;
+	// window.location.search='?topic='+selectFilterTopicQuestion;
+});
