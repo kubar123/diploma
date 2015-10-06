@@ -253,7 +253,7 @@ $id = "";
   //Insert question and answers
   $(document).on('click', '.submit_question', function() {
     //Test id
-    var id=1;
+    var id=$('.topic_ID_new').val();
     //Grab form details
     var answer = $('.correct_answer');
     var quest = $('.new_question');

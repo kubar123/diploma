@@ -23,7 +23,8 @@
 
       //Get the post variables
       $topic_ID = $_POST['t_ID'];
-      echo $topic_ID;
+      // echo $topic_ID;
+      echo "<input type='hidden' class='topic_ID_new' name='topic_ID_new' value='$topic_ID' />"
 
       // $topic_ID = 1;
 
