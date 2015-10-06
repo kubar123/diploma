@@ -46,6 +46,16 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
           </tr>
           </table> -->
           <h3>Question List</h3>
+          <span id="questionMenu">
+            <table width='45%'>
+              <tr>
+                <td><button id="dragAndDrop">Drag and drop</button></td>
+                <td><button id="crossword">Crossword</button></td>
+                <td><button id="hangman">Hangman</button></td>
+                <td><button id="multiChoice">Multiple choice</button></td>
+              </tr>
+            </table>
+          </span>
           <hr>
           <h3>Topic list</h3>
           <span id="topicSpace"></span>
@@ -59,7 +69,7 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
               echo showTopicTable(1);
             }
           ?>
-          <button id='btnTopicNew' onclick='newTopic()'>New</button> | <button onclick='topicEdit()' id='btnTopicEdit'>Edit</button> | <button onclick='deleteTopic()'>Delete</button>
+          <button id='btnTopicNew' onclick='newTopic()'>New</button>
           <hr>
           <h3> Rules</h3>
           <br><span id="infoSpace"></span>
