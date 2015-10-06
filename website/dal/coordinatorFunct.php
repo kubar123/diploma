@@ -54,7 +54,7 @@
 			connect();
 			//$id=1; // <<<------- FOR TESTING ONLY
 			try{
-				$sql="SELECT * from topic where subject_ID=$id";
+				$sql="SELECT * from topic where subject_ID='$id'";
 				$stmt=$dbConnection->query($sql);
 				if($stmt->rowcount()!=0){
 					echo "<table id='topicTable'>";

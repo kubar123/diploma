@@ -15,6 +15,11 @@ function filterTopicList(){
   window.location.search = '?topic='+selectFilterTopic;
 }
 
+$('#crosswordQues').click(function(){
+	alert('click');
+});
+
+
 //delete a topic using a specific ID
 function deleteTopic(id){
   // var deleteID=$("input[name='editDelete']:checked").val();

@@ -56,6 +56,8 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
               </tr>
             </table>
           </span>
+
+          <span id="QuestionAnswerSpace"></span>
           <hr>
           <h3>Topic list</h3>
           <span id="topicSpace"></span>
