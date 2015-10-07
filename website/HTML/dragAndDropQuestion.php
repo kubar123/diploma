@@ -50,8 +50,9 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
             <?php
                echo showSelectSubjectQuestion();
                if(isset($_GET['drag_topic'])){
-                  //echo showTopicTable($_GET['drag_topic']);
-              }
+                  echo"<br>Please choose a topic: ";
+                  echo showSelectTopic($_GET['drag_topic']);
+                }
             // }else{
             //   echo showTopicTable(1);
             // }
@@ -59,6 +60,9 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
 
           </span>
           
+          <span id="tableQuestionSpace">
+            
+          </span>
           <br>
           
          <!--  <li>Project</li>

@@ -7,7 +7,7 @@ var selectFilterTopic=null;
 var selectFilterTopicQuestion=null;
 
 function setSubjectFilterQuestion(s){
-	selectFilterTopicQuestion=s[s.selectedIndex].id;
+	selectFilterTopicQuestion=s[s.selectedIndex].value;
 	filterTopicListQuestion();
 }
 
@@ -217,7 +217,7 @@ function saveEditTopic(topicID){
 // hide question ist data at start of app - show if btn is clicked...
 $(function(){
 	// $('#QuestionAnswerSpace').hide();
-})
+});
 //handle drag and drop
 $('#dragAndDropListBtn').click(function(){
 	// $('#QuestionAnswerSpace').show();
@@ -230,3 +230,34 @@ $('#dragAndDropListBtn').click(function(){
 	// url+='?drag_topic'+selectFilterTopicQuestion;
 	// window.location.search='?topic='+selectFilterTopicQuestion;
 });
+
+$(function(){
+	var id = location.search.split('drag_topic=')[1]
+	if(id!=null)
+		$('#subjSelectedQuestion').val(id);
+	// alert($('#subjSelectedQuestion').val());
+
+});
+    
+
+ // ------------------------------- DRAG AND DROP QUESTION ----------------------------
+ var topicSelection;
+ function setTopicFilter(s){
+  topicSelection=s.options[s.selectedIndex].value;
+  var data={drag_topic:topicSelection};
+  getPOST('../dal/topicFunctions.php',data)
+  .success(function(data){
+  	$('#tableQuestionSpace').html(data);
+  }).fail(function(data){
+  	alert(data+"FAIL");
+  });
+  //once the topic has been set, make ajax all to get all the 
+}
+
+function getPOST(url, data){
+	return $.ajax({
+		type:"POST",
+		url: url,
+		data:data
+	});
+}

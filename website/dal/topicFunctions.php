@@ -12,4 +12,10 @@ if(isset($_POST['topicName']) && isset($_POST['subj']) && isset($_POST['topicID'
 	editTopic($_POST['topicName'], $_POST['subj'],$_POST['topicID']);
 }
 
+if(isset($_POST['drag_topic'])){
+	getTableQuestionSingle($_POST['drag_topic']);
+	//echo "all good so far";
+	// showSelectTopic()
+}
+
 ?>
