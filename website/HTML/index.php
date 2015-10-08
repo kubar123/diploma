@@ -26,6 +26,8 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
     <body>
      <?php 
       include "head.php";
+      // $i = addQuestion(3, 1, 1, "HIAAA HELLO", array("ONE", "TWO", "THREE"), array("OP1", "OP2", "OP@"));
+      // die("<br /> ==>  ".$i);
      ?>
         <div id="content">
           <div class="title"><span>Drunk Panthers - We think globally.</span><hr></div>

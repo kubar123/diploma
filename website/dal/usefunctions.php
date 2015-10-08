@@ -67,13 +67,12 @@
 		$topic_ID = $_POST['topicID'];
 		$quest = $_POST['quest'];
 		$diff = $_POST['diff'];
-		$ans = $_POST['ans'];
-		$op1 = $_POST['op1'];
-		$op2 = $_POST['op2'];
-		$op3 = $_POST['op3'];
-		$diff = $_POST['diff'];
+		$isMultiple = $_POST['isMultiple'];
+		$correct = json_decode($_POST['correct']);
+		$options = json_decode($_POST['options']);
 
-		addQuestion($topic_ID, $diff, $quest, $ans, $op1,$op2,$op3);
+		$d = addQuestion($topic_ID, $diff, $isMultiple, $quest,$correct, $options);
+		echo $d;
 
 	}
 

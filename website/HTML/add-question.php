@@ -23,7 +23,10 @@
 
       //Get the post variables
       $topic_ID = $_POST['t_ID'];
-      // echo $topic_ID;
+      // if(!isset($topic_ID))
+      if(!isset($topic_ID))
+        echo '<script>window.location = "multiple_choice.php";</script>';
+      
       echo "<input type='hidden' class='topic_ID_new' name='topic_ID_new' value='$topic_ID' />"
 
       // $topic_ID = 1;
@@ -41,19 +44,28 @@
           <input type='text' placeholder='Enter question' class='new_question'  />
 
         <h2>Add your four multiple choice answers!</h2>
+        <p>Check the radio buttons if your question has multiple answers!</p><br />
+
         <label for='correct_answer'>Correct answer: </label>
-          <input type='text' placeholder='Enter question' class='correct_answer' />
+          <input type='text' placeholder='Enter question' name='correct_answer[]' class='correct_answer' />
+            <div class='correct_answers'></div>
+          <input type='button' value='Add another correct answer' class='add_another_input' />
 
-        <label for='option1'>Option 1: </label>
-          <input type='text' placeholder='Enter option 1' class='option1' />
 
-        <label for='option2'>Option 2: </label>
-          <input type='text' placeholder='Enter option 2' class='option2' />
+        <br /><br /><label for='option1'>Option 1: </label>
+          <input type='text' placeholder='Enter option' name='optional_answer[]' class='optional_answer' />
 
-        <label for='option3'>Option 3: </label>
-          <input type='text' placeholder='Enter option 3' class='option3' />
+        <br /><label for='option2'>Option 2: </label>
+          <input type='text' placeholder='Enter option' name='optional_answer[]' class='optional_answer' />
 
-        <select name='questDifficulty' class='questDifficulty'>
+        <br /><label for='option3'>Option 3: </label>
+          <input type='text' placeholder='Enter option' name='optional_answer[]' class='optional_answer' />
+
+
+        <div class='optional_answers'></div>
+          <input type='button' value='Add another option' class='add_another_optional_input' />
+
+        <br /><select name='questDifficulty' class='questDifficulty'>
           <option value='1'>Hard</option>
           <option value='2'>Medium</option>
           <option value='3'>Easy</option>

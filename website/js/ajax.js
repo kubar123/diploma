@@ -235,13 +235,13 @@ $id = "";
             // alert(JSON.stringify(data));
 
             if($.isEmptyObject(data))
-              m+="<h1>No questions found</h1><input type='submit' value='Add Question' class='add_new_question' />";
+              m+="<h1>No questions found</h1><form action='add-question.php' method='post'><input type='submit' value='Add New' class='add_question' /><input type='hidden' value='"+$id+"' name='t_ID' class='t_ID' /></form>";
             else {
               var m= "<br /><form action='add-question.php' method='post'><input type='submit' value='Add New' class='add_question' /><input type='hidden' value='"+$id+"' name='t_ID' class='t_ID' /></form>";
               m += "<h2>Questions: </h2><table>";
               m+= "<tr><td>Question</td><td>Answer<td></tr>";
               $.each(data, function(index, element) {
-                  m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['answer']+"<td></tr>";
+                  m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['data']+"<td></tr>";
               });
                 m+= "</table>";
            }
@@ -249,30 +249,47 @@ $id = "";
            }); //End of ajax funct
 
    });
+  $(document).on('click', '.add_another_input', function(event) {
+    var clone = $('.correct_answer').first().clone();
+    $('.correct_answers').append(clone);
+  });
+
+  $(document).on('click', '.add_another_optional_input', function(event) {
+    var clone = $('.optional_answer').first().clone();
+    $('.optional_answers').append(clone);
+  });
 
   //Insert question and answers
   $(document).on('click', '.submit_question', function() {
     //Test id
     var id=$('.topic_ID_new').val();
-    //Grab form details
-    var answer = $('.correct_answer');
-    var quest = $('.new_question');
-    var op1 = $('.option1');
-    var op2 = $('.option2');
-    var op3 = $('.option3');
-    var diff = $('.questDifficulty');
+    var isMultiple;
 
+    //Turn input fields into arrays that will be passed to php function
+    var optional = $("input[class='optional_answer']")
+              .map(function(){return $(this).val();}).get();
+
+    var correct = $("input[class='correct_answer']")
+              .map(function(){return $(this).val();}).get();
+    var quest = $('.new_question');
+
+    //Grab difficulty
+    var diff = $('.questDifficulty');
+    if(correct.length > 1)
+      isMultiple = 1;
+    else
+      isMultiple = 0;
+  
     $.ajax({
              type: 'POST',
              url: '../dal/usefunctions.php',
              data: {
                 addQ: "true",
                 quest: quest.val(),
-                ans: answer.val(),
-                op1: op1.val(),
-                op2: op2.val(),
-                op3: op3.val(),
+                correct: JSON.stringify(correct),
+                options: JSON.stringify(optional),
                 diff: diff.val(),
+                isMultiple: isMultiple,
                 topicID: id,
              }
          })
@@ -280,14 +297,9 @@ $id = "";
              .always(function() {})
              .fail(function() {})
              .success(function(data) {
-              // alert(data)
-              // alert(JSON.stringify(data));
-              alert("Question added successfully!");
-              answer.val("");
-              quest.val("");
-              op1.val("");
-              op2.val("");
-              op3.val("");
+              alert("Question added successfully!" + data);
+              $('.optional_answer').val("");
+              $('.correct_answer').val("");
 
               
     }); //End of ajax funct

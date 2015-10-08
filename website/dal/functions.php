@@ -3,9 +3,13 @@
 		Connection below
 	*/
 		//Databse Connection Variables
-		$localhost = "localhost";
-		$user = "root";
-		$password = "root";
+		$localhost = "localhost"; //LOCAlHOST
+		// $localhost = "http://lansoftprogramming.com/phpmyadmin";
+		$user = "root"; //LOCALHOST
+		// $user = "ITGuruMain"; 
+		$password = "root"; //LOCALHOST
+		// $password = "hSGHJ6dPVrVMtfx3";
+
 		$db = "ITGuru";
 		$dsn = "mysql:host=$localhost;dbname=$db;";
 
@@ -181,7 +185,7 @@
 			global $numRecords,$dbConnection,$stmt;
 			connect();
 			try{
-				$sql="SELECT * from topic where subject_ID=$id";
+				$sql="SELECT * from topic where subject_ID='$id'";
 				$stmt=$dbConnection->query($sql);
 				if($stmt == false)
 					die("error");
@@ -199,7 +203,9 @@
 			global $numRecords,$dbConnection,$stmt;
 			connect();
 			try{
-				$sql="SELECT * from question where topic_ID=$id";
+				$sql="select question.*, answer.* from question INNER JOIN answer ON question.question_ID = answer.question_ID and question.topic_ID = $id ORDER BY question.question_ID";
+				// $sql="SELECT * from question, answer where topic_ID=$id and answer.isCorrect = 1";
+				// SELECT * from question, answer where topic_ID=1 and answer.isCorrect = 1
 				$stmt=$dbConnection->query($sql);
 				if($stmt == false)
 					die("error");
@@ -216,34 +222,84 @@
 		
 	//Coordinator related functions   ^ 
 
-	//Add question functions
-		function addQuestion($topicID, $difficulty, $question, $answer, $opt1,$opt2,$opt3){
+		function addQuestion($topicID, $difficulty, $isMultiple, $quest,$correct, $options){
 			global $numRecords,$dbConnection,$stmt;
 			connect();
-			 $sql = "INSERT INTO question (topic_ID,difficulty,answer, question)
-				    VALUES($topicID,$difficulty,'$answer','$question');";
+			// die( "SIZE: " .sizeof(json_decode($options)));
+			// $y = "";
+			// for($z = 0; $z < sizeof($correct); $z++){
+			// 	$y .= $correct[$z];
+			// }
+			// die("OPTIONS ====>    " . $y);
 
-			  
+			 $sql = "INSERT INTO question (topic_ID,difficulty,isMultiple, question)
+				    VALUES($topicID,$difficulty,$isMultiple,'$quest');";
+
+			//REMEMBER THAT QUESTION WONT ACTUALLY INSERT, NEITHER WILL ANSWERS
 			try{
 				$stmt=$dbConnection->query($sql);
 					$qID = $dbConnection->lastInsertId();
-					// die($qID);
+
 				if(!$stmt)
 					die("error1".$dbConnection->errorInfo());
+				$stmt = "";
+				// $dbConnection->beginTransaction();
+					for($i = 0; $i < sizeof($correct); $i++){
+						// $dbConnection->exec("INSERT INTO answer (question_ID, data, isCorrect)
+					 //    	VALUES($qID,'".$correct[$i]."',1);");
+						$stmt .= "INSERT INTO answer (question_ID, data, isCorrect)
+					    	VALUES($qID,'".$correct[$i]."',1);";
+					}
 
-				$dbConnection->beginTransaction();
-				//Insert questions
-				$dbConnection->exec("INSERT INTO answer (question_ID, data)
-				    VALUES($qID,'$opt1');");
-				$dbConnection->exec("INSERT INTO answer (question_ID, data)
-				    VALUES($qID,'$opt2');");
-				$dbConnection->exec("INSERT INTO answer (question_ID, data)
-				    VALUES($qID,'$opt3');");
+					for($z = 0; $z < sizeof($options); $z++){
+						// $dbConnection->exec("INSERT INTO answer (question_ID, data, isCorrect)
+					 //    	VALUES($qID,'".$options[$z]."',0);");
+						$stmt .= "INSERT INTO answer (question_ID, data, isCorrect)
+					    	VALUES($qID,'".$options[$z]."',0);";
+					}
+				$dd = $dbConnection->query($stmt);
+				echo $dd->errorInfo();
+				// $dbConnection->commit();
 
 
-				$dbConnection->commit();
+				
+
+				// //Check for multiple answers
+				// if($isMultiple){
+				// 	if($ans2 != "ZOZ")
+				// 		$ans2 = 1;
+				// 	else
+				// 		$ans2 = 0;
+
+				// 	if($ans3 != "ZOZ")
+				// 		$ans3 = 1;
+				// 	else
+				// 		$ans3 = 0;
+
+				// 	if($ans4 != "ZOZ")
+				// 		$ans4 = 1;
+				// 	else
+				// 		$ans4 = 0;
+				// }
+				
+				// //Insert questions
+				// //Correct answer
+				// $dbConnection->exec("INSERT INTO answer (question_ID, data, correct)
+				//     VALUES($qID,'$answer',1));");
+
+				// //Possible correct answer / Options
+				// $dbConnection->exec("INSERT INTO answer (question_ID, data, correct)
+				//     VALUES($qID,'$opt1',$ans2));");
+				// $dbConnection->exec("INSERT INTO answer (question_ID, data, correct)
+				//     VALUES($qID,'$opt2', $ans3);");
+				// $dbConnection->exec("INSERT INTO answer (question_ID, data, correct)
+				//     VALUES($qID,'$opt3', $ans4);");
+
+
+				
 				if(!$dbConnection)
 					die("error2".$dbConnection->errorInfo());				
+
 
 			}catch (Exception $e){
 				//Rollback cos of fail

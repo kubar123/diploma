@@ -1,8 +1,9 @@
 <?php
 include "head.php";
-
+die("????"); 
 $_SESSION['type'] = 1;
 ?>
+<?php ?>
 <div id="content">
   <div class="title"><span>Welcome Administrator</span><hr></div>
   
