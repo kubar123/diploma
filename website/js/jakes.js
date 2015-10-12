@@ -287,9 +287,16 @@ var editQuesBtn;	//buttons
 var editQuesID;		//id
 //-------------- --------- ------
 // -------------------------------------- EDIT -------------------------
+// save the new question data
+function saveEditedQuestion(){
+	// using editQuesID as the ID we will be saving in the DB
+	var ans=$('#dragAns'+editQuesID+" :first-child").val();
+	var ques=$('#dragQues'+editQuesID+" :first-child").val();
+	//alert(ans);
+}
 
 function cancelEditQuestion(questionID){
-	$('#dragAns'+questionID).parent().parent().replaceWith(editQuesTr);
+	$(questionID).parent().replaceWith(editQuesTr);
 	//resetting item to null
 	editQuesID=null;
 }
@@ -297,48 +304,48 @@ function cancelEditQuestion(questionID){
 function editQuestion(questionID){
 	//CHECK IF item was not already set, if already set, cancel old edit
 	if(editQuesID!=null){
-		cancelEditQuestion(editQuesID);
+		cancelEditQuestion("#dragAns"+editQuesID);
 		//return;
 	}
 	//save edit data
 	editQuesID=questionID;
-	editQuesTr="<tr>"+$('#dragAns'+questionID).parent()+"</tr>";
+	editQuesTr="<tr>"+$('#dragAns'+questionID).parent().html()+"</tr>";
 	//$('#dragAns1').parent().replaceWith("<tr>"+editQuesTr.html()+"</tr>");
 	editQuesAns=$('#dragAns'+questionID).text();
 	editQuesQues=$('#dragQues'+questionID).text();
 	editQuesDiff=$('#dragDiff'+questionID).text();
 	editQuesBtn=$('#dragBtn'+questionID).html();
-	console.log(editQuesBtn);
+	//console.log(editQuesBtn);
 	//now we change all the td's text into <input> with value
 	// $('#dragAns'+questionID).replaceWith("<input id='dragAns"+questionID+"' value='"+editQuesAns+"'/>");
 	$('#dragAns'+questionID).replaceWith(makeInputTdBox("dragAns"+questionID, editQuesAns));
 	$('#dragQues'+questionID).replaceWith(makeInputTdBox("dragQues"+questionID, editQuesQues));
 	$('#dragDiff'+questionID).replaceWith(makeSelectTd("dragDiff"+questionID, editQuesDiff));
+	$('#dragBtn'+questionID).replaceWith(makeSaveCancelBtn("dragBtn"+questionID));
 }
 //make 'save'/'cancel' buttons
 function makeSaveCancelBtn(questionID){
-	var btns= "<button id='"+questionID+"' onclick=''>Save</button> "
+	var btns= "<td id='"+questionID+"'> <button onclick='saveEditedQuestion()'>Save</button> ";
+	btns+=" <button onclick='cancelEditQuestion("+questionID+")'>Cancel</button>";
+	return btns;
 }
 function makeSelectTd(id, selected){
-	var box="<td id='"+id+"'";
+	var box="<td id='"+id+"'>";
 	box+="<select>";
-	switch(selected){
-		//checks which option is selected by default
-		case 1:
-			box+="<option selected='selected'>1</option>";
-			box+="<option>2</option>";
-			box+="<option>3</option>";
-			break;
-		case 2:
-			box+="<option>1</option>";
-			box+="<option selected='selected' >2</option>";
-			box+="<option>3</option>";
-			break;
-		case 3:
-			box+="<option>1</option>";
-			box+="<option>2</option>";
-			box+="<option selected='selected'>3</option>";
-			break;
+	//alert(selected);
+	console.log(selected);
+	if(selected==1){
+		box+="<option selected>1</option>";
+		box+="<option>2</option>";
+		box+="<option>3</option>";
+	}else if(selected ==2){
+		box+="<option>1</option>";
+		box+="<option selected >2</option>";
+		box+="<option>3</option>";
+	}else if(selected ==3){
+		box+="<option>1</option>";
+		box+="<option>2</option>";
+		box+="<option selected>3</option>";
 	}
 	box+="</select></td>";
 	return box;
