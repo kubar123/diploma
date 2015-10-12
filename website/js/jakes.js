@@ -245,8 +245,10 @@ var editQuesAns;
 var editQuesQues;
 var editQuesDiff;
 var editQuesBtn;
+var editQuesID;
 function editQuestion(questionID){
-	//save whole tr to variable
+	//save edit data
+	editQuesID=questionID;
 	editQuesTr="<tr>"+$('#dragAns'+questionID).parent()+"</tr>";
 	//$('#dragAns1').parent().replaceWith("<tr>"+editQuesTr.html()+"</tr>");
 	editQuesAns=$('#dragAns'+questionID).text();
@@ -254,6 +256,39 @@ function editQuestion(questionID){
 	editQuesDiff=$('#dragDiff'+questionID).text();
 	editQuesBtn=$('#dragBtn'+questionID).html();
 	console.log(editQuesBtn);
+	//now we change all the td's text into <input> with val
+	// $('#dragAns'+questionID).replaceWith("<input id='dragAns"+questionID+"' value='"+editQuesAns+"'/>");
+	$('#dragAns'+questionID).replaceWith(makeInputTdBox("dragAns"+questionID, editQuesAns));
+	$('#dragQues'+questionID).replaceWith(makeInputTdBox("dragQues"+questionID, editQuesQues));
+	$('#dragDiff'+questionID).replaceWith(makeSelectTd("dragDiff"+questionID, editQuesDiff));
+}
+function makeSelectTd(id, selected){
+	var box="<td id='"+id+"'";
+	box+="<select>";
+	switch(selected){
+		case 1:
+			box+="<option selected='selected'>1</option>";
+			box+="<option>2</option>";
+			box+="<option>3</option>";
+			break;
+		case 2:
+			box+="<option>1</option>";
+			box+="<option selected='selected' >2</option>";
+			box+="<option>3</option>";
+			break;
+		case 3:
+			box+="<option>1</option>";
+			box+="<option>2</option>";
+			box+="<option selected='selected'>3</option>";
+			break;
+	}
+	box+="</select></td>";
+	return box;
+
+}
+function makeInputTdBox(id, value){
+	var box="<td id='"+id+"'><input style='width:100%' value='"+value+"' /> </td>";
+	return box;
 }
 
  // ------------------------------- DRAG AND DROP QUESTION ----------------------------
