@@ -197,12 +197,12 @@ function getTableQuestionSingle($topic_ID){
 			if($stmt->rowcount()==0)	die("Nothing was found");
 			
 			$ans=$stmt->fetch(PDO::FETCH_ASSOC);
-			echo "<td>";
+			echo "<td id='dragAns$data[question_ID]'>";
 			echo $ans[data];
 			echo "</td>";
-			echo "<td> $data[question] </td>";
-			echo "<td>$data[difficulty] </td>";
-			echo "<td><a href='#' onclick'editQuestion($data[question_ID]);'>Edit</a>";
+			echo "<td id='dragQues$data[question_ID]'> $data[question] </td>";
+			echo "<td id='dragDiff$data[question_ID]'>$data[difficulty] </td>";
+			echo "<td id='dragBtn$data[question_ID]'><a href='#' onclick='editQuestion($data[question_ID]); return false;'>Edit</a>";
 			echo "</tr>";
 			// }
 				$stmt=null;

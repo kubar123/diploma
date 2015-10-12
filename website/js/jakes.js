@@ -232,13 +232,29 @@ $('#dragAndDropListBtn').click(function(){
 });
 
 $(function(){
-	var id = location.search.split('drag_topic=')[1]
+	var id = location.search.split('drag_topic=')[1];
 	if(id!=null)
 		$('#subjSelectedQuestion').val(id);
 	// alert($('#subjSelectedQuestion').val());
 
 });
-    
+// EDIT a question drag and drop field
+
+var editQuesTr;
+var editQuesAns;
+var editQuesQues;
+var editQuesDiff;
+var editQuesBtn;
+function editQuestion(questionID){
+	//save whole tr to variable
+	editQuesTr="<tr>"+$('#dragAns'+questionID).parent()+"</tr>";
+	//$('#dragAns1').parent().replaceWith("<tr>"+editQuesTr.html()+"</tr>");
+	editQuesAns=$('#dragAns'+questionID).text();
+	editQuesQues=$('#dragQues'+questionID).text();
+	editQuesDiff=$('#dragDiff'+questionID).text();
+	editQuesBtn=$('#dragBtn'+questionID).html();
+	console.log(editQuesBtn);
+}
 
  // ------------------------------- DRAG AND DROP QUESTION ----------------------------
  var topicSelection;
@@ -260,4 +276,4 @@ function getPOST(url, data){
 		url: url,
 		data:data
 	});
-}
+} 
