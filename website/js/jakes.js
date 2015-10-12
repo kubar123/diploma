@@ -280,15 +280,26 @@ function deleteQuestion(questionID){
 }
 // ------------- VAR ------------
 var editQuesTr; // <tr> of question - for easy restore
-var editQuesAns; //text answer
-var editQuesQues;
-var editQuesDiff;
+var editQuesAns;	// answer
+var editQuesQues;	//question
+var editQuesDiff;	//difficulty
 var editQuesBtn;	//buttons
-var editQuesID;	//id
+var editQuesID;		//id
 //-------------- --------- ------
 // -------------------------------------- EDIT -------------------------
+
+function cancelEditQuestion(questionID){
+	$('#dragAns'+questionID).parent().parent().replaceWith(editQuesTr);
+	//resetting item to null
+	editQuesID=null;
+}
 // EDIT a question drag and drop field
 function editQuestion(questionID){
+	//CHECK IF item was not already set, if already set, cancel old edit
+	if(editQuesID!=null){
+		cancelEditQuestion(editQuesID);
+		//return;
+	}
 	//save edit data
 	editQuesID=questionID;
 	editQuesTr="<tr>"+$('#dragAns'+questionID).parent()+"</tr>";
@@ -304,7 +315,10 @@ function editQuestion(questionID){
 	$('#dragQues'+questionID).replaceWith(makeInputTdBox("dragQues"+questionID, editQuesQues));
 	$('#dragDiff'+questionID).replaceWith(makeSelectTd("dragDiff"+questionID, editQuesDiff));
 }
-// ===================================== END =============================================
+//make 'save'/'cancel' buttons
+function makeSaveCancelBtn(questionID){
+	var btns= "<button id='"+questionID+"' onclick=''>Save</button> "
+}
 function makeSelectTd(id, selected){
 	var box="<td id='"+id+"'";
 	box+="<select>";
@@ -334,6 +348,7 @@ function makeInputTdBox(id, value){
 	var box="<td id='"+id+"'><input style='width:100%' value='"+value+"' /> </td>";
 	return box;
 }
+// ===================================== END =============================================
 
  // ------------------------------- DRAG AND DROP QUESTION ----------------------------
  var topicSelection;

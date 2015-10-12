@@ -1,7 +1,7 @@
      <?php 
       include "head.php";
-       if(isset($_SESSION['type']) == 3)
-        header("Location: index.php");
+       //if(isset($_SESSION['type']) == 3)
+        //header("Location: index.php");
      ?>
         <div id="content">
           <div class="title"><span>Welcome Coordinator</span><hr></div>
