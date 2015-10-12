@@ -1,6 +1,10 @@
 <?php
+	session_start();
 	include "functions.php";
 	$insert = false;
+
+
+	##Subject code:
 
 	//INSERT SUBJECT
 	if(isset($_POST['subjName'])){
@@ -10,6 +14,7 @@
 		$insert = false;
 	}
 
+	//Insert a subject
 	if(isset($_POST['coordiId'])){
 		$insert = true;
 		$coord = $_POST['coordiId'];
@@ -21,7 +26,7 @@
 		// return $yo;
 	}
 
-	//EDIT SUBJECT
+	//Edit subject 
 	if(isset($_POST['editSubj'])){
 		$newName = $_POST['editSubj'];
 		$insert = true;
@@ -47,7 +52,8 @@
 		delete_subject($_POST['deleteID']);
 	}
 
-	//QUESTIONS:
+	##Questions code:
+
 	//Get topic list from subjects:
 	if(isset($_POST['subjID'])){
 		//Get the subjects and echo them so we can grab the DATA
@@ -55,13 +61,14 @@
 		echo json_encode($topics);
 	}
 
+	//Show questions if the topic ID has been set
 	if(isset($_POST['topicID'])){
 		$questions = showQuestions($_POST['topicID']);
 		echo json_encode($questions);
 
 	}
 
-	//Insert question
+	//Insert question if a request has been made
 	if(isset($_POST['addQ'])){
 		//GET POST VARS
 		$topic_ID = $_POST['topicID'];
@@ -74,6 +81,28 @@
 		$d = addQuestion($topic_ID, $diff, $isMultiple, $quest,$correct, $options);
 		echo $d;
 
+	}
+
+	if(isset($_POST['loginPassword'])){
+		if(!isset($_POST['loginUsername']))
+			return "Please fill out the form!";
+
+		//Assign values to variables
+		$username = $_POST['loginUsername'];
+		$password = $_POST['loginPassword'];
+		echo $username . " " . $password;
+
+		$q = authenticate_user($username, $password);
+		// print_r_nice($q);
+		// die($q);
+		// die( " " .$q['user_type']);
+		$_SESSION['user_type'] = $q['user_type'];
+		$_SESSION['user_ID'] = $q['user_ID'];
+		$_SESSION['vKey'] = $q['vKey'];
+		// print_r_nice($_SESSION);
+		// die($_SESSION);
+
+		header("Location: ../HTML/login.php");
 	}
 
 

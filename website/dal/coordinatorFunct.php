@@ -3,8 +3,8 @@
 
 // make li from all subject the coordinator has permissions to view
 function getCoordinatorSubjectList(){
-	global $numRecords,$dbConnection,$stmt;
-	connect();
+	$dbConnection =  connect(); //Run connect function 
+
 	$user=$_SESSION['user_ID'];
 	$sql="select * from subject where owner_ID=$user";
 	try{
@@ -25,8 +25,8 @@ function getCoordinatorSubjectList(){
 	}
 }
 function showSelectSubjectQuestion(){
-	global $numRecords,$dbConnection,$stmt;
-	connect();
+	$dbConnection =  connect(); //Run connect function 
+
 	$user=$_SESSION['user_ID'];
 	$sql="select * from subject where owner_ID=$user";
 	try{
@@ -73,8 +73,8 @@ function showSelectTopic($subject_ID){
 }
 
 function showSelectSubject(){
-	global $numRecords,$dbConnection,$stmt;
-	connect();
+	$dbConnection =  connect(); //Run connect function 
+
 	$user=$_SESSION['user_ID'];
 	$sql="select * from subject where owner_ID=$user";
 	try{
@@ -99,8 +99,8 @@ function showSelectSubject(){
 	}
 }
 function showTopicTable($id){
-	global $numRecords,$dbConnection,$stmt;
-	connect();
+	$dbConnection =  connect(); //Run connect function 
+	
 	//$id=1; // <<<------- FOR TESTING ONLY
 	try{
 		$sql="SELECT * from topic where subject_ID='$id'";
@@ -123,8 +123,7 @@ function showTopicTable($id){
 }
 // ------- DELETE TOPIC --------
 function deleteTopic($id){
-	global $numRecords, $dbConnection, $stmt;
-	connect(); //Run connect function 
+	$dbConnection =  connect(); //Run connect function 
 
 	$sql = "delete from topic where topic_ID = $id";
 
@@ -142,8 +141,7 @@ function deleteTopic($id){
 // ------ END OF DELETE --------
 // ------ new topic ------------
 function newTopic($id, $subj){
-	global $numRecords, $dbConnection, $stmt;
-	connect(); //Run connect function 
+	$dbConnection =  connect(); //Run connect function 
 
 	$sql="insert into topic (subject_ID, topic_name) values($subj, '$id')";
 	//echo $sql;
@@ -159,8 +157,7 @@ function newTopic($id, $subj){
 }
 // ---------------------- edit topic ----------------
 function editTopic($tName, $subj, $topicID){
-	global $numRecords, $dbConnection, $stmt;
-	connect(); //Run connect function 
+	$dbConnection =  connect(); //Run connect function 
 
 	$sql="update topic set topic_name='$tName' where topic_ID=$topicID";
 	try{
