@@ -225,8 +225,8 @@ $('#dragAndDropListBtn').click(function(){
 	//$('#QuestionAnswerSpace').html("<h1>Hello</h1>");
 	var url=window.location.href;
 	window.location.href="dragAndDropQuestion.php";
-	alert(url);
-	alert(window.location);
+	// alert(url);
+	// alert(window.location);
 	// url+='?drag_topic'+selectFilterTopicQuestion;
 	// window.location.search='?topic='+selectFilterTopicQuestion;
 });
@@ -238,14 +238,56 @@ $(function(){
 	// alert($('#subjSelectedQuestion').val());
 
 });
-// EDIT a question drag and drop field
+// ====================================EDIT SINGLE QUES ==============================
 
-var editQuesTr;
-var editQuesAns;
+//---------------------------------------DELETE ---------------------------------
+function deleteQuestion(questionID){
+	// ---- confirmation box ------
+	 swal({
+		   title: "Are you sure you want to delete this Question?",
+		   text: "You will not be able to recover this Question!",
+		   type: "warning",
+		   showCancelButton: true,
+		   confirmButtonColor: "#DD6B55",
+		   confirmButtonText: "Yes, delete it!",
+		   cancelButtonText: "No, cancel!",
+		   closeOnConfirm: false,
+		   closeOnCancel: false
+	   }, function(isConfirm) {
+		   if (isConfirm) {
+			   swal("Deleted!", "Your question has been deleted", "success");
+			   $.ajax({
+				   type: 'POST',
+				   url: '../dal/topicFunctions.php',
+				   data: {
+					   questionID: questionID,
+					   topicConfirm:true
+				   }
+			   })
+				   .done(function() {})
+				   .always(function() {})
+				   .fail(function() { alert("Some error occured!")})
+				   .success(function() {
+						$('#dragAns'+questionID).parent().remove();
+					  	isConfirmed = true;
+				   }); //End of ajax funct  
+				
+		   } else {
+			   isConfirmed = false;
+			   swal("Cancelled", "The question has not been deleted", "error");
+		   }
+	   });
+}
+// ------------- VAR ------------
+var editQuesTr; // <tr> of question - for easy restore
+var editQuesAns; //text answer
 var editQuesQues;
 var editQuesDiff;
-var editQuesBtn;
-var editQuesID;
+var editQuesBtn;	//buttons
+var editQuesID;	//id
+//-------------- --------- ------
+// -------------------------------------- EDIT -------------------------
+// EDIT a question drag and drop field
 function editQuestion(questionID){
 	//save edit data
 	editQuesID=questionID;
@@ -256,16 +298,18 @@ function editQuestion(questionID){
 	editQuesDiff=$('#dragDiff'+questionID).text();
 	editQuesBtn=$('#dragBtn'+questionID).html();
 	console.log(editQuesBtn);
-	//now we change all the td's text into <input> with val
+	//now we change all the td's text into <input> with value
 	// $('#dragAns'+questionID).replaceWith("<input id='dragAns"+questionID+"' value='"+editQuesAns+"'/>");
 	$('#dragAns'+questionID).replaceWith(makeInputTdBox("dragAns"+questionID, editQuesAns));
 	$('#dragQues'+questionID).replaceWith(makeInputTdBox("dragQues"+questionID, editQuesQues));
 	$('#dragDiff'+questionID).replaceWith(makeSelectTd("dragDiff"+questionID, editQuesDiff));
 }
+// ===================================== END =============================================
 function makeSelectTd(id, selected){
 	var box="<td id='"+id+"'";
 	box+="<select>";
 	switch(selected){
+		//checks which option is selected by default
 		case 1:
 			box+="<option selected='selected'>1</option>";
 			box+="<option>2</option>";

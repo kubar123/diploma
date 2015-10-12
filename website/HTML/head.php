@@ -27,7 +27,9 @@
     <body>
 <?php
   session_start();
+
   include "../dal/functions.php";
+  $_SESSION['user_type'] = 1;
 ?>
 <header class='head'>
         <h1 class="headText">&nbsp;</h1>

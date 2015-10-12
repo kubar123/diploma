@@ -177,22 +177,27 @@ function editTopic($tName, $subj, $topicID){
 function getTableQuestionSingle($topic_ID){
 	try{
 		$conn=getConnection();
-
+// __ STMT # 1
 		$stmt=$conn->prepare("SELECT * from question where topic_ID=:topic_ID and isMultiple=0");
 		$stmt->bindParam(":topic_ID",$topic_ID);
 		$stmt->execute();
+		//check if anything was found
 		if($stmt->rowcount()==0)	die("Nothing was found");
+
 		$ques=$stmt->fetchall(PDO::FETCH_ASSOC);
+
 		echo "<table>";
 		echo "<th>Answer</th><th>Question</th><th>Difficulty</th><th>Edit/delete</th>";
-		foreach($ques as $data){
+		foreach($ques as $data){ //check question against answer to get QUES/ANS pair
 			echo "<tr>";
 			$id= $data[question_ID];
+// __ STMT # 2
 			$stmt=$conn->prepare("SELECT * from answer where question_ID=:id and isCorrect=1");
 			$stmt->bindParam(":id",$id);
 			$stmt->execute();
+
 			if($stmt->rowcount()==0)	die("Nothing was found");
-			
+			//if something was found, make a Table based on it.
 			$ans=$stmt->fetch(PDO::FETCH_ASSOC);
 			echo "<td id='dragAns$data[question_ID]'>";
 			echo $ans[data];
