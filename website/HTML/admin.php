@@ -1,7 +1,5 @@
 <?php
 include "head.php";
-
-$_SESSION['type'] = 1;
 ?>
 <div id="content">
   <div class="title"><span>Welcome Administrator</span><hr></div>

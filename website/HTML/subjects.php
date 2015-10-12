@@ -1,7 +1,7 @@
 <?php
 include "head.php";
-die("????"); 
-$_SESSION['type'] = 1;
+ if($_SESSION['type'] == 3)
+        header("Location: index.php");
 ?>
 <?php ?>
 <div id="content">
@@ -21,7 +21,20 @@ $_SESSION['type'] = 1;
       else:
         foreach($subjects as $items):
       ?>
-        <tr class='subject-row'><td id='name'><?php echo $items['name']; ?></td><td id='owner-username'><?php echo $items['username']; ?></td><td><?php if($_SESSION['type'] == 1){ ?><a href='#' class='edit-subject' id='<?php echo $items['subject_ID']; ?>'> Edit</a> • <a href='#' class='delete-subject' id='<?php echo $items['subject_ID']; ?>'> Delete</a><?php } else { echo "Admin only"; } ?></td></tr>
+        <tr class='subject-row'>
+            <td id='name'>
+                <?php echo $items['name']; ?>
+            </td>
+            <td id='owner-username'>
+                <?php echo $items['username']; ?>
+            </td>
+            <td>
+                <?php if($_SESSION['type'] == 1): ?>
+                    <a href='#' class='edit-subject' id='<?php echo $items['subject_ID']; ?>'> Edit</a> • <a href='#' class='delete-subject' id='<?php echo $items['subject_ID']; ?>'> Delete</a>
+                <?php 
+                else: echo "Admin only"; endif; ?>
+            </td>
+        </tr>
       <?php
         endforeach;
       endif;

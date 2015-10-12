@@ -22,30 +22,11 @@
 <script src="../js/sweetalert.min.js"></script> 
 <link rel="stylesheet" type="text/css" href="../CSS/sweetalert.css">
 
-
-
-        <!--<script langua="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>-->
-<div id="loginDialog" title="Login"><p>Username</p><br><input id="txtUsername" type="text" name="txtUser" placeholder="Username" required><br><br><input id="txtPassword" type="password" name="txtPassword" placeholder="password" required><br><br><button  
-onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </div>
-<script>$('#loginDialog').hide();</script>
     </head>
     
     <body>
 <?php
   session_start();
-  /*
-    Test session variables - Lateer this will be changed to hold auth key, uId, uType, name, and any other data we might need.
-    type = the type of user. 1 for admin, 2 for coord, and 3 for user
-  */
-  $_SESSION['type'] = 1;
-
-   $_SESSION['username']="alan";
-  $_SESSION['user_ID']="1";
-
-  /*
-    IF YOU WANT TO ACT AS A COORDINATOR UNCOMMENT THE BELOW SESSION VARIABLE AND COMMENT OUT THE ONE ABOVE!!
-  */
-  // $_SESSION['type'] = 2;
   include "../dal/functions.php";
 ?>
 <header class='head'>
@@ -62,25 +43,35 @@ onclick="loginButton();" type='button' href="#" id="btnLogin">Login</button>  </
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About us</a></li>
             <li><a href="contact.php">Contact us</a></li>
-            <?php if($_SESSION['type'] == 1) { ?>
+            <?php 
+            if($_SESSION['user_type'] == 1): ?>
               <li><a href="admin.php">Admin</a></li>
                 <li><a href="coordinator.php">Teachers</a></li>
                 <li><a href="users.php">Users</a></li>
                 <li><a href="subjects.php">Subjects</a></li>
               <?php
-                  }
-                  else if($_SESSION['type'] == 2) { 
+            elseif($_SESSION['user_type'] == 2):
                ?>
               <li><a href="coordinator.php">Coordinator</a></li>
                 <!-- READ ONLY FOR COORDINATORS -->
                 <li><a href="coordinator.php">Teachers</a></li>
                 <li><a href="users.php">Users</a></li>
 
-            <?php 
-                  }
-              else{  ?>
-              <li id='menuLoginButton'><a href="#" onclick="showPopup();" data-rel='popup'>Login</a></li>
-            <?php } ?>
+              <?php 
+            endif;
+                // print_r_nice($_SESSION);
+                if(isset($_SESSION['user_type']) ?  print '<li><a href="logout.php">Logout</a></li>' :  print '<li><a href="login.php">Login</a></li>');
+              ?>
+                 <!-- <li><a href="logout.php">Logout</a></li> -->
+            <?
+                // elseif(!isset($_SESSION['type'])):
+            ?>
+                <!-- <li><a href="login.php">Login</a></li> -->
+            <?php
+              // endif;
+            ?>
+
+
 
 
             </ul> 

@@ -4,14 +4,17 @@
 	*/
 		//Databse Connection Variables
 		$localhost = "localhost"; //LOCAlHOST
+		// $localhost = "http://www.jandlcreative.com.au"; //LOCAlHOST
 		// $localhost = "http://lansoftprogramming.com/phpmyadmin";
-		$user = "root"; //LOCALHOST
+		
+		// $user = "jandlcre_project"; //LOCALHOST
 		// $user = "ITGuruMain"; 
-		$password = "root"; //LOCALHOST
+		// $password = "projects_diploma_007"; //LOCALHOST
 		// $password = "hSGHJ6dPVrVMtfx3";
+		
+		// $password = "root";
 
-		$db = "ITGuru";
-		$dsn = "mysql:host=$localhost;dbname=$db;";
+		
 
 		//Declare Global Variables
 		$dbConnection = null;
@@ -21,9 +24,15 @@
 		//Establish MySQL Connection
 		function connect()
 		{
-			global $user, $password, $dsn, $dbConnection;  //Required to accessglobal variables
+			$user = "root"; //LOCALHOST
+			$password = "root";
+			// $db = "jandlcre_projects";
+			$db = "ITGuru";
+			$dsn = "mysql:host=$localhost;dbname=$db;";
+
 			try
 			{
+
 				//Create a PDO connection with the configuration date
 				$dbConnection = new PDO($dsn, $user, $password);
 				$dbConnection ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -32,7 +41,7 @@
 			catch(PDOException $error)
 			{
 				//Display error message if applicable
-				echo "An error occured: ".$error->getMessage();
+				echo "II $password An error occured: ".$error->getMessage();
 			}
 		}
 	/* 
@@ -58,8 +67,7 @@
 		Subject related functions 
 	*/
 		function show_subjects($id){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+			$dbConnection =  connect(); //Run connect function 
 			if($id != "all"){
 				$sql = "select subject.*, user.username, user.user_type from subject where user.user_ID = $id INNER JOIN user ON subject.owner_ID = user.user_ID ORDER BY user.username ASC";
 			}else{
@@ -81,8 +89,7 @@
 		}
 
 		function assign_coordinator_subject($sID,$uID){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+			$dbConnection = connect(); //Run connect function 
 
 			$sql = "UPDATE `subject' SET 'owner_ID'=$uID WHERE subject_ID = ". $sID;
 
@@ -98,8 +105,7 @@
 		}
 
 		function insert_subject($name, $coordID){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+			$dbConnection = connect(); //Run connect function 
 			
 
 			$sql = "insert into subject (name, owner_ID) values('$name', $coordID)";
@@ -120,8 +126,7 @@
 
 		}
 		function edit_subject($subjId, $subjName, $coord){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+			$dbConnection = connect(); //Run connect function 
 
 			$sql = "UPDATE subject SET owner_ID=$coord, name ='$subjName' WHERE subject_ID = $subjId";
 			// $sql = "UPDATE subject SET owner_ID=$coord, name = '$subjName' WHERE subject_ID = ". $subjId;
@@ -138,8 +143,7 @@
 		}
 
 		function delete_subject($id){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+			$dbConnection = connect(); //Run connect function 
 
 			$sql = "delete from subject where subject_ID = $id";
 
@@ -162,8 +166,7 @@
 	//Coordinator related functions 
 	
 		function show_coordinators(){
-			global $numRecords, $dbConnection, $stmt;
-			connect(); //Run connect function 
+			$dbConnection = connect(); //Run connect function 
 
 			$sql = "select * from user where user_type = 2";
 
@@ -182,8 +185,7 @@
 
 		//Show topics for a particular ID
 		function showTopics($id){
-			global $numRecords,$dbConnection,$stmt;
-			connect();
+			$dbConnection = connect();
 			try{
 				$sql="SELECT * from topic where subject_ID='$id'";
 				$stmt=$dbConnection->query($sql);
@@ -200,10 +202,9 @@
 
 		//Show questions for a topic ID
 		function showQuestions($id){
-			global $numRecords,$dbConnection,$stmt;
-			connect();
+			$dbConnection = connect();
 			try{
-				$sql="select question.*, answer.* from question INNER JOIN answer ON question.question_ID = answer.question_ID and question.topic_ID = $id ORDER BY question.question_ID";
+				$sql="select question.*, answer.* from question INNER JOIN answer ON question.question_ID = answer.question_ID and question.topic_ID = $id and answer.isCorrect = 1 ORDER BY question.question_ID";
 				// $sql="SELECT * from question, answer where topic_ID=$id and answer.isCorrect = 1";
 				// SELECT * from question, answer where topic_ID=1 and answer.isCorrect = 1
 				$stmt=$dbConnection->query($sql);
@@ -222,20 +223,13 @@
 		
 	//Coordinator related functions   ^ 
 
+		//correct & options are both arrays. These arrays are being passed through an AJAX call
 		function addQuestion($topicID, $difficulty, $isMultiple, $quest,$correct, $options){
-			global $numRecords,$dbConnection,$stmt;
-			connect();
-			// die( "SIZE: " .sizeof(json_decode($options)));
-			// $y = "";
-			// for($z = 0; $z < sizeof($correct); $z++){
-			// 	$y .= $correct[$z];
-			// }
-			// die("OPTIONS ====>    " . $y);
+			$dbConnection = connect();
 
+			//Insert into question table & recieve the question ID for use in the answers insert stmt
 			 $sql = "INSERT INTO question (topic_ID,difficulty,isMultiple, question)
 				    VALUES($topicID,$difficulty,$isMultiple,'$quest');";
-
-			//REMEMBER THAT QUESTION WONT ACTUALLY INSERT, NEITHER WILL ANSWERS
 			try{
 				$stmt=$dbConnection->query($sql);
 					$qID = $dbConnection->lastInsertId();
@@ -243,70 +237,29 @@
 				if(!$stmt)
 					die("error1".$dbConnection->errorInfo());
 				$stmt = "";
-				// $dbConnection->beginTransaction();
-					for($i = 0; $i < sizeof($correct); $i++){
-						// $dbConnection->exec("INSERT INTO answer (question_ID, data, isCorrect)
-					 //    	VALUES($qID,'".$correct[$i]."',1);");
-						$stmt .= "INSERT INTO answer (question_ID, data, isCorrect)
-					    	VALUES($qID,'".$correct[$i]."',1);";
-					}
 
-					for($z = 0; $z < sizeof($options); $z++){
-						// $dbConnection->exec("INSERT INTO answer (question_ID, data, isCorrect)
-					 //    	VALUES($qID,'".$options[$z]."',0);");
-						$stmt .= "INSERT INTO answer (question_ID, data, isCorrect)
-					    	VALUES($qID,'".$options[$z]."',0);";
-					}
+				for($i = 0; $i < sizeof($correct); $i++):
+					$stmt .= "INSERT INTO answer (question_ID, data, isCorrect)
+				    	VALUES($qID,'".$correct[$i]."',1);";
+				endfor;
+
+				for($z = 0; $z < sizeof($options); $z++):
+					$stmt .= "INSERT INTO answer (question_ID, data, isCorrect)
+				    	VALUES($qID,'".$options[$z]."',0);";
+				endfor;
 				$dd = $dbConnection->query($stmt);
-				echo $dd->errorInfo();
-				// $dbConnection->commit();
 
-
-				
-
-				// //Check for multiple answers
-				// if($isMultiple){
-				// 	if($ans2 != "ZOZ")
-				// 		$ans2 = 1;
-				// 	else
-				// 		$ans2 = 0;
-
-				// 	if($ans3 != "ZOZ")
-				// 		$ans3 = 1;
-				// 	else
-				// 		$ans3 = 0;
-
-				// 	if($ans4 != "ZOZ")
-				// 		$ans4 = 1;
-				// 	else
-				// 		$ans4 = 0;
-				// }
-				
-				// //Insert questions
-				// //Correct answer
-				// $dbConnection->exec("INSERT INTO answer (question_ID, data, correct)
-				//     VALUES($qID,'$answer',1));");
-
-				// //Possible correct answer / Options
-				// $dbConnection->exec("INSERT INTO answer (question_ID, data, correct)
-				//     VALUES($qID,'$opt1',$ans2));");
-				// $dbConnection->exec("INSERT INTO answer (question_ID, data, correct)
-				//     VALUES($qID,'$opt2', $ans3);");
-				// $dbConnection->exec("INSERT INTO answer (question_ID, data, correct)
-				//     VALUES($qID,'$opt3', $ans4);");
-
-
-				
 				if(!$dbConnection)
 					die("error2".$dbConnection->errorInfo());				
 
-
 			}catch (Exception $e){
-				//Rollback cos of fail
+				//Rollback if fails
 				$dbConnection->rollback();
 				return "Error rolling back: ". $e;
 			}
 		}
+
+
 
 
 	
@@ -318,6 +271,7 @@
 		if($exit) exit;
 	}	
 
+include "login_functions.php";
 include "coordinatorFunct.php";
 
 
