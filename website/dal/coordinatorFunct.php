@@ -28,7 +28,7 @@ function showSelectSubjectQuestion(){
 	$dbConnection =  connect(); //Run connect function 
 
 	$user=$_SESSION['user_ID'];
-	$sql="select * from subject where owner_ID=$user";
+	$sql="select * from subject";
 	try{
 		$stmt=$dbConnection->query($sql);
 		if($stmt->rowcount()!=0){
@@ -40,6 +40,9 @@ function showSelectSubjectQuestion(){
 			foreach($rows as $r){
 				// getOption($r['subject_ID']);
 				$id=$r['subject_ID'];
+				//append '*' if the user has permissions to edit
+				if($r['owner_ID']==$_SESSION['user_ID'])
+					$id="*".$id;
 				$name=$r['name'];
 				echo "<option value='$id'>$name</option>";
 			}
@@ -76,7 +79,7 @@ function showSelectSubject(){
 	$dbConnection =  connect(); //Run connect function 
 
 	$user=$_SESSION['user_ID'];
-	$sql="select * from subject where owner_ID=$user";
+	$sql="select * from subject";
 	try{
 		
 		$stmt=$dbConnection->query($sql);
@@ -90,6 +93,12 @@ function showSelectSubject(){
 				// getOption($r['subject_ID']);
 				$id=$r['subject_ID'];
 				$name=$r['name'];
+				//checking if the user has permissions
+				if($r['owner_ID']==$_SESSION['user_ID']){
+					$name="*".$name;
+					//$id=$id2;
+					//echo "<script>console.log('$id')</script>";
+				}
 				echo "<option id='$id'>$name</option>";
 			}
 		}
@@ -97,6 +106,20 @@ function showSelectSubject(){
 	}catch(PDOException $e){ 	
 		echo "PDO error";
 	}
+}
+// FUNCTioN IS WRONG -  to be modified.
+// first run sql to get all users subjects, then loop through to see if the subject we using 'owner_ID' == $user_ID
+function isUserSubjCoordinator($userID, $subjectID){
+	try{
+		$dbConnection =  connect(); //Run connect function 
+		$sql="SELECT * from subject where $userID = $subject_ID";
+		$stmt=$dbConnection->query($sql);
+			if($stmt->rowcount()!=0){
+				return true;
+			}else{
+				return false;
+			}
+	}catch(PDOException $e){ die($e);}
 }
 function showTopicTable($id){
 	$dbConnection =  connect(); //Run connect function 
@@ -111,9 +134,13 @@ function showTopicTable($id){
 			while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
 				echo "<tr>";
 				echo "<td id='topicTxt".$arrRows['topic_ID']."'>".$arrRows['topic_name']."</td>";
+				//check if the user has permissions...
+				if(isUserSubjCoordinator($_SESSION['user_ID'], $id)){
 				echo "<td><a href='#' id='btnTopicEdit".$arrRows['topic_ID']."' onclick='topicEdit(".$arrRows['topic_ID']."); return false;'>Edit</a> 
 				| <a href='#' id='btnTopicDel".$arrRows['topic_ID']."' onclick='deleteTopic(".$arrRows['topic_ID']."); return false;' name='editDelete' value='".$arrRows['topic_ID']."'>Delete</a></td>";
+				}
 				echo "</tr>";
+
 			}
 			echo "</table>";
 		}
