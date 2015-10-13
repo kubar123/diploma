@@ -1,6 +1,8 @@
 
      <?php 
       include "head.php";
+      if(isset($_SESSION['type']) == 3 || isset($_SESSION['type']) == 1 )
+        header("Location: index.php");
      ?>
       <div id="content">
       <h2>Select a subject: </h2>

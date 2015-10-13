@@ -12,7 +12,7 @@ include "head.php";
   <div class='table-wrapper'>
     <h3>Subjects</h3>
     <table class='subject-table'>
-      <tr><th>Name</th><th>Owner</th><th>Action</th></tr>
+      <tr><th>ID</th><th>Name</th><th>Owner</th><th>Action</th></tr>
       <!-- <div style='display: none'><tr class='subject-row'><td id='name'></td><td id='owner-username'></td><td><a href='#' class='edit-subject' id=''> Edit</a> • <a href='#' class='delete-subject' id=''> Delete</a></td></tr></div> -->
       <?php
       $subjects = show_subjects("all");
@@ -22,6 +22,9 @@ include "head.php";
         foreach($subjects as $items):
       ?>
         <tr class='subject-row'>
+            <td id='subj_ID'>
+                <?php echo $items['subject_ID']; ?>
+            </td>
             <td id='name'>
                 <?php echo $items['name']; ?>
             </td>
@@ -29,7 +32,7 @@ include "head.php";
                 <?php echo $items['username']; ?>
             </td>
             <td>
-                <?php if($_SESSION['type'] == 1): ?>
+                <?php if($_SESSION['user_type'] == 1): ?>
                     <a href='#' class='edit-subject' id='<?php echo $items['subject_ID']; ?>'> Edit</a> • <a href='#' class='delete-subject' id='<?php echo $items['subject_ID']; ?>'> Delete</a>
                 <?php 
                 else: echo "Admin only"; endif; ?>
@@ -41,7 +44,7 @@ include "head.php";
       ?>
     </table>
     <br>
-    <?php if($_SESSION['type'] == 1): ?>
+    <?php if($_SESSION['user_type'] == 1): ?>
       <button class='new-subject'>New Subject</button><br>
     <?php endif; ?>
 

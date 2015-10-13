@@ -21,6 +21,7 @@ $id = "";
       //Get coordinator chosen
       var coord = $('.choose-coord');
       var subName = $('#new-subject-name').val();
+      var subID = $('#new-subject-id').val();
       //remove the 
       $(this).parent().parent().remove();
 
@@ -30,7 +31,8 @@ $id = "";
            url: '../dal/usefunctions.php',
            data: {
                subjName: subName,
-               coordiId: coord.val()
+               coordiId: coord.val(),
+               subjAddID: subID
            }
        })
            .done(function() {})
@@ -58,19 +60,22 @@ $id = "";
   
    function newSubj(){
         var clone = $('.coordi-list').find('.choose-coord-edit').clone();
-        $(".subject-table tr:last").after('<tr class="subject-row"><td><input id="new-subject-name" type="text"/></td><td id="new-subject-coord">'+$('<td>').append(clone).html()+'</td><td> <button class="btn-add-subject">Add</button><button class="btn-cancel-subject">Cancel</button></td></tr>');
+        $(".subject-table tr:last").after('<tr class="subject-row"><td><input id="new-subject-id" type="text" placeholder="Enter ID"/></td><td><input id="new-subject-name" type="text" placeholder="Enter name"/></td><td id="new-subject-coord">'+$('<td>').append(clone).html()+'</td><td> <button class="btn-add-subject">Add</button><button class="btn-cancel-subject">Cancel</button></td></tr>');
    }
 
    //When they click edit then dynamically change the tr
    $(document).on('click', '.edit-subject', function() {
       if(clickCounter == 0){
+
         //Get the current details
         var editID = $(this).attr('id'); 
         var currentName = $(this).parent().parent().find('#name').text();
+
         //Clone data needed for save/cancel buttons
         edBtns = $(this).parent().clone();
         cancelEdClone = $(this).parent().parent().clone();
 
+        $(this).parent().parent().find('#subj_ID').html("<input type='text' id='edited-ID' placeholder='Enter ID' />");
         $(this).parent().parent().find('#name').html("<input type='text' id='edited-name' placeholder='Enter subject name' />");
         $(this).parent().parent().find('#owner-username').html(clone);
         $(this).parent().html("<input type='button' value='save' data-id='"+editID+"' id='btn-save-edits' /> <input type='button' value='cancel' id='btn-cancel-edits' />");
@@ -97,11 +102,19 @@ $id = "";
       //Get the updated details      
        var coord = $('.choose-coord-edit');
        var subName = $('#edited-name').val();
+       var newID = $('#edited-ID').val();
+
+       //Get the previous ID
        var editID = $(this).attr('data-id');
 
+       if(subName == "" || newID == ""){
+          alert("Please fill out the form");
+          return;
+       }
        //When they click save revert back to edit * delete buttons
        $(this).parent().replaceWith(edBtns);
        $(this).parent().parent().find('#name').text(subName);
+       $(this).parent().parent().find('#subj_ID').text(newID);
        $(this).prev('#owner-username').html("<p>"+coord.text()+"</p>");
        clickCounter = 0;
 
@@ -114,7 +127,8 @@ $id = "";
            data: {
                editSubj: subName,
                editCoord: coord.val(),
-               id: editID
+               id: editID,
+               newID: newID
            }
        })
            .done(function() {})
@@ -122,8 +136,20 @@ $id = "";
            .fail(function() {})
            .success(function(data) {
 
+              if(data == 3)
+                alert("This ID already exists!");
+              else if(data == 2)
+                alert("Please fill all the details out!");
+              else
+                alert("Subject has been successfully edited");
+
                // $('.share-wrap').fadeOut();
-               $('#' + editID).parent().parent().find('#name').text(subName);
+              $('#' + editID).parent().parent().find('#name').text(subName);
+              $('#' + editID).parent().parent().find('#subj_ID').text(newID);
+              $(this).prev('#owner-username').html("<p>"+coord.text()+"</p>");
+                edBtns.find('#'+editID).attr('data-id', newID);
+
+                $(this).parent().replaceWith(edBtns);
                // alert(data);
                // $('.share-wrap').fadeOut();
 

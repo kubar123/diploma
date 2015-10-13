@@ -21,8 +21,13 @@
 	}else{
 		$insert = false;
 	}
+
+	if(isset($_POST['subjAddID'])){
+		$insert = true;
+		$subjID = $_POST['subjAddID'];
+	}
 	if($insert == true){
-		insert_subject($sName, $coord);
+		insert_subject($sName, $coord, $subjID);
 		// return $yo;
 	}
 
@@ -30,21 +35,34 @@
 	if(isset($_POST['editSubj'])){
 		$newName = $_POST['editSubj'];
 		$insert = true;
-		echo "subj";
-	}else{$insert = false;}
+		// echo "subj";
+	} else 
+		$insert = false;
+
 	if(isset($_POST['editCoord'])){
 		$newCoord = $_POST['editCoord'];
 		$insert = true;
-		echo "edit";
-	}else{$insert = false;}
+		// echo "edit";
+	} else
+		$insert = false;
+
 	if(isset($_POST['id'])){
-		$newID = $_POST['id'];
+		$oldID = $_POST['id'];
 		$insert = true;
-		echo "id" . $newID."    ";
-	}else{$insert = false;}
+		// echo "id" . $oldID."    ";
+	} else
+		$insert = false;
+
+	if(isset($_POST['newID'])){
+		$newID = $_POST['newID'];
+		$insert = true;
+	} else
+		$insert = false;
+
 	if($insert == true){
 		// echo "insert";
-		edit_subject($newID, $newName, $newCoord);
+		$e = edit_subject($oldID, $newName, $newCoord, $newID);
+		echo $e;
 	}
 
 	//Delete subject

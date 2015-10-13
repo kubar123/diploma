@@ -104,11 +104,11 @@
 			}
 		}
 
-		function insert_subject($name, $coordID){
+		function insert_subject($name, $coordID, $subjID){
 			$dbConnection = connect(); //Run connect function 
 			
 
-			$sql = "insert into subject (name, owner_ID) values('$name', $coordID)";
+			$sql = "insert into subject (subject_ID, name, owner_ID) values('$subjID' ,'$name', $coordID)";
 
 			try{
 
@@ -125,14 +125,22 @@
 			}
 
 		}
-		function edit_subject($subjId, $subjName, $coord){
+		function edit_subject($oldsubjId, $subjName, $coord, $newID){
 			$dbConnection = connect(); //Run connect function 
-
-			$sql = "UPDATE subject SET owner_ID=$coord, name ='$subjName' WHERE subject_ID = $subjId";
+			// if($subjName == "" || $coord == "" || $newID == "")
+			// 	return 2;
+			// return $subjName . " <name oldId>".$oldsubjId . " coord>".$coord. " new>".$newID;
+			//Check if new ID already exists
+			// $sql = "select * from subject where subject_ID = '$newID'";
+			// $stmt = $dbConnection->query($sql);
+			// if($stmt->numRecords() == 0)
+			// 	return 3;
+			$sql = "UPDATE subject SET owner_ID=$coord, name ='$subjName', subject_ID ='$newID' WHERE subject_ID = '$oldsubjId'";
 			// $sql = "UPDATE subject SET owner_ID=$coord, name = '$subjName' WHERE subject_ID = ". $subjId;
-
 			try{
 				$stmt = $dbConnection->query($sql);
+				return $stmt->errorInfo();
+				// return 1;
 				if($stmt == false){
 					die("Die -> false");
 				}
@@ -145,7 +153,7 @@
 		function delete_subject($id){
 			$dbConnection = connect(); //Run connect function 
 
-			$sql = "delete from subject where subject_ID = $id";
+			$sql = "delete from subject where subject_ID = '$id'";
 
 			try{
 				$stmt = $dbConnection->query($sql);

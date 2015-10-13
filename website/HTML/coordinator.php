@@ -1,7 +1,8 @@
      <?php 
       include "head.php";
-       if(isset($_SESSION['type']) == 3)
-        header("Location: index.php");
+      //Redirect users that don't have permission to view this page
+       // if(isset($_SESSION['user_type']) == 3 || isset($_SESSION['user_type']) == 1)
+       //  header("Location: index.php");
      ?>
         <div id="content">
           <div class="title"><span>Welcome Coordinator</span><hr></div>
