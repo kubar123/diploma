@@ -82,7 +82,7 @@ function showSelectSubject(){
 		$stmt=$dbConnection->query($sql);
 		if($stmt->rowcount()!=0){
 			echo "<select id='subjSelected' onchange='setSubjectFilter(this)'>";
-			// echo "<option> Subject... </option>";
+			 echo "<option selected disabled> Subject... </option>";
 			$rows=$stmt->fetchAll();
 			$stmt=null;
 			$dbConnection=null;
