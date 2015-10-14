@@ -11,6 +11,9 @@ h1,h2,h3{
 	color:#0074cf;
 
 }
+th, td{
+	text-align: center;
+}
 .aboutImg{
 	float:right;
 	max-width: 250px;

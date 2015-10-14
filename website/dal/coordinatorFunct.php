@@ -342,5 +342,36 @@ function getConnection(){
 	}
 } // end function
 
+// ------------------- HIGH SCORES ---------------
+//make a highscore table
+function makeHighscoreTable($gameID){
+	try{
+		$conn=getConnection();
+		$stmt=$conn->prepare("SELECT a.user_ID, username, score, time, icon, name AS subject_Name FROM `score` a, `user` b, `subject` c WHERE game_ID=:gameID AND a.user_ID=b.user_ID AND a.subject_ID=c.subject_ID ORDER BY `score` DESC");
+		$stmt->bindParam(":gameID",$gameID);
+		$stmt->execute();
+		if($stmt->rowcount()==0)	die("No highscores found!");
+		$highScore=$stmt->fetchAll();
+
+		if($stmt->rowcount()!=0){
+			echo "<table><tr><th>#</th><th>Name</th><th>Score</th><th>Subject</th><th>Time</th></tr>";
+			$i=0;
+			foreach($highScore as $score) {
+				$i++;
+				echo "<tr>";
+				//echo "<td>".$i."</td>"
+				echo "<td><img width='16px' height='16px' src='../resources/highscoreIcon/".$score['icon']."'/></td>";
+				echo "<td>".$score['username']."</td>";
+				echo "<td>".$score['score']."</td>";
+				echo "<td>".$score['subject_Name']."</td>";
+				echo "<td>".$score['time']."</td>";
+				echo "</tr>";
+			}
+			echo "</table>";
+		}else{
+			echo "No highscores found";
+		}
+	}catch(PDOException $e){ die($e);}
+}
 
 ?>
