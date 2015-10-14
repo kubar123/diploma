@@ -1,8 +1,8 @@
      <?php 
       include "head.php";
       //Redirect users that don't have permission to view this page
-       // if(isset($_SESSION['user_type']) == 3 || isset($_SESSION['user_type']) == 1)
-       //  header("Location: index.php");
+       if($_SESSION['user_type'] == 3 || $_SESSION['user_type'] == 1 )
+        header("Location: index.php");
      ?>
         <div id="content">
           <div class="title"><span>Welcome Coordinator</span><hr></div>
@@ -23,7 +23,7 @@
                 <td><button id="dragAndDropListBtn">Drag and drop</button></td>
                 <td><button id="crosswordQues">Crossword</button></td>
                 <td><button id="hangman">Hangman</button></td>
-                <td><button id="multiChoice">Multiple choice</button></td>
+                <td><a href='multiple_choice.php'><button id="multiChoice">Multiple choice</button></a></td>
               </tr>
             </table>
           </span>

@@ -1,7 +1,8 @@
 
      <?php 
       include "head.php";
-      if(isset($_SESSION['user_type']) == 3 || isset($_SESSION['user_type']) == 1 )
+      // print_r_nice($_SESSION);
+      if($_SESSION['user_type'] == 3 || $_SESSION['user_type'] == 1 )
         header("Location: index.php");
      ?>
         <div id="content">

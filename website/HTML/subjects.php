@@ -1,6 +1,6 @@
 <?php
 include "head.php";
- if($_SESSION['type'] == 3)
+ if($_SESSION['type'] == 3 || $_SESSION['type'] == 1)
         header("Location: index.php");
 ?>
 <?php ?>

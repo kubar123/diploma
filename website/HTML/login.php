@@ -1,7 +1,9 @@
      <?php 
       include "head.php";
-      if(isset($_SESSION['user_type']))
+      if(isset($_SESSION['user_type'])){
+        print_r_nice($_SESSION);
         header("Location: index.php");
+      }
       // print_r_nice($_SESSION);
      ?>
     <div id="content">
