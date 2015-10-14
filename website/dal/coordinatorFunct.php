@@ -354,7 +354,7 @@ function makeHighscoreTable($gameID){
 		$highScore=$stmt->fetchAll();
 
 		if($stmt->rowcount()!=0){
-			echo "<table><tr><th>#</th><th>Name</th><th>Score</th><th>Subject</th><th>Time</th></tr>";
+			echo "<table class='rwd-table'><tr><th>#</th><th>Name</th><th>Score</th><th>Subject</th><th>Time</th></tr>";
 			$i=0;
 			foreach($highScore as $score) {
 				$i++;

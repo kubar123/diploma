@@ -267,7 +267,6 @@ z-index: 2;
 /*
 	TABLE STYLING
 	*/
-
 	table > tr:first-child{
 		text-align: left;
 	}
