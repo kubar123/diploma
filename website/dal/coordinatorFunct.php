@@ -107,8 +107,7 @@ function showSelectSubject(){
 		echo "PDO error";
 	}
 }
-// FUNCTioN IS WRONG -  to be modified.
-// first run sql to get all users subjects, then loop through to see if the subject we using 'owner_ID' == $user_ID
+
 function isUserSubjCoordinator($userID, $subjectID){
 	//return true;
 	try{
@@ -212,9 +211,27 @@ function editTopic($tName, $subj, $topicID){
 
 		// --------=---------------------------- end of topics -------------------------
 // ----------------------- questions --------------------------------
-function getTableQuestionSingle($topic_ID){
+function getTableQuestionSingle($topic_ID, $user_ID){
+	$subj;
+	$isEditable;
 	try{
-		$conn=getConnection();
+	// 	$conn=getConnection();
+	// 	//first we want to get the subject ID using the topic
+	// 	$stmt=$conn->prepare("SELECT * from topic where topic_ID=:topicID");
+	// 	$stmt->bindParam(":topicID",$topic_ID);
+	// 	$stmt->execute();
+
+	// 	if($stmt->rowcount()==0) die("Nothing was found");
+
+	// 	$subj=$stmt->fetchAll(PDO::FETCH_ASSOC);
+	// 	$subj2=$subj[0]['subject_ID'];
+	// 	echo $subj[0]['subject_ID'];
+		//echo $_SESSION['user_ID'];
+		//check if the user has permissions to edit this subject/topic
+		$isEditable=isUserSubjCoordinator($user_ID, $subj2);
+		//echo "".$isEditable;
+		//echo "<script>console.log('".$subj[0]['subject_ID']."')</script>";
+
 // __ STMT # 1
 		$stmt=$conn->prepare("SELECT * from question where topic_ID=:topic_ID and isMultiple=0");
 		$stmt->bindParam(":topic_ID",$topic_ID);
@@ -225,7 +242,10 @@ function getTableQuestionSingle($topic_ID){
 		$ques=$stmt->fetchall(PDO::FETCH_ASSOC);
 
 		echo "<table>";
-		echo "<th>Answer</th><th>Question</th><th>Difficulty</th><th>Edit/delete</th>";
+		echo "<th>Answer</th><th>Question</th><th>Difficulty</th>";
+		if($isEditable==true){
+			echo "<th>Edit/delete</th>";
+		}
 		foreach($ques as $data){ //check question against answer to get QUES/ANS pair
 			echo "<tr>";
 			$id= $data[question_ID];
@@ -242,7 +262,10 @@ function getTableQuestionSingle($topic_ID){
 			echo "</td>";
 			echo "<td id='dragQues$data[question_ID]'> $data[question] </td>";
 			echo "<td id='dragDiff$data[question_ID]'>$data[difficulty] </td>";
-			echo "<td id='dragBtn$data[question_ID]'><a href='#' onclick='editQuestion($data[question_ID]); return false;'>Edit</a>";
+			//ensure the user has permissions to view this subject
+			if($isEditable==true){
+				echo "<td id='dragBtn$data[question_ID]'><a href='#' onclick='editQuestion($data[question_ID]); return false;'>Edit</a>";
+			}
 			echo "</tr>";
 			// }
 				$stmt=null;
@@ -273,8 +296,24 @@ function getTableQuestionSingle($topic_ID){
 	}catch(PDOException $e){ die($e);	}
 }
 
-function editQuestion($question_ID, $question, $answer, $difficulty){
+function editQuestion($ID, $ques, $ans, $diff){
+	// echo $ID.$ques.$ans.$diff;
+	try{
+		$conn=getConnection();
+//  STMT - update question table info first
+		$stmt=$conn->prepare("UPDATE question set difficulty=:diff, question=:ques where question_ID=:id");
+		$stmt->bindParam(":diff",$diff);
+		$stmt->bindParam(":ques",$ques);
+		$stmt->bindParam(":id",$ID);
+		$stmt->execute();
 
+//STMT - update answer table info
+		$stmt=$conn->prepare("UPDATE answer set data=:ans where question_ID=:id and isCorrect=1");
+		$stmt->bindParam(":id",$ID);
+		$stmt->bindParam(":ans",$ans);
+		$stmt->execute();
+
+	}catch(PDOException $e) {die($e);}
 }
 
 

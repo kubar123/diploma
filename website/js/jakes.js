@@ -292,6 +292,23 @@ function saveEditedQuestion(){
 	// using editQuesID as the ID we will be saving in the DB
 	var ans=$('#dragAns'+editQuesID+" :first-child").val();
 	var ques=$('#dragQues'+editQuesID+" :first-child").val();
+	var diff=$('#dragDiff'+editQuesID+" :first-child").find(":selected").text();
+	var question_ID=editQuesID;
+
+	var data={
+		ans:ans,
+		ques:ques,
+		diff:diff,
+		question_ID:question_ID
+	};
+	getPOST('../dal/topicFunctions.php',data)
+		.fail(function(data){
+			alert(data);
+		})
+		.success(function(data){
+			alert(data);
+	});
+	//alert(diff);
 	//alert(ans);
 }
 

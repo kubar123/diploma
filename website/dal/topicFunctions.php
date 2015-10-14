@@ -13,9 +13,14 @@ if(isset($_POST['topicName']) && isset($_POST['subj']) && isset($_POST['topicID'
 }
 
 if(isset($_POST['drag_topic'])){
-	getTableQuestionSingle($_POST['drag_topic']);
+	getTableQuestionSingle($_POST['drag_topic'], $_SESSION['user_ID']);
 	//echo "all good so far";
 	// showSelectTopic()
+}
+
+//edit question
+if(isset($_POST['ans']) && isset($_POST['ques']) && isset($_POST['diff']) && isset($_POST['question_ID'])){
+	editQuestion($_POST['question_ID'], $_POST['ques'], $_POST['ans'], $_POST['diff']);
 }
 
 ?>
