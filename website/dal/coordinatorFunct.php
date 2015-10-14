@@ -373,5 +373,13 @@ function makeHighscoreTable($gameID){
 		}
 	}catch(PDOException $e){ die($e);}
 }
+// ---------------- API FUNCTION ----------------------
+function getImgApi($imageName){
+	$path = '../resources/highscoreIcon/$imageName';
+	$type = pathinfo($path, PATHINFO_EXTENSION);
+	$data = file_get_contents($path);
+	$base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+	return $base64;
+}
 
 ?>
