@@ -46,7 +46,7 @@
             <?php 
             if($_SESSION['user_type'] == 1): ?>
               <li><a href="admin.php">Admin</a></li>
-                <li><a href="users.php">Users</a></li>
+                <!-- <li><a href="users.php">Users</a></li> -->
                 <li><a href="subjects.php">Subjects</a></li>
               <?php
             elseif($_SESSION['user_type'] == 2):
@@ -54,7 +54,7 @@
               <li><a href="coordinator.php">Coordinator</a></li>
                 <!-- READ ONLY FOR COORDINATORS -->
                 <li><a href="coordinator.php">Teachers</a></li>
-                <li><a href="users.php">Users</a></li>
+                <!-- <li><a href="users.php">userss</a></li> -->
 
               <?php 
             endif;
