@@ -1,5 +1,6 @@
 <?php 
 // -------------------------------------- TOPICS---------------------------------
+  session_start();
 
 // make li from all subject the coordinator has permissions to view
 function getCoordinatorSubjectList(){
@@ -214,21 +215,23 @@ function editTopic($tName, $subj, $topicID){
 function getTableQuestionSingle($topic_ID, $user_ID){
 	$subj;
 	$isEditable;
+	$user_ID=1;
+
 	try{
-	// 	$conn=getConnection();
+		$conn=getConnection();
 	// 	//first we want to get the subject ID using the topic
-	// 	$stmt=$conn->prepare("SELECT * from topic where topic_ID=:topicID");
-	// 	$stmt->bindParam(":topicID",$topic_ID);
-	// 	$stmt->execute();
+		$stmt=$conn->prepare("SELECT * from topic where topic_ID=:topicID");
+		$stmt->bindParam(":topicID",$topic_ID);
+		$stmt->execute();
 
-	// 	if($stmt->rowcount()==0) die("Nothing was found");
+		if($stmt->rowcount()==0) die("Nothing was found");
 
-	// 	$subj=$stmt->fetchAll(PDO::FETCH_ASSOC);
-	// 	$subj2=$subj[0]['subject_ID'];
+		$subj=$stmt->fetchAll(PDO::FETCH_ASSOC);
+		$subj2=$subj[0]['subject_ID'];
+		$isEditable=isUserSubjCoordinator($user_ID, $subj2);
 	// 	echo $subj[0]['subject_ID'];
 		//echo $_SESSION['user_ID'];
 		//check if the user has permissions to edit this subject/topic
-		$isEditable=isUserSubjCoordinator($user_ID, $subj2);
 		//echo "".$isEditable;
 		//echo "<script>console.log('".$subj[0]['subject_ID']."')</script>";
 

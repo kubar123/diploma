@@ -27,9 +27,10 @@
     <body>
 <?php
   session_start();
+      $_SESSION['user_ID']=1;
 
   include "../dal/functions.php";
-  $_SESSION['user_type'] = 1;
+  //$_SESSION['user_type'] = 1;
 ?>
 <header class='head'>
         <h1 class="headText">&nbsp;</h1>
