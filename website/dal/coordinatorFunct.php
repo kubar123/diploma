@@ -40,10 +40,10 @@ function showSelectSubjectQuestion(){
 			foreach($rows as $r){
 				// getOption($r['subject_ID']);
 				$id=$r['subject_ID'];
+				$name=$r['name'];
 				//append '*' if the user has permissions to edit
 				if($r['owner_ID']==$_SESSION['user_ID'])
-					$id="*".$id;
-				$name=$r['name'];
+					$name="*".$name;
 				echo "<option value='$id'>$name</option>";
 			}
 		}
@@ -110,12 +110,20 @@ function showSelectSubject(){
 // FUNCTioN IS WRONG -  to be modified.
 // first run sql to get all users subjects, then loop through to see if the subject we using 'owner_ID' == $user_ID
 function isUserSubjCoordinator($userID, $subjectID){
+	//return true;
 	try{
 		$dbConnection =  connect(); //Run connect function 
-		$sql="SELECT * from subject where $userID = $subject_ID";
+		$sql="SELECT * from subject where subject_ID ='$subjectID'";
 		$stmt=$dbConnection->query($sql);
+
 			if($stmt->rowcount()!=0){
-				return true;
+				while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
+					// if($arrRows['subject_ID']==$subjectID)//
+					if($arrRows['owner_ID']==$userID){
+						return true;
+					}
+				}
+				return false;
 			}else{
 				return false;
 			}
@@ -123,7 +131,7 @@ function isUserSubjCoordinator($userID, $subjectID){
 }
 function showTopicTable($id){
 	$dbConnection =  connect(); //Run connect function 
-	
+	$userEdit=isUserSubjCoordinator($_SESSION['user_ID'], $id);
 	//$id=1; // <<<------- FOR TESTING ONLY
 	try{
 		$sql="SELECT * from topic where subject_ID='$id'";
@@ -135,7 +143,8 @@ function showTopicTable($id){
 				echo "<tr>";
 				echo "<td id='topicTxt".$arrRows['topic_ID']."'>".$arrRows['topic_name']."</td>";
 				//check if the user has permissions...
-				if(isUserSubjCoordinator($_SESSION['user_ID'], $id)){
+				//echo "<script>console.log('".isUserSubjCoordinator($_SESSION['user_ID'], $id)."')</script>";
+				if($userEdit===true){
 				echo "<td><a href='#' id='btnTopicEdit".$arrRows['topic_ID']."' onclick='topicEdit(".$arrRows['topic_ID']."); return false;'>Edit</a> 
 				| <a href='#' id='btnTopicDel".$arrRows['topic_ID']."' onclick='deleteTopic(".$arrRows['topic_ID']."); return false;' name='editDelete' value='".$arrRows['topic_ID']."'>Delete</a></td>";
 				}
@@ -143,6 +152,8 @@ function showTopicTable($id){
 
 			}
 			echo "</table>";
+		}else{
+			echo "Nothing found";
 		}
 	}catch(PDOException $err){
 		echo "An error occured".$err->getMessage();
