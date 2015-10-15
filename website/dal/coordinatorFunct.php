@@ -109,26 +109,6 @@ function showSelectSubject(){
 	}
 }
 
-function isUserSubjCoordinator($userID, $subjectID){
-	//return true;
-	try{
-		$dbConnection =  connect(); //Run connect function 
-		$sql="SELECT * from subject where subject_ID ='$subjectID'";
-		$stmt=$dbConnection->query($sql);
-
-			if($stmt->rowcount()!=0){
-				while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
-					// if($arrRows['subject_ID']==$subjectID)//
-					if($arrRows['owner_ID']==$userID){
-						return true;
-					}
-				}
-				return false;
-			}else{
-				return false;
-			}
-	}catch(PDOException $e){ die($e);}
-}
 function showTopicTable($id){
 	$dbConnection =  connect(); //Run connect function 
 	$userEdit=isUserSubjCoordinator($_SESSION['user_ID'], $id);
@@ -215,6 +195,30 @@ function editTopic($tName, $subj, $topicID){
 
 
 		// --------=---------------------------- end of topics -------------------------
+
+
+// ---------------------------- SECURITY ----------------------------
+// checki f the user is the coordonator of this subject
+function isUserSubjCoordinator($userID, $subjectID){
+	try{
+		$dbConnection =  connect(); //Run connect function 
+		$sql="SELECT * from subject where subject_ID ='$subjectID'";
+		$stmt=$dbConnection->query($sql);
+
+			//user has no subjects he coordinates
+			if($stmt->rowcount()==0)	return false;
+
+			while($arrRows=$stmt->fetch(PDO::FETCH_ASSOC)){
+				// check if the owner ID is the user's id
+				if($arrRows['owner_ID']==$userID)
+					return true; // if so, he is coordinator
+				
+			}	
+			return false;
+	}catch(PDOException $e){ die($e);}
+}
+
+
 // ----------------------- questions --------------------------------
 function getTableQuestionSingle($topic_ID, $user_ID){
 	$subj;
@@ -223,40 +227,33 @@ function getTableQuestionSingle($topic_ID, $user_ID){
 
 	try{
 		$conn=getConnection();
-	// 	//first we want to get the subject ID using the topic
+// getting subject ID from topic ID
+		//ensures user has permissions to modify topic
 		$stmt=$conn->prepare("SELECT * from topic where topic_ID=:topicID");
 		$stmt->bindParam(":topicID",$topic_ID);
 		$stmt->execute();
-
+		//unepected error - possibly incorrect user calling this function
 		if($stmt->rowcount()==0) die("Nothing was found");
 
 		$subj=$stmt->fetchAll(PDO::FETCH_ASSOC);
 		$subj2=$subj[0]['subject_ID'];
+		//check if the user is the coordinator of this subject
 		$isEditable=isUserSubjCoordinator($user_ID, $subj2);
-	// 	echo $subj[0]['subject_ID'];
-		//echo $_SESSION['user_ID'];
-		//check if the user has permissions to edit this subject/topic
-		//echo "".$isEditable;
-		//echo "<script>console.log('".$subj[0]['subject_ID']."')</script>";
 
-// __ STMT # 1
+// Getting question using topic ID
 		$stmt=$conn->prepare("SELECT * from question where topic_ID=:topic_ID and isMultiple=0");
 		$stmt->bindParam(":topic_ID",$topic_ID);
 		$stmt->execute();
+
 		//check if anything was found
-		if($stmt->rowcount()==0){
-			echo "Nothing was found<br> ";
-			// if($isEditable==true) 
-			// 	echo "<button id='btnNewQuestion' onclick='makeNewQuestion()'>New</button>";
-			//die();
-		}
+		if($stmt->rowcount()==0)	die("Nothing was found<br> ");
+
 		$ques=$stmt->fetchall(PDO::FETCH_ASSOC);
 
 		echo "<table id='quesAnsTable'>";
 		echo "<th>Answer</th><th>Question</th><th>Difficulty</th>";
-		if($isEditable==true){
-			echo "<th>Action</th>";
-		}
+		if($isEditable==true)	echo "<th>Action</th>";
+
 		foreach($ques as $data){ //check question against answer to get QUES/ANS pair
 			echo "<tr>";
 			$id= $data[question_ID];
@@ -266,14 +263,15 @@ function getTableQuestionSingle($topic_ID, $user_ID){
 			$stmt->execute();
 
 			if($stmt->rowcount()==0)	die("Nothing was found");
-			//if something was found, make a Table based on it.
+			
 			$ans=$stmt->fetch(PDO::FETCH_ASSOC);
+			//if something was found, make a Table based on it.
 			echo "<td id='dragAns$data[question_ID]'>";
 			echo $ans[data];
 			echo "</td>";
 			echo "<td id='dragQues$data[question_ID]'> $data[question] </td>";
 			echo "<td id='dragDiff$data[question_ID]'>$data[difficulty] </td>";
-			//ensure the user has permissions to view this subject
+			//ensure the user has permissions to edit this subject
 			if($isEditable==true){
 				echo "<td id='dragBtn$data[question_ID]'><a href='#' onclick='editQuestion($data[question_ID]); return false;'>Edit</a> <a href='#' onclick='deleteQuestion($data[question_ID]); return false;'>Delete</a>";
 			}
@@ -283,6 +281,7 @@ function getTableQuestionSingle($topic_ID, $user_ID){
 
 		}
 		echo "</table>";
+		// new question button only if user has permissions
 		if($isEditable==true) 
 			echo "<button id='btnNewQuestion' onclick='makeNewQuestion()'>New</button>";
 
@@ -320,7 +319,7 @@ function saveNewQuestion($ques, $ans, $diff, $topicID){
 		$stmt->bindParam(':ques', $ques);
 		$stmt->execute();
 
-		// for insert answer
+		// using Question_ID foreign key
 		$questionID=$conn->lastInsertId();
 //insert answer
 		$stmt=$conn->prepare("INSERT into answer(question_ID, data, isCorrect) values(:qid, :ans, 1)");
@@ -328,14 +327,70 @@ function saveNewQuestion($ques, $ans, $diff, $topicID){
 		$stmt->bindParam(":ans",$ans);
 		$stmt->execute();
 
-
-
-		//to get last insert id
-		//$usID=$conn->lastInsertId();
 	}catch(PDOException $e){ die($e);}
 }
 
 
+
+// delete a specific question
+function deleteQuestionSingle($questionID){
+	try{
+		$conn=getConnection();
+		//delete question/answer combination
+		$stmt=$conn->prepare("DELETE from answer where question_ID=:questionID; DELETE from question where question_ID=:questionID");
+		$stmt->bindParam(":questionID", $questionID);
+		$stmt->execute();
+ 	}catch(PDOException $e){ die($e);}
+}
+
+// ------------------- HIGH SCORES ---------------------------------
+//make a highscore table
+function makeHighscoreTable($gameID){
+	try{
+		$conn=getConnection();
+		//joining highscre & user table ot get username from ID
+		$stmt=$conn->prepare("SELECT a.user_ID, username, score, time, icon, name AS subject_Name FROM `score` a, `user` b, `subject` c WHERE game_ID=:gameID AND a.user_ID=b.user_ID AND a.subject_ID=c.subject_ID ORDER BY `score` DESC");
+		$stmt->bindParam(":gameID",$gameID);
+		$stmt->execute();
+
+		if($stmt->rowcount()==0)	die("No highscores found!");
+
+		$highScore=$stmt->fetchAll();
+		if($stmt->rowcount()!=0){
+			echo "<table class='rwd-table'><tr><th>#</th><th>Name</th><th>Score</th><th>Subject</th><th>Time</th></tr>";
+			$i=0;
+			//loop through high scores
+			foreach($highScore as $score) {
+				//for a max of 5 scores
+				if(i>=5)	return;
+
+				echo "<tr>";
+				//echo "<td>".$i."</td>"
+				echo "<td><img width='16px' height='16px' src='../resources/highscoreIcon/".$score['icon']."'/></td>";
+				echo "<td>".$score['username']."</td>";
+				echo "<td>".$score['score']."</td>";
+				echo "<td>".$score['subject_Name']."</td>";
+				echo "<td>".$score['time']."</td>";
+				echo "</tr>";
+				$i++;
+			}
+			echo "</table>";
+		}else{
+			echo "No highscores found";
+		}
+	}catch(PDOException $e){ die($e);}
+}
+// ---------------- API FUNCTION ----------------------
+//returns an icon in base 64.
+function getImgApi($imageName){
+	$path = '../resources/highscoreIcon/$imageName';
+	$type = pathinfo($path, PATHINFO_EXTENSION);
+	$data = file_get_contents($path);
+	$base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+	return $base64;
+}
+
+// --------------- CONNECT FUNCTIONS ----------------
 $localhost = "localhost";
 $user = "root";
 $password = "root";
@@ -357,57 +412,5 @@ function getConnection(){
 		die("Error PDO Exception");
 	}
 } // end function
-
-// delete a specific question
-function deleteQuestionSingle($questionID){
-	try{
-		$conn=getConnection();
-		//delete question/answer combination
-		$stmt=$conn->prepare("DELETE from answer where question_ID=:questionID; DELETE from question where question_ID=:questionID");
-		$stmt->bindParam(":questionID", $questionID);
-		$stmt->execute();
- 	}catch(PDOException $e){ die($e);}
-}
-
-// ------------------- HIGH SCORES ---------------
-//make a highscore table
-function makeHighscoreTable($gameID){
-	try{
-		$conn=getConnection();
-		//joining highscre & user table ot get username from ID
-		$stmt=$conn->prepare("SELECT a.user_ID, username, score, time, icon, name AS subject_Name FROM `score` a, `user` b, `subject` c WHERE game_ID=:gameID AND a.user_ID=b.user_ID AND a.subject_ID=c.subject_ID ORDER BY `score` DESC");
-		$stmt->bindParam(":gameID",$gameID);
-		$stmt->execute();
-		if($stmt->rowcount()==0)	die("No highscores found!");
-		$highScore=$stmt->fetchAll();
-
-		if($stmt->rowcount()!=0){
-			echo "<table class='rwd-table'><tr><th>#</th><th>Name</th><th>Score</th><th>Subject</th><th>Time</th></tr>";
-			$i=0;
-			foreach($highScore as $score) {
-				$i++;
-				echo "<tr>";
-				//echo "<td>".$i."</td>"
-				echo "<td><img width='16px' height='16px' src='../resources/highscoreIcon/".$score['icon']."'/></td>";
-				echo "<td>".$score['username']."</td>";
-				echo "<td>".$score['score']."</td>";
-				echo "<td>".$score['subject_Name']."</td>";
-				echo "<td>".$score['time']."</td>";
-				echo "</tr>";
-			}
-			echo "</table>";
-		}else{
-			echo "No highscores found";
-		}
-	}catch(PDOException $e){ die($e);}
-}
-// ---------------- API FUNCTION ----------------------
-function getImgApi($imageName){
-	$path = '../resources/highscoreIcon/$imageName';
-	$type = pathinfo($path, PATHINFO_EXTENSION);
-	$data = file_get_contents($path);
-	$base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-	return $base64;
-}
 
 ?>

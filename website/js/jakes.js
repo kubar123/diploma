@@ -238,7 +238,7 @@ $(function(){
 	// alert($('#subjSelectedQuestion').val());
 
 });
-// ====================================EDIT SINGLE QUES ==============================
+// ====================================SINGLE QUESTION ANSWER ================================
 
 //---------------------------------------DELETE ---------------------------------
 function deleteQuestion(questionID){
@@ -279,6 +279,7 @@ function deleteQuestion(questionID){
 		   }
 	   });
 }
+// --------------------------------------------- EDIT -------------------------
 // ------------- VAR ------------
 var editQuesTr; // <tr> of question - for easy restore
 var editQuesAns;	// answer
@@ -287,7 +288,7 @@ var editQuesDiff;	//difficulty
 var editQuesBtn;	//buttons
 var editQuesID;		//id
 //-------------- --------- ------
-// -------------------------------------- EDIT -------------------------
+
 // save the new question data
 function saveEditedQuestion(){
 	// using editQuesID as the ID we will be saving in the DB
@@ -313,45 +314,42 @@ function saveEditedQuestion(){
 	//alert(ans);
 }
 
+//remove input boxes, show standard previous text
 function cancelEditQuestion(questionID){
+	//replace last edited row with the original tr
 	$(questionID).parent().replaceWith(editQuesTr);
-	//resetting item to null
 	editQuesID=null;
 }
 // EDIT a question drag and drop field
 function editQuestion(questionID){
 	//CHECK IF item was not already set, if already set, cancel old edit
-	if(editQuesID!=null){
-		cancelEditQuestion("#dragAns"+editQuesID);
-		//return;
-	}
-	//save edit data
+	if(editQuesID!=null)	cancelEditQuestion("#dragAns"+editQuesID);
+
+	//save edit data for later usage
 	editQuesID=questionID;
 	editQuesTr="<tr>"+$('#dragAns'+questionID).parent().html()+"</tr>";
-	//$('#dragAns1').parent().replaceWith("<tr>"+editQuesTr.html()+"</tr>");
 	editQuesAns=$('#dragAns'+questionID).text();
 	editQuesQues=$('#dragQues'+questionID).text();
 	editQuesDiff=$('#dragDiff'+questionID).text();
 	editQuesBtn=$('#dragBtn'+questionID).html();
-	//console.log(editQuesBtn);
 	//now we change all the td's text into <input> with value
-	// $('#dragAns'+questionID).replaceWith("<input id='dragAns"+questionID+"' value='"+editQuesAns+"'/>");
 	$('#dragAns'+questionID).replaceWith(makeInputTdBox("dragAns"+questionID, editQuesAns));
 	$('#dragQues'+questionID).replaceWith(makeInputTdBox("dragQues"+questionID, editQuesQues));
 	$('#dragDiff'+questionID).replaceWith(makeSelectTd("dragDiff"+questionID, editQuesDiff));
 	$('#dragBtn'+questionID).replaceWith(makeSaveCancelBtn("dragBtn"+questionID));
 }
+
 //make 'save'/'cancel' buttons
 function makeSaveCancelBtn(questionID){
 	var btns= "<td id='"+questionID+"'> <button onclick='saveEditedQuestion()'>Save</button> ";
 	btns+=" <button onclick='cancelEditQuestion("+questionID+")'>Cancel</button>";
 	return btns;
 }
+
+//make td with select box (difficulty setting)
 function makeSelectTd(id, selected){
 	var box="<td id='"+id+"'>";
-	box+="<select>";
-	//alert(selected);
-	console.log(selected);
+	box+="<select>";;
 	if(selected==1){
 		box+="<option selected>1</option>";
 		box+="<option>2</option>";
@@ -366,14 +364,99 @@ function makeSelectTd(id, selected){
 		box+="<option selected>3</option>";
 	}
 	box+="</select></td>";
-	return box;
 
+	return box;
 }
+
+//make an td with an input box
 function makeInputTdBox(id, value){
-	var box="<td id='"+id+"'><input style='width:100%' value='"+value+"' /> </td>";
-	return box;
+	return "<td id='"+id+"'><input style='width:100%' value='"+value+"' /> </td>";
 }
 
+
+//save the new question
+function saveNewQues(){
+	var ans=$('#newAns :first-child').val();
+	var ques=$('#newQues :first-child').val();
+	var diff=$('#newDiff :first-child').find(":selected").text();
+	// validate the data
+	if(!isValidString(ans, 'abc')){
+		alert("Incorrect input");
+		return;
+	}else if(!isValidString(ques, 'abc')){
+		alert("Incorrect input");
+		return;
+	}else if(!isValidString(diff, 123)){
+		alert("Incorrect input");
+		return;
+	}
+
+	//add post data
+	var data={
+		ans:ans,
+		ques:ques,
+		diff:diff,
+		newQues:true,
+		topicID:topicSelection
+	};
+
+	getPOST('../dal/topicFunctions.php', data)
+		.fail(function(data){
+			alert("Some error occured");
+		}).success(function(data){
+			setTopicFilter(topicSelect);
+		});
+
+}
+
+//removes the input boxes
+function cancelNewQues(){
+	$("#newQuesTr").remove();
+}
+
+//new single question - adds tr with input boxes
+function makeNewQuestion(){
+	//making a new TR
+	var newTr="<tr id='newQuesTr'>"
+	//adding input/select box td's
+	newTr+=makeInputTdBox('newAns',"");
+	newTr+=makeInputTdBox('newQues',"");
+	newTr+=makeSelectTd('newDiff',1);
+	//make save/ cancel action
+	newTr+="<td id='newAction'><button onclick='cancelNewQues()'>Cancel</button> <button onclick='saveNewQues()'>Save</button></td>";
+
+	newTr+="</tr>";
+	//add to end of table
+	$('#quesAnsTable tbody').append(newTr);
+} 
+//set variable to the topic ID
+var topicSelection;
+function setTopicFilter(s){
+	topicSelection=s.options[s.selectedIndex].value;
+	var data={drag_topic:topicSelection};
+  	getPOST('../dal/topicFunctions.php',data)
+  		.success(function(data){
+  			$('#tableQuestionSpace').html(data);
+  		}).fail(function(data){
+  			alert(data+"FAIL");
+	});
+  //once the topic has been set, make ajax all to get all the 
+}
+// ====================================END     QUESTION ANSWER ================================
+
+
+
+//return ajax POST
+function getPOST(url, data){
+	return $.ajax({
+		type:"POST",
+		url: url,
+		data:data
+	});
+} 
+
+
+//validation function -------------- ---------------------------
 function isValidString(itemString, type){
 	if (type=="abc"){
 		//tests
@@ -397,78 +480,4 @@ function isValidString(itemString, type){
 		return true;
 	}
 }
-//save the new question
-function saveNewQues(){
-	var ans=$('#newAns :first-child').val();
-	var ques=$('#newQues :first-child').val();
-	var diff=$('#newDiff :first-child').find(":selected").text();
-	// validate the data
-	if(!isValidString(ans, 'abc')){
-		alert("Incorrect input");
-		return;
-	}else if(!isValidString(ques, 'abc')){
-		alert("Incorrect input");
-		return;
-	}else if(!isValidString(diff, 123)){
-		alert("Incorrect input");
-		return;
-	}
-	//once validated, send to server using ajax
-	var data={
-		ans:ans,
-		ques:ques,
-		diff:diff,
-		newQues:true,
-		topicID:topicSelection
-	};
-	getPOST('../dal/topicFunctions.php', data)
-		.fail(function(data){
-			alert(data);
-		}).success(function(data){
-			alert(data);
-			setTopicFilter(topicSelect);
-		});
-
-}
-//removes the input boxes
-function cancelNewQues(){
-	$("#newQuesTr").remove();
-}
-
-//new single question - adds tr with input boxes
-function makeNewQuestion(){
-	//making a new TR
-	var newTr="<tr id='newQuesTr'>"
-	//adding input/select box td's
-	newTr+=makeInputTdBox('newAns',"");
-	newTr+=makeInputTdBox('newQues',"");
-	newTr+=makeSelectTd('newDiff',1);
-	//make save/ cancel action
-	newTr+="<td id='newAction'><button onclick='cancelNewQues()'>Cancel</button> <button onclick='saveNewQues()'>Save</button></td>";
-
-	newTr+="</tr>";
-	$('#quesAnsTable tbody').append(newTr);
-}
-// ===================================== END =============================================
-
- // ------------------------------- DRAG AND DROP QUESTION ----------------------------
- var topicSelection;
- function setTopicFilter(s){
-  topicSelection=s.options[s.selectedIndex].value;
-  var data={drag_topic:topicSelection};
-  getPOST('../dal/topicFunctions.php',data)
-  .success(function(data){
-  	$('#tableQuestionSpace').html(data);
-  }).fail(function(data){
-  	alert(data+"FAIL");
-  });
-  //once the topic has been set, make ajax all to get all the 
-}
-
-function getPOST(url, data){
-	return $.ajax({
-		type:"POST",
-		url: url,
-		data:data
-	});
-} 
+ // ----------------
