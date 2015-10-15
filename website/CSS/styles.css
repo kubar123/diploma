@@ -11,9 +11,7 @@ h1,h2,h3{
 	color:#0074cf;
 
 }
-th, td{
-	text-align: center;
-}
+
 .aboutImg{
 	float:right;
 	max-width: 250px;
@@ -267,6 +265,9 @@ z-index: 2;
 /*
 	TABLE STYLING
 	*/
+	th, td{
+		text-align: center;
+	}
 	table > tr:first-child{
 		text-align: left;
 	}

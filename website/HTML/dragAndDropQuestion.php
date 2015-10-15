@@ -33,7 +33,6 @@
             
           </span>
           <br>
-          
          <!--  <li>Project</li>
           <li>Java</li> -->
           </ul>

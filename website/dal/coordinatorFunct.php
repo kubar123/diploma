@@ -152,8 +152,12 @@ function showTopicTable($id){
 
 			}
 			echo "</table>";
+			if($userEdit===true){
+				echo "<br> <button id='btnTopicNew' onclick='newTopic()'>New</button>";
+			}
 		}else{
 			echo "Nothing found";
+			echo "<br><button id='btnTopicNew' onclick='newTopic()'>New</button>";
 		}
 	}catch(PDOException $err){
 		echo "An error occured".$err->getMessage();
@@ -240,14 +244,18 @@ function getTableQuestionSingle($topic_ID, $user_ID){
 		$stmt->bindParam(":topic_ID",$topic_ID);
 		$stmt->execute();
 		//check if anything was found
-		if($stmt->rowcount()==0)	die("Nothing was found");
-
+		if($stmt->rowcount()==0){
+			echo "Nothing was found<br> ";
+			// if($isEditable==true) 
+			// 	echo "<button id='btnNewQuestion' onclick='makeNewQuestion()'>New</button>";
+			//die();
+		}
 		$ques=$stmt->fetchall(PDO::FETCH_ASSOC);
 
-		echo "<table>";
+		echo "<table id='quesAnsTable'>";
 		echo "<th>Answer</th><th>Question</th><th>Difficulty</th>";
 		if($isEditable==true){
-			echo "<th>Edit/delete</th>";
+			echo "<th>Action</th>";
 		}
 		foreach($ques as $data){ //check question against answer to get QUES/ANS pair
 			echo "<tr>";
@@ -267,34 +275,17 @@ function getTableQuestionSingle($topic_ID, $user_ID){
 			echo "<td id='dragDiff$data[question_ID]'>$data[difficulty] </td>";
 			//ensure the user has permissions to view this subject
 			if($isEditable==true){
-				echo "<td id='dragBtn$data[question_ID]'><a href='#' onclick='editQuestion($data[question_ID]); return false;'>Edit</a>";
+				echo "<td id='dragBtn$data[question_ID]'><a href='#' onclick='editQuestion($data[question_ID]); return false;'>Edit</a> <a href='#' onclick='deleteQuestion($data[question_ID]); return false;'>Delete</a>";
 			}
 			echo "</tr>";
 			// }
 				$stmt=null;
 
 		}
+		echo "</table>";
+		if($isEditable==true) 
+			echo "<button id='btnNewQuestion' onclick='makeNewQuestion()'>New</button>";
 
-		// $stmt=$conn->prepare("SELECT * FROM answer where topic_ID=:topic_ID and isCorrect=1");
-		// $stmt->bindParam(":topic_ID",$topic_ID);
-
-		// $stmt->execute();
-		// if($stmt->rowcount()==0)
-		// 	die("Nothing was found");
-		// $ans=json_encode($stmt->fetch(PDO::FETCH_ASSOC));
-
-		
-
-
-		
-				// if($stmt->rowcount()!=0){
-		// 	echo "<select id='topicSelect' onchange='setTopicFilter(this)'> ";
-		// 	foreach($row as $r){
-		// 		$id=$r['topic_ID'];
-		// 		$name=$r['topic_name'];
-		// 		echo "<option id='$id'> $name </option>";
-		// 	}
-			
 		// }
 	}catch(PDOException $e){ die($e);	}
 }
@@ -317,6 +308,31 @@ function editQuestion($ID, $ques, $ans, $diff){
 		$stmt->execute();
 
 	}catch(PDOException $e) {die($e);}
+}
+//save a single question/answer pair
+function saveNewQuestion($ques, $ans, $diff, $topicID){
+	try{
+		$conn=getConnection();
+// inserting question
+		$stmt=$conn->prepare("INSERT into question(topic_ID, difficulty, isMultiple, question) values(:topic, :diff, 0, :ques); ");
+		$stmt->bindParam(':topic', $topicID);
+		$stmt->bindParam(':diff', $diff);
+		$stmt->bindParam(':ques', $ques);
+		$stmt->execute();
+
+		// for insert answer
+		$questionID=$conn->lastInsertId();
+//insert answer
+		$stmt=$conn->prepare("INSERT into answer(question_ID, data, isCorrect) values(:qid, :ans, 1)");
+		$stmt->bindParam(":qid",$questionID);
+		$stmt->bindParam(":ans",$ans);
+		$stmt->execute();
+
+
+
+		//to get last insert id
+		//$usID=$conn->lastInsertId();
+	}catch(PDOException $e){ die($e);}
 }
 
 
@@ -342,11 +358,23 @@ function getConnection(){
 	}
 } // end function
 
+// delete a specific question
+function deleteQuestionSingle($questionID){
+	try{
+		$conn=getConnection();
+		//delete question/answer combination
+		$stmt=$conn->prepare("DELETE from answer where question_ID=:questionID; DELETE from question where question_ID=:questionID");
+		$stmt->bindParam(":questionID", $questionID);
+		$stmt->execute();
+ 	}catch(PDOException $e){ die($e);}
+}
+
 // ------------------- HIGH SCORES ---------------
 //make a highscore table
 function makeHighscoreTable($gameID){
 	try{
 		$conn=getConnection();
+		//joining highscre & user table ot get username from ID
 		$stmt=$conn->prepare("SELECT a.user_ID, username, score, time, icon, name AS subject_Name FROM `score` a, `user` b, `subject` c WHERE game_ID=:gameID AND a.user_ID=b.user_ID AND a.subject_ID=c.subject_ID ORDER BY `score` DESC");
 		$stmt->bindParam(":gameID",$gameID);
 		$stmt->execute();

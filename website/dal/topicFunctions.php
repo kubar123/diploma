@@ -25,5 +25,39 @@ if(isset($_POST['drag_topic'])){
 if(isset($_POST['ans']) && isset($_POST['ques']) && isset($_POST['diff']) && isset($_POST['question_ID'])){
 	editQuestion($_POST['question_ID'], $_POST['ques'], $_POST['ans'], $_POST['diff']);
 }
+//delete question
+if(isset($_POST['questionID']) && isset($_POST['questionConfirm'])){
+	deleteQuestionSingle($_POST['questionID']);
+}
 
+//save new question
+if(isset($_POST['ques']) && isset($_POST['topicID']) && isset($_POST['ans']) && isset($_POST['diff']) && isset($_POST['newQues'])){
+	//first, validate the data
+	validateData($_POST['ques'],'abc');
+	validateData($_POST['ans'],'abc');
+	validateData($_POST['diff'],123);
+
+	saveNewQuestion($_POST['ques'],$_POST['ans'],$_POST['diff'], $_POST['topicID']);
+}
+
+// ---- valdiate functions ----
+function validateData($data, $type){
+	//text check
+	if($type=='abc'){
+		if($data=="")
+			die("Invalid type");
+		if($data==" ")
+			die("Invalid type");
+		if($data=="  ")
+			die("Invalid type");
+		// everything is ok.
+		//number check
+	}else if($type==123){
+		if($data=='')
+			die("Invalid type");
+		if(is_nan($data))
+			die("Invalid type");
+
+	}
+}
 ?>

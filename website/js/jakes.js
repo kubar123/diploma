@@ -154,9 +154,9 @@ function saveEditTopic(topicID){
  	// var topicID=topicID;
 	var topicName=$('#topicTxt'+topicID).val();
   	var subj=$("#subjSelected :selected").attr("id");
-  alert(topicName);
-  alert(subj);
-  alert(topicID);
+  //alert(topicName);
+  //alert(subj);
+  //alert(topicID);
   	$.ajax({
 		type:'POST',
 		url: '../dal/topicFunctions.php',
@@ -170,7 +170,7 @@ function saveEditTopic(topicID){
   .always(function(){})
   .fail(function(){})
   .success(function(data){
-	alert(data);
+	//alert(data);
 	selectTextActual=topicName;
 	cancelEditTopic(topicID);
 	// $('#topicTxt'+topicID).replaceWith("<td id='topicTxt"+topicID+"'>"+topicName+"</td>");
@@ -261,13 +261,14 @@ function deleteQuestion(questionID){
 				   url: '../dal/topicFunctions.php',
 				   data: {
 					   questionID: questionID,
-					   topicConfirm:true
+					   questionConfirm:true
 				   }
 			   })
 				   .done(function() {})
 				   .always(function() {})
 				   .fail(function() { alert("Some error occured!")})
-				   .success(function() {
+				   .success(function(data) {
+				   	//alert(data);
 						$('#dragAns'+questionID).parent().remove();
 					  	isConfirmed = true;
 				   }); //End of ajax funct  
@@ -371,6 +372,82 @@ function makeSelectTd(id, selected){
 function makeInputTdBox(id, value){
 	var box="<td id='"+id+"'><input style='width:100%' value='"+value+"' /> </td>";
 	return box;
+}
+
+function isValidString(itemString, type){
+	if (type=="abc"){
+		//tests
+		if(itemString=="")
+			return false;
+		if(itemString==" ")
+			return false;
+
+		//all ok
+		return true;
+	}else if(type==123){
+		//tests
+		if(itemString=="")
+			return false;
+		if(itemString==" ")
+			return false;
+		if(isNaN(itemString))
+			return false;
+
+		//all ok
+		return true;
+	}
+}
+//save the new question
+function saveNewQues(){
+	var ans=$('#newAns :first-child').val();
+	var ques=$('#newQues :first-child').val();
+	var diff=$('#newDiff :first-child').find(":selected").text();
+	// validate the data
+	if(!isValidString(ans, 'abc')){
+		alert("Incorrect input");
+		return;
+	}else if(!isValidString(ques, 'abc')){
+		alert("Incorrect input");
+		return;
+	}else if(!isValidString(diff, 123)){
+		alert("Incorrect input");
+		return;
+	}
+	//once validated, send to server using ajax
+	var data={
+		ans:ans,
+		ques:ques,
+		diff:diff,
+		newQues:true,
+		topicID:topicSelection
+	};
+	getPOST('../dal/topicFunctions.php', data)
+		.fail(function(data){
+			alert(data);
+		}).success(function(data){
+			alert(data);
+			setTopicFilter(topicSelect);
+		});
+
+}
+//removes the input boxes
+function cancelNewQues(){
+	$("#newQuesTr").remove();
+}
+
+//new single question - adds tr with input boxes
+function makeNewQuestion(){
+	//making a new TR
+	var newTr="<tr id='newQuesTr'>"
+	//adding input/select box td's
+	newTr+=makeInputTdBox('newAns',"");
+	newTr+=makeInputTdBox('newQues',"");
+	newTr+=makeSelectTd('newDiff',1);
+	//make save/ cancel action
+	newTr+="<td id='newAction'><button onclick='cancelNewQues()'>Cancel</button> <button onclick='saveNewQues()'>Save</button></td>";
+
+	newTr+="</tr>";
+	$('#quesAnsTable tbody').append(newTr);
 }
 // ===================================== END =============================================
 
