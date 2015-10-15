@@ -218,17 +218,16 @@ function saveEditTopic(topicID){
 $(function(){
 	// $('#QuestionAnswerSpace').hide();
 });
+
+//handle clicks
+$('#hangman').click(function(){
+	var url=window.location.href;
+	window.location.href="singleQuestion.php";
+});
 //handle drag and drop
 $('#dragAndDropListBtn').click(function(){
-	// $('#QuestionAnswerSpace').show();
-	//when clicked, ask for topic
-	//$('#QuestionAnswerSpace').html("<h1>Hello</h1>");
 	var url=window.location.href;
-	window.location.href="dragAndDropQuestion.php";
-	// alert(url);
-	// alert(window.location);
-	// url+='?drag_topic'+selectFilterTopicQuestion;
-	// window.location.search='?topic='+selectFilterTopicQuestion;
+	window.location.href="singleQuestion.php";
 });
 
 $(function(){

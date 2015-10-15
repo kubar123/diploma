@@ -137,7 +137,8 @@ function showTopicTable($id){
 			}
 		}else{
 			echo "Nothing found";
-			echo "<br><button id='btnTopicNew' onclick='newTopic()'>New</button>";
+			if($userEdit===true)
+				echo "<br><button id='btnTopicNew' onclick='newTopic()'>New</button>";
 		}
 	}catch(PDOException $err){
 		echo "An error occured".$err->getMessage();
