@@ -88,6 +88,7 @@
 			}
 		}
 
+		//Assign a coordinator to a subject
 		function assign_coordinator_subject($sID,$uID){
 			$dbConnection = connect(); //Run connect function 
 
