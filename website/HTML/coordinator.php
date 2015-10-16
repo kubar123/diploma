@@ -44,7 +44,7 @@
               echo showTopicTable(1);
             }
           ?>
-          <button id='btnTopicNew' onclick='newTopic()'>New</button>
+          
           <hr>
           <h3> Rules</h3>
           <br><span id="infoSpace"></span>

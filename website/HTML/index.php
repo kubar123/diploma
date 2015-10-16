@@ -7,8 +7,16 @@
         <div id="content">
           <div class="title"><span>Drunk Panthers - We think globally.</span><hr></div>
           <div class="right">
-            <h3>Today's top highscores </h3>
-            <table>
+            <h3>Game 1 highscores </h3>
+            <?php 
+
+            echo makeHighscoreTable(1);
+            echo "<h3>Game 2 highscores</h3>";
+            echo makeHighscoreTable(2);
+
+             ?>
+
+            <!-- <table>
                <tr><th>#</th><th>Name</th><th>Score</th><th>Game</th></tr>
                <tr><td>1</td><td>Jake</td><td>1,322</td><td>Game 1</td></tr>
                <tr><td>2</td><td>Mike</td><td>1,323</td><td>Game 2</td></tr>
@@ -16,7 +24,7 @@
                <tr><td>4</td><td>Nick</td><td>788</td><td>Game 1</td></tr>
                <tr><td>5</td><td>Wayne</td><td>645</td><td>Game 1</td></tr>
 
-            </table>
+            </table -->
           </div>
           <p><h3>Get ready to start revising!</h3>
           <ul>
