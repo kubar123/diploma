@@ -93,6 +93,8 @@
 		$quest = $_POST['quest'];
 		$diff = $_POST['diff'];
 		$isMultiple = $_POST['isMultiple'];
+
+		//Grab the arrays made from input fields and decode
 		$correct = json_decode($_POST['correct']);
 		$options = json_decode($_POST['options']);
 
@@ -111,6 +113,7 @@
 		$isMultiple = $_POST['isMultiple'];
 		$correct = json_decode($_POST['correct']);
 		$options = json_decode($_POST['options']);
+		// print_r_nice($options);
 
 		//Validate that everything has been filled in and not left empty
 		for($i = 0; $i<sizeof($correct); $i++):

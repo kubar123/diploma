@@ -1,10 +1,8 @@
 <?php 
 
-/*
-	WONT RETURN THE FETCH ARRAY OF LOGGED IN DATA....EASY FIX
+// This page handles everythign to do with loggin in and handing out user data.
 
-*/
-	//Login
+
 function authenticate_user($username, $password){
 	//Returns whether the account is valid or not
 	$validated = validateUser($username, $password);
@@ -38,7 +36,6 @@ function validateUser($user, $pass){
 		- Future reference, I could use this and if an account doesn't exist then prompt the user to create a new one.
 	*/
 	$sqlCheck = "select username, password from user where username = '$user'";
-	echo "<script>console.log('2')</script>";
 	// $sqlCheck = "selct username, passcode from users where passcode = "
 
 	//Run Query
@@ -74,14 +71,13 @@ function validateUser($user, $pass){
 		}
 }
 
-//This function returns the vKey when the user logs in, the vKey is stored in a session variable for other validation
+//This function returns the vKey when the user logs in, the vKey is stored in a session variable (in usefunctions.php) for other validation
 function give_key($user){
 	// global $numRecords, $dbConnection, $stmt;
 	$dbConnection = connect();
 	/*
 	Dictionary:
-		$sql_return = This is an array of all the values retrieved from the query.
-		return array() = This returns an array of values, these values can be accessed easily using indexes
+		This function is returning an array of vkey, user_id, and user type
 	*/
 	$sqlCheck = "select vKey, user_ID, user_type from user where username = '$user'";
 

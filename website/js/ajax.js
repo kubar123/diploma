@@ -3,6 +3,7 @@ var edBtns = "";
 var cancelEdClone = "";
 var clickCounter = 0;
 $id = "";
+// $.ajaxSetup({ cache: false });
     //New subject jquery functions
     $(".new-subject").click(function(){
       $(this).fadeOut();
@@ -222,7 +223,13 @@ $id = "";
            .always(function() {})
            .fail(function() {})
            .success(function(data) {
-            // alert(JSON.stringify(data));
+              printQuestionsTable(data);
+           }); //End of ajax funct
+
+   });
+
+  function printQuestionsTable(data){
+    // alert(JSON.stringify(data));
             if($.isEmptyObject(data))
               m = "<h1>No topic found</h1><a href='coordinator.php'>Add new topic</a>";
             else{
@@ -236,9 +243,7 @@ $id = "";
 
             }
               $('.topic_menu').html(m);
-           }); //End of ajax funct
-
-   });
+  }
 
   //Grab questions for a topic
   $(document).on('change', '.choose-topic', function() {
