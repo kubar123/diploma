@@ -227,6 +227,76 @@
 			}
 		}
 
+		function showSingleQuestion($id){
+			$dbConnection = connect();
+			try{
+				$sql="select question.*, answer.* from question, answer where answer.question_ID = $id and question.question_ID = $id";// INNER JOIN answer ON $id = answer.question_ID"
+				// $sql="select question.*, answer.* from question, answer where answer.question_ID = $id and question.question_ID = $id";
+				$sql="select question.*, answer.* from question, answer where answer.question_ID = $id and question.question_ID = $id";
+				// $sql="SELECT * from question, answer where topic_ID=$id and answer.isCorrect = 1";
+				// SELECT * from question, answer where topic_ID=1 and answer.isCorrect = 1
+				$stmt=$dbConnection->query($sql);
+				if($stmt == false)
+					die("error");
+
+				return $stmt->fetchAll(PDO::FETCH_ASSOC);
+				
+
+			}catch (Exception $e){
+
+			}
+		}
+
+		function editSingleMultipleChoiceQuest($qID, $difficulty, $isMultiple, $quest,$correct, $options, $corrID, $optID){
+			$dbConnection = connect();
+			try{
+				echo $corrID[$i];
+				for($i = 0; $i < sizeof($corrID); $i++):
+					echo $corrID[$i];
+				endfor;
+
+				// Maybe add insert for more questions
+				echo "<script>console.log('1');</script>";
+				//Update the actual question
+				$stmt=$dbConnection->prepare("UPDATE question SET difficulty = :dif, isMultiple = :isMul, question = :quest  WHERE question_ID = :qID");
+					$stmt->bindParam(':qID', $qID);
+					$stmt->bindParam(':dif', $difficulty);
+					$stmt->bindParam(':isMul', $isMultiple);
+					$stmt->bindParam(':quest', $quest);
+				$stmt->execute();
+				echo "<script>console.log('2');</script>";
+
+				$stmt=$dbConnection->prepare("UPDATE answer SET data = :data WHERE answer_ID = :ansID");
+				//Loop through the correct answers array and append correct insert statement
+				for($i = 0; $i < sizeof($correct); $i++):
+					$stmt->bindParam(':ansID', $corrID[$i]);
+					$stmt->bindParam(':data', $correct[$i]);
+					$stmt->execute();
+				endfor;
+				echo "<script>console.log('3');</script>";
+
+				$stmt=$dbConnection->prepare("UPDATE answer SET data = :data WHERE answer_ID = :ansID");
+				//Loop through the optional answers array and append correct insert statement
+				for($z = 0; $z < sizeof($options); $z++):
+					$stmt->bindParam(':ansID', $optID[$i]);
+					$stmt->bindParam(':data', $options[$i]);
+					$stmt->execute();
+				endfor;
+				echo "<script>console.log('4');</script>";
+
+
+				// $stmt=$dbConnection->query($sql);
+				if($stmt == false)
+					die("error");
+
+				// return $stmt->fetchAll(PDO::FETCH_ASSOC);
+				
+
+			}catch (Exception $e){
+
+			}
+		}
+
 
 		
 	//Coordinator related functions   ^ 
@@ -246,15 +316,18 @@
 					die("error1".$dbConnection->errorInfo());
 				$stmt = "";
 
+				//Loop through the correct answers array and append correct insert statement
 				for($i = 0; $i < sizeof($correct); $i++):
 					$stmt .= "INSERT INTO answer (question_ID, data, isCorrect)
 				    	VALUES($qID,'".$correct[$i]."',1);";
 				endfor;
 
+				//Loop through the optional answers array and append correct insert statement
 				for($z = 0; $z < sizeof($options); $z++):
 					$stmt .= "INSERT INTO answer (question_ID, data, isCorrect)
 				    	VALUES($qID,'".$options[$z]."',0);";
 				endfor;
+
 				$dd = $dbConnection->query($stmt);
 
 				if(!$dbConnection)

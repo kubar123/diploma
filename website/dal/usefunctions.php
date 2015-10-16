@@ -101,6 +101,43 @@
 
 	}
 
+	//Insert question if a request has been made
+	if(isset($_POST['editQ'])){
+		//1 = fill out the form
+		//GET POST VARS
+		$qID = $_POST['qID'];
+		$quest = $_POST['quest'];
+		$diff = $_POST['diff'];
+		$isMultiple = $_POST['isMultiple'];
+		$correct = json_decode($_POST['correct']);
+		$options = json_decode($_POST['options']);
+
+		//Validate that everything has been filled in and not left empty
+		for($i = 0; $i<sizeof($correct); $i++):
+			if($correct[$i] == "" || $correct[$i] == null || $quest == null || $quest == "" ){
+				echo "1";
+				return;
+			}
+		endfor;
+		for($i = 0; $i<sizeof($options); $i++):
+			if($options[$i] == "" || $options[$i] == null){
+				echo "1";
+				return;
+			}
+		endfor;
+
+
+		//Get stored arrays
+		$optionalID = $_SESSION['optIDS'];
+		$correctID =  $_SESSION['corrIDS'];
+
+		$d = editSingleMultipleChoiceQuest($qID, $diff, $isMultiple, $quest,$correct, $options, $correctID, $optionalID);
+		echo $d;
+		unset($_SESSION['optIDS']);
+		unset($_SESSION['corrIDS']);
+
+	}
+
 	if(isset($_POST['loginPassword'])){
 		if(!isset($_POST['loginUsername']))
 			return "Please fill out the form!";

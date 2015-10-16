@@ -265,9 +265,9 @@ $id = "";
             else {
               var m= "<br /><form action='add-question.php' method='post'><input type='submit' value='Add New' class='add_question' /><input type='hidden' value='"+$id+"' name='t_ID' class='t_ID' /></form>";
               m += "<h2>Questions: </h2><table>";
-              m+= "<tr><td>Question</td><td>Answer<td></tr>";
+              m+= "<tr><td>Question</td><td>Answer<td><td>Action</td></tr>";
               $.each(data, function(index, element) {
-                  m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['data']+"<td></tr>";
+                  m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['data']+"<td><td><a class='edit_multiplechoice' data-id='"+data[index]['question_ID']+"' href='#'>Edit</a>•<a href=''>Delete</a></td></tr>";
               });
                 m+= "</table>";
            }
@@ -331,6 +331,70 @@ $id = "";
     }); //End of ajax funct
 
 
+  });
+
+//EDIT question and answers
+  $(document).on('click', '.edit_question', function() {
+    //Test id
+    var id=$('.qID_editme').val();
+    var isMultiple;
+    var button = $(this).clone();
+
+    //Turn input fields into arrays that will be passed to php function
+    var optional = $("input[class='optional_answer']")
+              .map(function(){return $(this).val();}).get();
+
+    var correct = $("input[class='correct_answer']")
+              .map(function(){return $(this).val();}).get();
+    var quest = $('.new_question');
+
+    //Grab difficulty
+    var diff = $('.questDifficulty');
+    if(correct.length > 1)
+      isMultiple = 1;
+    else
+      isMultiple = 0;
+  
+    $.ajax({
+             type: 'POST',
+             url: '../dal/usefunctions.php',
+             data: {
+                 editQ: "true",
+                quest: quest.val(),
+                correct: JSON.stringify(correct),
+                options: JSON.stringify(optional),
+                // correctID: JSON.stringify(correctID),
+                // optionsID: JSON.stringify(optionalID),
+                diff: diff.val(),
+                isMultiple: isMultiple,
+                qID: id,
+             }
+         })
+             .done(function() {})
+             .always(function() {})
+             .fail(function() {})
+             .success(function(data) {
+              if(data == "1") {
+                alert("Please fill out all inputs");
+                return;
+              }
+              alert("Question was edited successfully!");
+              button.attr('class', 'goBackMultipleChoice');
+              button.val("Back");
+              $('.edit_question').after(button)
+    }); //End of ajax funct
+  });
+
+  $(document).on('click', '.goBackMultipleChoice', function() {
+        window.location = "../HTML/multiple_choice.php";
+  });
+             
+  
+  //Pass qid to edit page
+  $(document).on('click', '.edit_multiplechoice', function() {
+    var qID = $(this).attr('data-id');
+    var data = { qID : qID};
+        window.location = "../HTML/add-question.php?qID="+qID;
   });
   
   
