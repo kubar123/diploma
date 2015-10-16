@@ -83,10 +83,14 @@ function newTopic(){
   
 }
 
+// get GET subhject ID
+function getTopic(){
+	return window.location.search.replace("?topic=", "");
+}
 function saveNewTopic(){
   var newID=$('#txtTopicNew').val();
-  var subj=$("#subjSelected :selected").attr("id");
-  // alert(subj);
+  var subj=getTopic();
+  alert(subj);
   // alert(newID);
   $.ajax({
 	type:'POST',
@@ -98,7 +102,9 @@ function saveNewTopic(){
   })
   .done(function(){})
   .always(function(){})
-  .fail(function(){})
+  .fail(function(data){
+	alert(data);
+})
   .success(function(data){
 	alert(data);
 
@@ -161,16 +167,15 @@ function saveEditTopic(topicID){
 		type:'POST',
 		url: '../dal/topicFunctions.php',
 		data: {
-		  topicName: topicName,
 		  subj: subj,
 		  topicID:topicID
 	   }
   })
-  .done(function(){})
-  .always(function(){})
-  .fail(function(){})
+  .fail(function(data){
+  	alert("fail"+data);
+  })
   .success(function(data){
-	//alert(data);
+	alert("ok"+data);
 	selectTextActual=topicName;
 	cancelEditTopic(topicID);
 	// $('#topicTxt'+topicID).replaceWith("<td id='topicTxt"+topicID+"'>"+topicName+"</td>");
@@ -307,7 +312,8 @@ function saveEditedQuestion(){
 			alert(data);
 		})
 		.success(function(data){
-			alert(data);
+			//update table
+			setTopicFilter(topicSelect);
 	});
 	//alert(diff);
 	//alert(ans);

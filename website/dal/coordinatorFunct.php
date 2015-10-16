@@ -148,7 +148,7 @@ function showTopicTable($id){
 function deleteTopic($id){
 	$dbConnection =  connect(); //Run connect function 
 
-	$sql = "delete from topic where topic_ID = $id";
+	$sql = "delete from topic where topic_ID = '$id'";
 
 	try{
 		$stmt = $dbConnection->query($sql);
@@ -166,7 +166,7 @@ function deleteTopic($id){
 function newTopic($id, $subj){
 	$dbConnection =  connect(); //Run connect function 
 
-	$sql="insert into topic (subject_ID, topic_name) values($subj, '$id')";
+	$sql="insert into topic (subject_ID, topic_name) values('$subj', '$id')";
 	//echo $sql;
 	try{
 		$stmt=$dbConnection->query($sql);
@@ -181,8 +181,8 @@ function newTopic($id, $subj){
 // ---------------------- edit topic ----------------
 function editTopic($tName, $subj, $topicID){
 	$dbConnection =  connect(); //Run connect function 
-
-	$sql="update topic set topic_name='$tName' where topic_ID=$topicID";
+	
+	$sql="update topic set topic_name='$tName' where topic_ID='$topicID'";
 	try{
 		$stmt=$dbConnection->query($sql);
 		if($stmt==false){
