@@ -20,7 +20,7 @@ $id = "";
     $(document).on('click', '.btn-add-subject', function() {
 
       //Get coordinator chosen
-      var coord = $('.choose-coord');
+      var coord = $(this).parent().parent().find('#new-subject-coord').find('select');
       var subName = $('#new-subject-name').val();
       var subID = $('#new-subject-id').val();
       //remove the 
@@ -46,7 +46,7 @@ $id = "";
               //Clone and append
               var clone = $('.subject-row:first').clone();
               clone.find('#name').text(subName);
-              clone.find('#owner-username').text(coord.text());
+              clone.find('#owner-username').text(coord.find('option:selected').text());
               $('.subject-table').append(clone);
 
 
@@ -101,7 +101,7 @@ $id = "";
    $(document).on('click', '#btn-save-edits', function() {
 
       //Get the updated details      
-       var coord = $('.choose-coord-edit');
+       var coord = $(this).parent().parent().find('#owner-username').find('select');
        var subName = $('#edited-name').val();
        var newID = $('#edited-ID').val();
 
@@ -116,7 +116,7 @@ $id = "";
        $(this).parent().replaceWith(edBtns);
        $(this).parent().parent().find('#name').text(subName);
        $(this).parent().parent().find('#subj_ID').text(newID);
-       $(this).prev('#owner-username').html("<p>"+coord.text()+"</p>");
+       $(this).parent().parent().find('#owner-username').find('select').find('option:selected').text();
        clickCounter = 0;
 
 
@@ -136,7 +136,6 @@ $id = "";
            .always(function() {})
            .fail(function() {})
            .success(function(data) {
-
               if(data == 3)
                 alert("This ID already exists!");
               else if(data == 2)
@@ -147,7 +146,8 @@ $id = "";
                // $('.share-wrap').fadeOut();
               $('#' + editID).parent().parent().find('#name').text(subName);
               $('#' + editID).parent().parent().find('#subj_ID').text(newID);
-              $(this).prev('#owner-username').html("<p>"+coord.text()+"</p>");
+              $(this).parent().parent().find('#owner-username').find('select').find('option:selected').text();
+              // $(this).prev('#owner-username').html("<p>"+coord.find('option:selected').text()+"</p>");
                 edBtns.find('#'+editID).attr('data-id', newID);
 
                 $(this).parent().replaceWith(edBtns);
@@ -272,7 +272,7 @@ $id = "";
               m += "<h2>Questions: </h2><table>";
               m+= "<tr><td>Question</td><td>Answer<td><td>Action</td></tr>";
               $.each(data, function(index, element) {
-                  m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['data']+"<td><td><a class='edit_multiplechoice' data-id='"+data[index]['question_ID']+"' href='#'>Edit</a>•<a href=''>Delete</a></td></tr>";
+                  m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['data']+"<td><td><a class='edit_multiplechoice' data-id='"+data[index]['question_ID']+"' href='#'>Edit</a>•<a data-id='"+data[index]['question_ID']+"' class='delete_multipleChoice' href='#'>Delete</a></td></tr>";
               });
                 m+= "</table>";
            }
@@ -329,8 +329,8 @@ $id = "";
              .fail(function() {})
              .success(function(data) {
               alert("Question added successfully!" + data);
-              $('.optional_answer').val("");
-              $('.correct_answer').val("");
+              // $('.optional_answer').val("");
+              // $('.correct_answer').val("");
 
               
     }); //End of ajax funct
@@ -405,6 +405,7 @@ $id = "";
   
   $(document).on('click', '.add_question', function() {
     $t_ID = $('.t_ID').val();
+    // window.location.href = '../HTML/add-question.php?topicID='+$t_ID;
     $.ajax({
            type: 'POST',
            url: '../HTML/add-question.php',
@@ -417,11 +418,52 @@ $id = "";
            .fail(function() {})
            .success(function(data) {
             // alert(JSON.stringify(data));
-            // window.location.href = "../HTML/add-question.php";
-
-            
+            // window.location.href = "../HTML/add-question.php";            
            }); //End of ajax funct
   });
+
+  
+  $(document).on('click', '.delete_multipleChoice', function() {
+       var deleteID = $(this).attr('data-id');
+       var isConfirm = false;
+       var rowThis = $(this);
+
+       // clone = $(this).clone();
+       swal({
+           title: "Are you sure you want to delete this question?",
+           text: "You will not be able to recover this question along with all it's ANSWERS!",
+           type: "warning",
+           showCancelButton: true,
+           confirmButtonColor: "#DD6B55",
+           confirmButtonText: "Yes, delete it!",
+           cancelButtonText: "No, cancel please!",
+           closeOnConfirm: false,
+           closeOnCancel: false
+       }, function(isConfirm) {
+           if (isConfirm) {
+               swal("Deleted!", "Your question has been deleted", "success");
+               $.ajax({
+                   type: 'POST',
+                   url: '../dal/usefunctions.php',
+                   data: {
+                       delete_qID: deleteID
+                   }
+               })
+                   .done(function() {})
+                   .always(function() {})
+                   .fail(function(data) {  })
+                   .success(function(data) {
+                      rowThis.parent().parent().fadeOut();
+                      isConfirmed = true;
+                   }); //End of ajax funct  
+                
+           } else {
+               isConfirmed = false;
+               swal("Cancelled", "The subject has not been deleted", "error");
+           }
+       });
+      return false;
+   });
 
 
 

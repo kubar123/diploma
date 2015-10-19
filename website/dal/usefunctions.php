@@ -151,17 +151,21 @@
 		echo $username . " " . $password;
 
 		$q = authenticate_user($username, $password);
-		// print_r_nice($q);
-		// die($q);
-		// die( " " .$q['user_type']);
+		
+		//Create our session variables that will be used for validation, etc.
 		$_SESSION['user_type'] = $q['user_type'];
 		$_SESSION['user_ID'] = $q['user_ID'];
 		$_SESSION['vKey'] = $q['vKey'];
-		// print_r_nice($_SESSION);
-		// die($_SESSION);
 
 		header("Location: ../HTML/login.php");
 	}
 
+	//Delete multiple choice question
+
+	if(isset($_POST['delete_qID'])){
+		$qID = $_POST['delete_qID'];
+		$q = deleteMultipleChoiceQuestion($qID);
+		echo $q;
+	}
 
 ?>

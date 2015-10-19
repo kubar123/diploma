@@ -4,7 +4,7 @@
       
       if($_SESSION['user_type'] == 3 || $_SESSION['user_type'] == 1 )
         header("Location: index.php");
-      
+      $topic_ID = $_POST['t_ID'];  //Get the post variables
       //If topic_ID has been set from the start, then it's a post page
       if(isset($topic_ID)){
         echo "<input type='hidden' class='topic_ID_new' name='topic_ID_new' value='$topic_ID' />";
@@ -14,6 +14,7 @@
       $data = [];
       $optionalIDS = [];
       $correctIDS = [];
+      $correctAns = [];
 
 
       if(isset($_GET['qID'])){
@@ -35,7 +36,7 @@
           array_push($optionalIDS, $ans[$i]['answer_ID']);
         }
         else{
-          $correctAns = $ans[$i]['data'];
+          array_push($correctAns, $ans[$i]['data']); 
           array_push($correctIDS, $ans[$i]['answer_ID']); 
         }
 
@@ -48,9 +49,9 @@
      ?>
       <div id="content">
         <h2>Fill in the following form!</h2>
-        <?php if(isset($_POST['qID'])): ?>
+        <?php if($edit): ?>
           <h3>Editing question: <?php if(isset($topic_ID)) echo $topic_ID; else echo "Something went wrong"; ?></h3>  
-          <?php else: ?>
+        <?php else: ?>
         <h3>This question belongs to the topic: <?php if(isset($topic_ID)) echo $topic_ID; else echo "Something went wrong"; ?></h3>
         <?php endif;?>
 
@@ -58,19 +59,31 @@
           <input type='text' placeholder='Enter question' class='new_question' <?php if($edit) echo "value='$question'"; ?> size='100%' />
 
         <h2>Add your four multiple choice answers!</h2>
-        <p>Check the radio buttons if your question has multiple answers!</p><br />
-
         <label for='correct_answer'>Correct answer: </label>
-          <input type='text' placeholder='Enter answer' name='correct_answer[]' class='correct_answer' <?php if($edit) echo "value='$correctAns'"; ?>/>
-             <?php if(!$edit): ?><div class='correct_answers'></div>
-          <input type='button' value='Add another correct answer' class='add_another_input' />
-           <?php endif; ?>
+      <?php 
+          if($edit):
+            $i=0;
+            foreach($correctAns as $c): 
+      ?>
+              <input type='text' placeholder='Enter answer' name='correct_answer[]' class='correct_answer' 
+                                                                        <?php if($edit) echo "value='$correctAns[$i]'"; ?>/>
+    <?php 
+            $i++;
+            endforeach;
+          endif;
+    ?>
+    <?php if(!$edit): ?><div class='correct_answers'></div> 
+            <input type='button' value='Add another correct answer' class='add_another_input' />
+    <?php 
+          endif; 
+    ?>
 
 
       <?php 
             //Print out the respective option inputs, if edit = true then print out found values, else print out empty inputs
             if($edit): 
               $i = 0;
+              //Data holds all the option data
               foreach($data as $v): 
               $z = $i;
       ?>    

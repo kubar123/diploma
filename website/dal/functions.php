@@ -324,6 +324,21 @@
 			}
 		}
 
+		function deleteMultipleChoiceQuestion($qID){
+			$dbConnection = connect();
+			try{
+				//Update the actual question
+				$stmt=$dbConnection->prepare("DELETE FROM question where question_ID = :qID");
+					$stmt->bindParam(':qID', $qID);
+				$stmt->execute();
+								
+				if($stmt == false)
+					die("error");				
+			}catch (Exception $e){
+
+			}
+		}
+
 
 
 

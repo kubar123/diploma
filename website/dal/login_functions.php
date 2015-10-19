@@ -1,6 +1,6 @@
 <?php 
 
-// This page handles everythign to do with loggin in and handing out user data.
+// This page handles everything to do with loggin in and handing out user data.
 
 
 function authenticate_user($username, $password){
