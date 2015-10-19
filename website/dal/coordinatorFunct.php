@@ -363,7 +363,7 @@ function makeHighscoreTable($gameID){
 			//loop through high scores
 			foreach($highScore as $score) {
 				//for a max of 5 scores
-				if(i>=5)	return;
+				if($i>=5)	break;
 
 				echo "<tr>";
 				//echo "<td>".$i."</td>"
