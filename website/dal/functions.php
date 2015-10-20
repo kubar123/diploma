@@ -244,9 +244,10 @@
 		function editSingleMultipleChoiceQuest($qID, $difficulty, $isMultiple, $quest,$correct, $options, $corrID, $optID){
 			$dbConnection = connect();
 			try{
-				echo $corrID[$i];
+				// print_r_nice($options);
+				echo " correct id: " . sizeof($corrID) . " optional: " . sizeof($optID);
 				for($i = 0; $i < sizeof($corrID); $i++):
-					echo $corrID[$i];
+					echo " <br />".$optID[$i];
 				endfor;
 
 				//Update the actual question
@@ -257,10 +258,11 @@
 					$stmt->bindParam(':quest', $quest);
 				$stmt->execute();
 
-				//Update the correct answer/s and options below
-				$stmt=$dbConnection->prepare("UPDATE answer SET data = :data WHERE answer_ID = :ansID");
+				
 				//Loop through the correct answers array and append correct insert statement
 				for($i = 0; $i < sizeof($correct); $i++):
+					//Update the correct answer/s and options below
+					$stmt=$dbConnection->prepare("UPDATE answer SET data = :data WHERE answer_ID = :ansID");
 					$stmt->bindParam(':ansID', $corrID[$i]);
 					$stmt->bindParam(':data', $correct[$i]);
 					$stmt->execute();
@@ -277,7 +279,7 @@
 				if($stmt == false)
 					die("error");				
 			}catch (Exception $e){
-
+				echo $e;
 			}
 		}
 

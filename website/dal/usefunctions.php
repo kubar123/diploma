@@ -133,6 +133,11 @@
 		//Get stored arrays
 		$optionalID = $_SESSION['optIDS'];
 		$correctID =  $_SESSION['corrIDS'];
+		print_r_nice($optionalID);
+		// for($i=0;$i<sizeof($options);$i++):
+		// 	echo $options[$i];
+		// endfor;
+		// die();
 
 		$d = editSingleMultipleChoiceQuest($qID, $diff, $isMultiple, $quest,$correct, $options, $correctID, $optionalID);
 		echo $d;

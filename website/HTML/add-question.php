@@ -72,7 +72,9 @@
             endforeach;
           endif;
     ?>
-    <?php if(!$edit): ?><div class='correct_answers'></div> 
+    <?php if(!$edit): ?>
+            <input type='text' placeholder='Enter answer' name='correct_answer[]' class='correct_answer' />
+            <div class='correct_answers'></div> 
             <input type='button' value='Add another correct answer' class='add_another_input' />
     <?php 
           endif; 
