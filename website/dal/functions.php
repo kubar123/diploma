@@ -271,8 +271,8 @@
 				$stmt=$dbConnection->prepare("UPDATE answer SET data = :data WHERE answer_ID = :ansID");
 				//Loop through the optional answers array and append correct insert statement
 				for($z = 0; $z < sizeof($options); $z++):
-					$stmt->bindParam(':ansID', $optID[$i]);
-					$stmt->bindParam(':data', $options[$i]);
+					$stmt->bindParam(':ansID', $optID[$z]);
+					$stmt->bindParam(':data', $options[$z]);
 					$stmt->execute();
 				endfor;
 				
