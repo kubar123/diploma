@@ -23,6 +23,11 @@
 <link rel="stylesheet" type="text/css" href="../CSS/sweetalert.css">
 
 
+<!-- Coordinator - crossword - view -->
+<div id="viewCrosswordTotal" title="View crossword"> </div>
+<script>$('#viewCrosswordTotal').hide();</script>
+<!-- End of crossword view -->
+
     </head>
     
     <body>

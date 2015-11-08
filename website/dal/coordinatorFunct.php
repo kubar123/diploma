@@ -223,7 +223,7 @@ function isUserSubjCoordinator($userID, $subjectID){
 function getTableQuestionSingle($topic_ID, $user_ID){
 	$subj;
 	$isEditable;
-	$user_ID=1;
+	//$user_ID=1;
 
 	try{
 		$conn=getConnection();
@@ -380,6 +380,80 @@ function makeHighscoreTable($gameID){
 		}
 	}catch(PDOException $e){ die($e);}
 }
+
+// ---------------- crossword functions --------------
+function getViewCrosswords($topicID){
+	try{
+		$conn=getConnection();
+		$stmt=$conn->prepare("SELECT * from crossword where topic_ID=:topicID");
+		$stmt->bindParam(":topicID",$topicID);
+		$stmt->execute();
+
+		if($stmt->rowcount()==0)	die("No crosswords found");
+
+		$crossword=$stmt->fetchAll();
+		if($stmt->rowcount()!=0){
+			echo "<table><tr><th>ID</th><th>difficulty</th><th>total squares</th><th>Action</th></tr>";
+			foreach ($crossword as $currentCross) {
+				echo "<tr>";
+				echo "<td>".$currentCross['crossword_ID']."</td>";
+				echo "<td>".$currentCross['difficulty']."</td>";
+				echo "<td>".$currentCross['total_sqrs']."</td>";
+				echo "<td>"."<a href='#' onclick='viewCrossword(".$currentCross['crossword_ID'].")' >View</a>"."</td>";
+				
+				echo "</tr>";
+			}
+			echo "</table>";
+		}
+
+	}catch(PDOException $e){ die($e);}
+}
+
+function getViewedCrossword($crosswordID){
+	try{
+		$conn=getConnection();
+		$stmt=$conn->prepare("SELECT * from crossword where crossword_ID=:crosswordID");
+		$stmt->bindParam(":crosswordID",$crosswordID);
+		$stmt->execute();
+		if($stmt->rowcount()==0)	die("No crosswords found");
+
+		$info=$stmt->fetchALL(PDO::FETCH_ASSOC);
+		// $totalSq=$crossword['total_sqrs'];
+		// $xSq=$crossword['x_sq'];
+		// $ySq=$crossword['y_sq'];
+		// $difficulty=$crossword['difficulty'];
+
+		$stmt=$conn->prepare("SELECT * from crossword_question where crossword_ID=:crosswordID");
+		$stmt->bindParam(":crosswordID",$crosswordID);
+		$stmt->execute();
+		//$crossword=$stmt->fetchAll();
+		$info2=$stmt->fetchALL(PDO::FETCH_ASSOC);
+
+		$merged=array_merge($info, $info2);
+
+		echo json_encode($merged);
+		// if($stmt->rowcount()!=0){
+		// 	$totalCount=0;
+		// 	//echo substr($crossword[0]['answer'],0,1);
+		// 	//echo $crossword[0]['square_ID'];
+		// 	echo "<table border='1' >";
+		// 	for($i=0;$i<$xSq;$i++){
+		// 		echo "<tr>";
+		// 		for($y=0;$y<$ySq;$y++){
+					
+		// 			if($totalCount===$crossword[0]['square_ID'])
+		// 				echo "<td>".substr($crossword[0]['answer'],0,1)."</td>";
+		// 			else
+		// 				echo "<td>   </td>";
+		// 			$totalCount++;
+		// 		}
+		// 		echo "</tr>";
+		// 	}
+		// 	echo "</table>";
+		// }
+	}catch(PDOException $e){ die($e);}
+}
+
 // ---------------- API FUNCTION ----------------------
 //returns an icon in base 64.
 function getImgApi($imageName){

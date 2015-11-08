@@ -40,6 +40,16 @@ if(isset($_POST['ques']) && isset($_POST['topicID']) && isset($_POST['ans']) && 
 	saveNewQuestion($_POST['ques'],$_POST['ans'],$_POST['diff'], $_POST['topicID']);
 }
 
+if(isset($_POST['topicID']) && isset($_POST['crosswordView'])){
+	getViewCrosswords($_POST['topicID']);
+	//echo "hello";
+}
+
+if(isset($_POST['crosswordID']) && isset($_POST['crossWordViewDetail'])){
+	getViewedCrossword($_POST['crosswordID']);
+	//echo "hello";
+}
+
 // ---- valdiate functions ----
 function validateData($data, $type){
 	//text check

@@ -26,9 +26,7 @@ function filterTopicList(){
   window.location.search = '?topic='+selectFilterTopic;
 }
 
-$('#crosswordQues').click(function(){
-	alert('click');
-});
+
 
 
 //delete a topic using a specific ID
@@ -438,6 +436,11 @@ function makeNewQuestion(){
 var topicSelection;
 function setTopicFilter(s){
 	topicSelection=s.options[s.selectedIndex].value;
+	// check which page it is
+	if(getFileName()=='crosswordView.php'){
+		crosswordView(topicSelection);
+		return;
+	}
 	var data={drag_topic:topicSelection};
   	getPOST('../dal/topicFunctions.php',data)
   		.success(function(data){
@@ -448,7 +451,18 @@ function setTopicFilter(s){
   //once the topic has been set, make ajax all to get all the 
 }
 // ====================================END     QUESTION ANSWER ================================
-
+function getFileName() {
+//this gets the full url
+var url = document.location.href;
+//this removes the anchor at the end, if there is one
+url = url.substring(0, (url.indexOf("#") == -1) ? url.length : url.indexOf("#"));
+//this removes the query after the file name, if there is one
+url = url.substring(0, (url.indexOf("?") == -1) ? url.length : url.indexOf("?"));
+//this removes everything before the last slash in the path
+url = url.substring(url.lastIndexOf("/") + 1, url.length);
+//return
+return url;
+}
 
 
 //return ajax POST
@@ -485,4 +499,101 @@ function isValidString(itemString, type){
 		return true;
 	}
 }
- // ----------------
+ // ---------------- CROSSWORD ------------------------------------------
+ $('#crosswordQues').click(function(){
+	var url=window.location.href;
+	window.location.href="crosswordView.php";
+});
+
+function crosswordView(topicID){
+	var data={
+		crosswordView:'true',
+		topicID:topicID
+	};
+  	getPOST('../dal/topicFunctions.php',data)
+  		.success(function(data){
+  			$('#tableCrossSpot').html(data);
+  		}).fail(function(data){
+  			alert(JSON.stringify(data)+" FAIL");
+	});
+}
+
+function viewCrossword(crosswordID){
+	//$('#viewCrosswordTotal').dialog();
+	//alert(crosswordID);
+	var data={
+		crosswordID:crosswordID,
+		crossWordViewDetail:'true'
+	};
+	$.ajax({
+		type:"POST",
+		url: '../dal/topicFunctions.php',
+		data:data,
+		dataType:"json"
+	}).success(function(data){
+		//alert(JSON.stringify(data));
+		// 0 is cross, 1+ is cross question
+		console.log(JSON.stringify(data));
+		//console.log(data[0].topic_ID);
+		var xSq=parseInt(data[0].x_sq);
+		var ySq=parseInt(data[0].y_sq);
+		var z= 1;
+		for(i in data){
+			if(i==0) continue;
+			z++;
+			//console.log(z);
+			console.log(data[i].answer);
+
+		}
+		var tdID="amazingID";
+		$('#viewCrosswordTotal').html(makeTable(xSq,ySq,tdID)).dialog();
+		//loop through each and every sq
+		for(var i=0; i<xSq*ySq;i++){
+			//go through the data we have for each sq
+			for(z in data){
+				if(z==0) continue; // skip crossword settings (0)
+
+				// if the id of the sq is the same at ans id...
+				if(data[z].square_ID==i){
+					//split its word into an array of chars
+					var wordArray=data[z].answer.split("");
+					
+					var count=i;
+					//with the array, we calculate how far away each letter should be
+					wordArray.forEach(function(entry) {
+					    $('#'+tdID+count).text(entry);
+					    console.log(count+" _____ "+entry);
+
+					    //if down, we go forward xSq spots (down 1), else go to next
+					    if(data[z].isDown=='1')	count+=xSq;
+					    else	count++;
+					});
+					
+					
+				}
+			}
+		}
+		console.log("z:: "+z);
+		//console.log(makeTable(xSq,ySq,"amazingID"));
+		// $('#viewCrosswordTotal').append(data);
+		// $('#viewCrosswordTotal').dialog();
+	}).fail(function(data){
+		alert('f: '+JSON.stringify(data));
+	});
+}
+
+function makeTable(x,y,id){
+	var sqID=0;
+	var info="";
+	info+="<table id='tableCrossSpot' border='1'>";
+	for(var ix=0;ix<x;ix++){
+		info+="<tr>";
+		for(var iy=0;iy<y;iy++){
+			info+="<td id='"+id+sqID+"'>"+"</td>";
+			sqID++;
+		}
+		info+="</tr>";
+	}
+	info+="</table>";
+	return info;
+}

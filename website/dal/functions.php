@@ -20,6 +20,7 @@
 		$dbConnection = null;
 		$stmt = null;
 		$numRecords = null;
+		$dsn=null;
 
 		//Establish MySQL Connection
 		function connect()
