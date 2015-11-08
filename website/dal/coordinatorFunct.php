@@ -1,7 +1,6 @@
 <?php 
 // -------------------------------------- TOPICS---------------------------------
   session_start();
-
 // make li from all subject the coordinator has permissions to view
 function getCoordinatorSubjectList(){
 	$dbConnection =  connect(); //Run connect function 

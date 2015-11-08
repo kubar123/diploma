@@ -1,5 +1,6 @@
      <?php 
       include "head.php";
+      
       if(isset($_SESSION['user_type']))
         header("Location: index.php");
       
@@ -12,7 +13,7 @@
                 <input type='text' placeholder="Enter your username here" name='loginUsername' class='loginUsername' />
             <br />
              <label for='loginPassword'>Password: </label>
-                <input type='text' placeholder="Enter your password here" name='loginPassword' class='loginPassword' />
+                <input type='password' placeholder="Enter your password here" name='loginPassword' class='loginPassword' />
 
             <br />
             <input type='submit' value='Login' class='loginButton' name='loginButton' />

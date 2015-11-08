@@ -89,7 +89,7 @@
 	//Insert question if a request has been made
 	if(isset($_POST['addQ'])){
 		//GET POST VARS
-		$topic_ID = $_POST['topicID'];
+		$topic_ID = $_POST['topic_ID'];
 		$quest = $_POST['quest'];
 		$diff = $_POST['diff'];
 		$isMultiple = $_POST['isMultiple'];
@@ -97,6 +97,27 @@
 		//Grab the arrays made from input fields and decode
 		$correct = json_decode($_POST['correct']);
 		$options = json_decode($_POST['options']);
+
+		if($quest == ""){
+			echo 1;
+			return;
+		}
+		
+		// foreach($correct as $i):
+		// 	if($correct[$i] == ""){
+		// 		echo 1;
+		// 		return;
+		// 	}
+		// endforeach;
+
+		// foreach($options as $i):
+		// 	if($options[$i] == ""){
+		// 		echo 1;		
+		// 		return;
+		// 	}
+		// endforeach;
+
+
 
 		$d = addQuestion($topic_ID, $diff, $isMultiple, $quest,$correct, $options);
 		echo $d;
@@ -147,16 +168,17 @@
 	}
 
 	if(isset($_POST['loginPassword'])){
-		if(!isset($_POST['loginUsername']))
-			return "Please fill out the form!";
+		if(!isset($_POST['loginUsername'])):
+			echo "Please fill out the form!";
+			header("Location: ../HTML/login.php");
+		endif;
 
 		//Assign values to variables
 		$username = $_POST['loginUsername'];
 		$password = $_POST['loginPassword'];
-		echo $username . " " . $password;
 
 		$q = authenticate_user($username, $password);
-		
+		// header("Location: ../HTML/login.php");
 		//Create our session variables that will be used for validation, etc.
 		$_SESSION['user_type'] = $q['user_type'];
 		$_SESSION['user_ID'] = $q['user_ID'];

@@ -22,16 +22,18 @@
 <script src="../js/sweetalert.min.js"></script> 
 <link rel="stylesheet" type="text/css" href="../CSS/sweetalert.css">
 
+
     </head>
     
     <body>
 <?php
   session_start();
-      $_SESSION['user_ID']=1;
+      
 
   include "../dal/functions.php";
   //$_SESSION['user_type'] = 1;
 ?>
+<input type='hidden' value='<?php echo $_SESSION['user_ID']; ?>' class='user_ID' />
 <header class='head'>
         <h1 class="headText">&nbsp;</h1>
       </header>
@@ -56,7 +58,6 @@
                ?>
               <li><a href="coordinator.php">Coordinator</a></li>
                 <!-- READ ONLY FOR COORDINATORS -->
-                <li><a href="coordinator.php">Teachers</a></li>
                 <!-- <li><a href="users.php">userss</a></li> -->
 
               <?php 

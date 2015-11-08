@@ -2,6 +2,9 @@ var clone = $('.coordi-list').find('.choose-coord-edit').clone();
 var edBtns = "";
 var cancelEdClone = "";
 var clickCounter = 0;
+var user_ID = $('.user_ID').val();
+var chosenSubjOwnerID="";
+
 $id = "";
 // $.ajaxSetup({ cache: false });
     //New subject jquery functions
@@ -76,8 +79,11 @@ $id = "";
         edBtns = $(this).parent().clone();
         cancelEdClone = $(this).parent().parent().clone();
 
-        $(this).parent().parent().find('#subj_ID').html("<input type='text' id='edited-ID' placeholder='Enter ID' />");
-        $(this).parent().parent().find('#name').html("<input type='text' id='edited-name' placeholder='Enter subject name' />");
+        var subjIdTxt = $(this).parent().parent().find('#subj_ID').text();
+        var subjNameTxt = $(this).parent().parent().find('#name').text();
+
+        $(this).parent().parent().find('#subj_ID').html("<input type='text' id='edited-ID' placeholder='Enter ID'  value='"+subjIdTxt.trim()+"'/>");
+        $(this).parent().parent().find('#name').html("<input type='text' id='edited-name' placeholder='Enter subject name' value='"+subjNameTxt.trim()+"' />");
         $(this).parent().parent().find('#owner-username').html(clone);
         $(this).parent().html("<input type='button' value='save' data-id='"+editID+"' id='btn-save-edits' /> <input type='button' value='cancel' id='btn-cancel-edits' />");
         clickCounter++;
@@ -210,6 +216,9 @@ $id = "";
       //Subj ID
       $id = $(this).val();
 
+      //Finds the selected value of THIS (subjects) select menu
+      chosenSubjOwnerID = $(this).find(":selected").attr('data-owner-id');
+
 
        $.ajax({
            type: 'POST',
@@ -236,7 +245,6 @@ $id = "";
               var m = "<h2>Select topic: </h2><select class='choose-topic' name='choose-topic'>";
               m += '<option disabled="disabled" selected="selected">Choose topic</option>';
               $.each(data, function(index, element) {
-
                   m+= "<option value='"+data[index]['topic_ID']+"'>"+data[index]['topic_name']+"</option>";
               });
                 m+= "</select>";
@@ -249,6 +257,7 @@ $id = "";
   $(document).on('change', '.choose-topic', function() {
       //Subj ID
       $id = $(this).val();
+
 
 
        $.ajax({
@@ -272,7 +281,10 @@ $id = "";
               m += "<h2>Questions: </h2><table>";
               m+= "<tr><td>Question</td><td>Answer<td><td>Action</td></tr>";
               $.each(data, function(index, element) {
-                  m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['data']+"<td><td><a class='edit_multiplechoice' data-id='"+data[index]['question_ID']+"' href='#'>Edit</a>•<a data-id='"+data[index]['question_ID']+"' class='delete_multipleChoice' href='#'>Delete</a></td></tr>";
+                  if(chosenSubjOwnerID == user_ID)
+                    m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['data']+"<td><td><a class='edit_multiplechoice' data-id='"+data[index]['question_ID']+"' href='#'>Edit</a>•<a data-id='"+data[index]['question_ID']+"' class='delete_multipleChoice' href='#'>Delete</a></td></tr>";
+                  else
+                    m+= "<tr><td>"+data[index]['question']+"</td><td>"+data[index]['data']+"<td><td>Must be admin of subject</td></tr>";
               });
                 m+= "</table>";
            }
@@ -302,6 +314,7 @@ $id = "";
 
     var correct = $("input[class='correct_answer']")
               .map(function(){return $(this).val();}).get();
+              
     var quest = $('.new_question');
 
     //Grab difficulty
@@ -321,14 +334,20 @@ $id = "";
                 options: JSON.stringify(optional),
                 diff: diff.val(),
                 isMultiple: isMultiple,
-                topicID: id,
+                topic_ID: id,
              }
          })
              .done(function() {})
              .always(function() {})
              .fail(function() {})
              .success(function(data) {
-              alert("Question added successfully!" + data);
+              
+              if(data == 1)
+                alert("Please fill in all input fields");
+              else
+                alert("Question added successfully!");
+
+              // alert("Question added successfully!" + data);
               // $('.optional_answer').val("");
               // $('.correct_answer').val("");
 
