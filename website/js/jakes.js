@@ -504,7 +504,23 @@ function isValidString(itemString, type){
 	var url=window.location.href;
 	window.location.href="crosswordView.php";
 });
-
+function log(str){
+	console.log(str);
+}
+function crosswordDelete(crosswordID){
+	crosswordID=parseInt(crosswordID);
+	var data={
+		crosswordDelete:'true',
+		crosswordID:crosswordID
+	};
+  	getPOST('../dal/topicFunctions.php',data)
+  		.success(function(data){
+  			log(data);
+  			crosswordView(topicSelection);
+  		}).fail(function(data){
+  			alert(JSON.stringify(data)+" FAIL");
+	});
+}
 function crosswordView(topicID){
 	var data={
 		crosswordView:'true',
@@ -518,6 +534,11 @@ function crosswordView(topicID){
 	});
 }
 
+// function windowReszie(){
+//   var size =$("td").height();
+//   $("td").width(size);
+// }
+// ~~~~~ view crossword ~~~~~~~
 function viewCrossword(crosswordID){
 	//$('#viewCrosswordTotal').dialog();
 	//alert(crosswordID);
@@ -538,15 +559,16 @@ function viewCrossword(crosswordID){
 		var xSq=parseInt(data[0].x_sq);
 		var ySq=parseInt(data[0].y_sq);
 		var z= 1;
-		for(i in data){
-			if(i==0) continue;
-			z++;
-			//console.log(z);
-			console.log(data[i].answer);
+		// for(i in data){
+		// 	if(i==0) continue;
+		// 	z++;
+		// 	//console.log(z);
+		// 	console.log(data[i].answer);
 
-		}
+		// }
 		var tdID="amazingID";
 		$('#viewCrosswordTotal').html(makeTable(xSq,ySq,tdID)).dialog();
+		// windowReszie();
 		//loop through each and every sq
 		for(var i=0; i<xSq*ySq;i++){
 			//go through the data we have for each sq

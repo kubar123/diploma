@@ -399,14 +399,24 @@ function getViewCrosswords($topicID){
 				echo "<td>".$currentCross['crossword_ID']."</td>";
 				echo "<td>".$currentCross['difficulty']."</td>";
 				echo "<td>".$currentCross['total_sqrs']."</td>";
-				echo "<td>"."<a href='#' onclick='viewCrossword(".$currentCross['crossword_ID'].")' >View</a>"."</td>";
-				
+				echo "<td>"."<a href='#' onclick='viewCrossword(".$currentCross['crossword_ID'].")' >View</a>";
+				echo ' | <a href="#" onclick="crosswordDelete('.$currentCross['crossword_ID'].')">Delete</a></td>';
 				echo "</tr>";
 			}
 			echo "</table>";
 		}
 
 	}catch(PDOException $e){ die($e);}
+}
+
+function deleteCrossword($crosswordID){
+	try{
+		$conn=getConnection();
+		$stmt=$conn->prepare(" DELETE from crossword_question where crossword_ID=:crosswordID; DELETE from crossword where crossword_ID=:crosswordID;");
+		$stmt->bindParam(":crosswordID",$crosswordID);
+		$stmt->execute();
+	}catch(PDOException $e){ die($e);}
+
 }
 
 function getViewedCrossword($crosswordID){

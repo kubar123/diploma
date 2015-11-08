@@ -50,6 +50,11 @@ if(isset($_POST['crosswordID']) && isset($_POST['crossWordViewDetail'])){
 	//echo "hello";
 }
 
+if(isset($_POST['crosswordID']) && isset($_POST['crosswordDelete']) ){
+	//echo "hello";
+	deleteCrossword($_POST['crosswordID']);
+}
+
 // ---- valdiate functions ----
 function validateData($data, $type){
 	//text check
