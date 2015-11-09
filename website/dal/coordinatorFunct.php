@@ -382,12 +382,13 @@ function makeHighscoreTable($gameID){
 }
 
 // ---------------- crossword functions --------------
+//get a table of all the crosswords specific to topic ID
 function getViewCrosswords($topicID){
 	$isEditable;
 	try{
 		$conn=getConnection();
 			// getting subject ID from topic ID
-		//ensures user has permissions to modify topic
+//ensure user has permissions to modify topic
 		$stmt=$conn->prepare("SELECT * from topic where topic_ID=:topicID");
 		$stmt->bindParam(":topicID",$topicID);
 		$stmt->execute();
@@ -395,21 +396,25 @@ function getViewCrosswords($topicID){
 		//unepected error - possibly incorrect user calling this function
 		if($stmt->rowcount()==0) die("Nothing was found");
 
+
 		$subj=$stmt->fetchAll(PDO::FETCH_ASSOC);
 		$subj2=$subj[0]['subject_ID'];
 		//check if the user is the coordinator of this subject
+
 		$user_ID=$_SESSION['user_ID'];
 		$isEditable=isUserSubjCoordinator($user_ID, $subj2);
+//end user edit rights check
 
-
+//make the table that will be shown with a list of all crosswords
 		$conn=getConnection();
 		$stmt=$conn->prepare("SELECT * from crossword where topic_ID=:topicID");
 		$stmt->bindParam(":topicID",$topicID);
 		$stmt->execute();
 
-		if($stmt->rowcount()==0)	die("No crosswords found");
+		// if($stmt->rowcount()==0)	die("No crosswords found");
 
 		$crossword=$stmt->fetchAll();
+		//if crosswords have been found...
 		if($stmt->rowcount()!=0){
 			echo "<table><tr><th>ID</th><th>difficulty</th><th>total squares</th><th>Action</th></tr>";
 			foreach ($crossword as $currentCross) {
@@ -425,11 +430,16 @@ function getViewCrosswords($topicID){
 			echo "</table>";
 			if($isEditable==true) 
 				echo "<button id='btnNewCrossword' onclick='makeNewCrossword()'>New</button>";
+		}else{
+			//if nothing found, still show the new button, but only if the user has edit rights
+			if($isEditable==true) 
+				echo "<button id='btnNewCrossword' onclick='makeNewCrossword()'>New</button>";
 		}
 
 	}catch(PDOException $e){ die($e);}
 }
 
+//delete the a specific crossword using its ID.
 function deleteCrossword($crosswordID){
 	try{
 		$conn=getConnection();
@@ -440,6 +450,7 @@ function deleteCrossword($crosswordID){
 
 }
 
+//returns JSON of the crossword + crossword_question table
 function getViewedCrossword($crosswordID){
 	try{
 		$conn=getConnection();
@@ -449,48 +460,28 @@ function getViewedCrossword($crosswordID){
 		if($stmt->rowcount()==0)	die("No crosswords found");
 
 		$info=$stmt->fetchALL(PDO::FETCH_ASSOC);
-		// $totalSq=$crossword['total_sqrs'];
-		// $xSq=$crossword['x_sq'];
-		// $ySq=$crossword['y_sq'];
-		// $difficulty=$crossword['difficulty'];
 
 		$stmt=$conn->prepare("SELECT * from crossword_question where crossword_ID=:crosswordID");
 		$stmt->bindParam(":crosswordID",$crosswordID);
 		$stmt->execute();
 		//$crossword=$stmt->fetchAll();
 		$info2=$stmt->fetchALL(PDO::FETCH_ASSOC);
-
+		//merge the arrays into one
 		$merged=array_merge($info, $info2);
-
+		//return JSON of array
 		echo json_encode($merged);
-		// if($stmt->rowcount()!=0){
-		// 	$totalCount=0;
-		// 	//echo substr($crossword[0]['answer'],0,1);
-		// 	//echo $crossword[0]['square_ID'];
-		// 	echo "<table border='1' >";
-		// 	for($i=0;$i<$xSq;$i++){
-		// 		echo "<tr>";
-		// 		for($y=0;$y<$ySq;$y++){
-					
-		// 			if($totalCount===$crossword[0]['square_ID'])
-		// 				echo "<td>".substr($crossword[0]['answer'],0,1)."</td>";
-		// 			else
-		// 				echo "<td>   </td>";
-		// 			$totalCount++;
-		// 		}
-		// 		echo "</tr>";
-		// 	}
-		// 	echo "</table>";
-		// }
 	}catch(PDOException $e){ die($e);}
 }
 
+//save a new crossword using $data
+//data = string that *happens* to be a JSON (non encoded)
 function saveNewCrossword($data){
-	$data= $data;
+//data[0] = crossword settings
 	$topicID=$data[0][0];
 	$xSize=$data[0][1];
 	$ySize=$data[0][2];
 	$total=$xSize*$ySize;
+	
 	try{
 		$conn=getConnection();
 // inserting question
@@ -502,17 +493,21 @@ function saveNewCrossword($data){
 		$stmt->bindParam(':ySq', $ySize);
 		$stmt->execute();
 
-		// using Question_ID foreign key
+		// getting last inserted ID to use for foreign key for crossword_question
 		$questionID=$conn->lastInsertId();
+		//loop through all the $data items (question/answers)
 		foreach($data as $word){
+			//skipping the settings [0]
 			if($data[0]==$word) continue;
 			$sqID=$word[0];
 			$isDown=$word[1];
 			$ans=$word[2];
 			$ques=$word[3];
-
+			// encoding for smallint for DB (0/1 instead of true/false)
 			if($isDown=='true') $isDown=1;
 			else $isDown=0;
+
+			//add to the databasse
 			$stmt=$conn->prepare("INSERT into crossword_question(crossword_ID, square_ID, isDown, question, answer)
 			values(:crosswordID, :sqID, :isDown, :ques, :ans); ");
 			$stmt->bindParam(':crosswordID', $questionID);

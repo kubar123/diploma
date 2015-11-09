@@ -525,6 +525,7 @@ function crosswordDelete(crosswordID){
 	});
 }
 
+//gets the view crossword table, showing a list of all the crosswords in that topic
 function crosswordView(topicID){
 	var data={
 		crosswordView:'true',
@@ -626,6 +627,8 @@ function makeTable(x,y,id){
 	info+="</table>";
 	return info;
 }
+
+//make a table with a specific onclick and class ID - same as above, different output
 function makeTableClass(x,y,id){
 	var sqID=0;
 	var info="";
@@ -642,8 +645,8 @@ function makeTableClass(x,y,id){
 	return info;
 }
 
+//append to the popup table inputs for x/ y size of the crossword
 function makeNewCrossword(){
-	//$('#viewCrosswordTotal').dialog();
 	//show x / y size
 	var inputString="<table><th>"
 	inputString+="<input type='number' max='12' min='1' placeHolder='Y' id='txtYaxis'/>";
@@ -654,11 +657,10 @@ function makeNewCrossword(){
 	inputString+="<br><div id='newCrossSpot'></div><hr><div id='addAnswerTd'></div>";
 	$('#viewCrosswordTotal').html(inputString).dialog();
 	$('#addAnswerTd').hide();
-
-
 }
+
+//generate a new crossword using the x / y axis input boxes
 function generateNewCrosswordSize(){
-	
 	var xSize=$('#txtXaxis').val();
 	var ySize=$('#txtYaxis').val();
 	if (xSize >12 || ySize >12){
@@ -672,11 +674,14 @@ function generateNewCrosswordSize(){
 	$('#newCrossSpot').html(makeTableClass(xSize,ySize,'itemSpot'));
 
 }
+
+//add a new answer to the crossword from the current tdItem we have clicked on
 function addCrossAns(tdItem){
+	//x, y size, ID of square we have clicked on.
 	var xSize=$('#txtXaxis').val();
 	var ySize=$('#txtYaxis').val();
 	var sqID=$(tdItem).attr('title');
-
+	//append text to show user where he clicked
 	$(tdItem).text("##");
 
 	//add input boxes to addAnswerTd
@@ -687,9 +692,12 @@ function addCrossAns(tdItem){
 	inputString+="<tr style='background:transparent;'><td><button onclick='addAnsToTable();'>Add</button>";
 	inputString+="</table>";
 	$('#addAnswerTd').html(inputString).show();
+	//focus on the add crossword answer input box.
+	$('#crossAddQues').focus();
 }
 var crosswordQuestionArray=[];
 
+//add the answer the user entered to the crossword
 function addAnsToTable(){
 	var ques=$('#crossAddQues').val();
 	var ans=$('#crossAddAns').val();
@@ -705,14 +713,16 @@ function addAnsToTable(){
 	sqID=parseInt(sqID);
 	log(ques+" "+ans+" "+down);
 
+	// hide the addAnswer td
 	$('#addAnswerTd').hide();
+//~~~~ valid checking ~~~~
 //ensure that the word does not go over maximum horizonatal
 	//get the modulus of the sqID and y line length
 	var maximumRight=(1+sqID)%ySq;
 	var positionAfterDown=sqID+((ans.length-1)*xSq);
 
 	if(!down){
-		if(ans.length>ySq-maximumRight){
+		if(ans.length-1>ySq-maximumRight){
 			alert('word too long');
 			return;
 		}
@@ -722,14 +732,17 @@ function addAnsToTable(){
 			return;
 		}
 	}
-
+// ~~~~ end of valid checking ~~~~
 	
+	//add the answer/question pair to an array of all question/answers
+	//used for 'crossword' table in DB
 	crosswordQuestionArray.push([sqID,down,ans,ques]);
 	log(crosswordQuestionArray);
 
-	//get array of answer
+	//get array of the answer's string
 	var wordArray=ans.split("");
 
+	//for each letter in the word array, add it to the crossword
 	var count= parseInt(sqID);
 	wordArray.forEach(function(entry) {
 	    $('#itemSpot'+count).text(entry);
@@ -741,20 +754,21 @@ function addAnsToTable(){
 	});
 }
 
-
+//save edited crossword question in the database 
 function saveEditedCrosswordQuestion(){
-	// JSON
 	var arr=JSON.stringify(crosswordQuestionArray);
 	var data={
 		crosswordQuestionArray:crosswordQuestionArray,
 		saveEditedCrossword:true
 	};
+
 	getPOST('../dal/topicFunctions.php',data)
 	.fail(function(data){
 		console.log(data);
+		alert('some error occured!');
 	}).success(function(data){
-		console.log(data);
+		crosswordView(topicSelection);
 	});
-console.log(arr);
+		//console.log(arr);
 	//
 }
