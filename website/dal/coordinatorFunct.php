@@ -383,7 +383,25 @@ function makeHighscoreTable($gameID){
 
 // ---------------- crossword functions --------------
 function getViewCrosswords($topicID){
+	$isEditable;
 	try{
+		$conn=getConnection();
+			// getting subject ID from topic ID
+		//ensures user has permissions to modify topic
+		$stmt=$conn->prepare("SELECT * from topic where topic_ID=:topicID");
+		$stmt->bindParam(":topicID",$topicID);
+		$stmt->execute();
+
+		//unepected error - possibly incorrect user calling this function
+		if($stmt->rowcount()==0) die("Nothing was found");
+
+		$subj=$stmt->fetchAll(PDO::FETCH_ASSOC);
+		$subj2=$subj[0]['subject_ID'];
+		//check if the user is the coordinator of this subject
+		$user_ID=$_SESSION['user_ID'];
+		$isEditable=isUserSubjCoordinator($user_ID, $subj2);
+
+
 		$conn=getConnection();
 		$stmt=$conn->prepare("SELECT * from crossword where topic_ID=:topicID");
 		$stmt->bindParam(":topicID",$topicID);
@@ -400,10 +418,13 @@ function getViewCrosswords($topicID){
 				echo "<td>".$currentCross['difficulty']."</td>";
 				echo "<td>".$currentCross['total_sqrs']."</td>";
 				echo "<td>"."<a href='#' onclick='viewCrossword(".$currentCross['crossword_ID'].")' >View</a>";
-				echo ' | <a href="#" onclick="crosswordDelete('.$currentCross['crossword_ID'].')">Delete</a></td>';
+				if($isEditable==true) 
+					echo ' | <a href="#" onclick="crosswordDelete('.$currentCross['crossword_ID'].')">Delete</a></td>';
 				echo "</tr>";
 			}
 			echo "</table>";
+			if($isEditable==true) 
+				echo "<button id='btnNewCrossword' onclick='makeNewCrossword()'>New</button>";
 		}
 
 	}catch(PDOException $e){ die($e);}
@@ -462,6 +483,48 @@ function getViewedCrossword($crosswordID){
 		// 	echo "</table>";
 		// }
 	}catch(PDOException $e){ die($e);}
+}
+
+function saveNewCrossword($data){
+	$data= $data;
+	$topicID=$data[0][0];
+	$xSize=$data[0][1];
+	$ySize=$data[0][2];
+	$total=$xSize*$ySize;
+	try{
+		$conn=getConnection();
+// inserting question
+		$stmt=$conn->prepare("INSERT into crossword(topic_ID, difficulty, total_sqrs, x_sq, y_sq)
+			values(:topic, 2, :total, :xSq,:ySq); ");
+		$stmt->bindParam(':topic', $topicID);
+		$stmt->bindParam(':total', $total);
+		$stmt->bindParam(':xSq', $xSize);
+		$stmt->bindParam(':ySq', $ySize);
+		$stmt->execute();
+
+		// using Question_ID foreign key
+		$questionID=$conn->lastInsertId();
+		foreach($data as $word){
+			if($data[0]==$word) continue;
+			$sqID=$word[0];
+			$isDown=$word[1];
+			$ans=$word[2];
+			$ques=$word[3];
+
+			if($isDown=='true') $isDown=1;
+			else $isDown=0;
+			$stmt=$conn->prepare("INSERT into crossword_question(crossword_ID, square_ID, isDown, question, answer)
+			values(:crosswordID, :sqID, :isDown, :ques, :ans); ");
+			$stmt->bindParam(':crosswordID', $questionID);
+			$stmt->bindParam(':sqID', $sqID);
+			$stmt->bindParam(':isDown', $isDown);
+			$stmt->bindParam(':ques', $ques);
+			$stmt->bindParam(':ans', $ans);
+			$stmt->execute();
+		}
+
+	}catch(PDOException $e){die($e);}
+	
 }
 
 // ---------------- API FUNCTION ----------------------

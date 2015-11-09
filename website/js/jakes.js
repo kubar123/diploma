@@ -452,16 +452,15 @@ function setTopicFilter(s){
 }
 // ====================================END     QUESTION ANSWER ================================
 function getFileName() {
-//this gets the full url
-var url = document.location.href;
-//this removes the anchor at the end, if there is one
-url = url.substring(0, (url.indexOf("#") == -1) ? url.length : url.indexOf("#"));
-//this removes the query after the file name, if there is one
-url = url.substring(0, (url.indexOf("?") == -1) ? url.length : url.indexOf("?"));
-//this removes everything before the last slash in the path
-url = url.substring(url.lastIndexOf("/") + 1, url.length);
-//return
-return url;
+	//get the full url
+	var url = document.location.href;
+	//remove the anchor at the end, if there is one
+	url = url.substring(0, (url.indexOf("#") == -1) ? url.length : url.indexOf("#"));
+	//remove the query after the file name, if there is one
+	url = url.substring(0, (url.indexOf("?") == -1) ? url.length : url.indexOf("?"));
+	//remove everything before the last slash in the path
+	url = url.substring(url.lastIndexOf("/") + 1, url.length);
+	return url;
 }
 
 
@@ -500,13 +499,17 @@ function isValidString(itemString, type){
 	}
 }
  // ---------------- CROSSWORD ------------------------------------------
+ //change the location of the page on click of crossword button
  $('#crosswordQues').click(function(){
 	var url=window.location.href;
 	window.location.href="crosswordView.php";
 });
+ //generic log function
 function log(str){
 	console.log(str);
 }
+
+//delete a specific crossword
 function crosswordDelete(crosswordID){
 	crosswordID=parseInt(crosswordID);
 	var data={
@@ -516,11 +519,12 @@ function crosswordDelete(crosswordID){
   	getPOST('../dal/topicFunctions.php',data)
   		.success(function(data){
   			log(data);
-  			crosswordView(topicSelection);
+  			crosswordView(topicSelection); //update crossword view
   		}).fail(function(data){
   			alert(JSON.stringify(data)+" FAIL");
 	});
 }
+
 function crosswordView(topicID){
 	var data={
 		crosswordView:'true',
@@ -534,10 +538,8 @@ function crosswordView(topicID){
 	});
 }
 
-// function windowReszie(){
-//   var size =$("td").height();
-//   $("td").width(size);
-// }
+
+var tdID="amazingID";// starting ID of each td
 // ~~~~~ view crossword ~~~~~~~
 function viewCrossword(crosswordID){
 	//$('#viewCrosswordTotal').dialog();
@@ -552,70 +554,63 @@ function viewCrossword(crosswordID){
 		data:data,
 		dataType:"json"
 	}).success(function(data){
-		//alert(JSON.stringify(data));
-		// 0 is cross, 1+ is cross question
-		console.log(JSON.stringify(data));
-		//console.log(data[0].topic_ID);
+
+		// 0 is crossword, 1+ is crossword question
 		var xSq=parseInt(data[0].x_sq);
 		var ySq=parseInt(data[0].y_sq);
-		var z= 1;
-		// for(i in data){
-		// 	if(i==0) continue;
-		// 	z++;
-		// 	//console.log(z);
-		// 	console.log(data[i].answer);
+		var z=1;
 
-		// }
-		var tdID="amazingID";
 		var tableQuestionAnsCross="<br><table><tr><th>sq ID</th><th>down</th><th>question</th><th>answer</th></tr>";
+		//make and open dialog (popup)
 		$('#viewCrosswordTotal').html(makeTable(xSq,ySq,tdID)).dialog();
-		// windowReszie();
-		//loop through each and every sq
+
+//add words to the td's
+		//loop through each and every square
 		for(var i=0; i<xSq*ySq;i++){
 			//go through the data we have for each sq
 			for(z in data){
 				if(z==0) continue; // skip crossword settings (0)
-				// if the id of the sq is the same at ans id...
+				// if the id of the sq is the same as ans id...
 				if(data[z].square_ID==i){
 					//split its word into an array of chars
 					var wordArray=data[z].answer.split("");
-					
 					var count=i;
 					//with the array, we calculate how far away each letter should be
 					wordArray.forEach(function(entry) {
 					    $('#'+tdID+count).text(entry);
 					    console.log(count+" _____ "+entry);
 
-					    //if down, we go forward xSq spots (down 1), else go to next
-					    if(data[z].isDown=='1')	count+=xSq;
+					    //if down, we go forward xSq spots (down), else go forawrd ++ (across)
+					    if(data[z].isDown=='1')	count+=ySq;
 					    else	count++;
 					});
-					
-					
 				}
 			}
 		}
 		// add the question / answer pairs to bottom of page
 		for(z in data){
 			if(z==0) continue; // skip crossword settings (0)
+
 			tableQuestionAnsCross+="<tr><td>"+data[z].square_ID+"</td>";
+			//nice styled true text
 			if(data[z].isDown==true) tableQuestionAnsCross+="<td>true</td>";
 			else 	tableQuestionAnsCross+="<td>false</td>";
+
 			tableQuestionAnsCross+="<td>"+data[z].question+"</td>";
 			tableQuestionAnsCross+="<td>"+data[z].answer+"</td></tr>";
 
 		}
 		tableQuestionAnsCross+="</table>";
+		//add to crossword
 		$('#viewCrosswordTotal').append(tableQuestionAnsCross);
 		console.log("z:: "+z);
-		//console.log(makeTable(xSq,ySq,"amazingID"));
-		// $('#viewCrosswordTotal').append(data);
-		// $('#viewCrosswordTotal').dialog();
 	}).fail(function(data){
 		alert('f: '+JSON.stringify(data));
 	});
 }
-
+//make table. returns a html table using x*y values, with id: exmaple data:
+// x = 5, y = 5, id = 'helloID'
+//result: 	total sqrs=25, id of each sq = 'helloID'+sqID
 function makeTable(x,y,id){
 	var sqID=0;
 	var info="";
@@ -623,11 +618,143 @@ function makeTable(x,y,id){
 	for(var ix=0;ix<x;ix++){
 		info+="<tr>";
 		for(var iy=0;iy<y;iy++){
-			info+="<td id='"+id+sqID+"'>"+"</td>";
+			info+="<td title='"+sqID+"' id='"+id+sqID+"'>"+"</td>";
 			sqID++;
 		}
 		info+="</tr>";
 	}
 	info+="</table>";
 	return info;
+}
+function makeTableClass(x,y,id){
+	var sqID=0;
+	var info="";
+	info+="<table id='tableCrossSpot' border='1'>";
+	for(var ix=0;ix<x;ix++){
+		info+="<tr>";
+		for(var iy=0;iy<y;iy++){
+			info+="<td title='"+sqID+"' onclick='addCrossAns(this);' id='"+id+sqID+"'>"+"</td>";
+			sqID++;
+		}
+		info+="</tr>";
+	}
+	info+="</table>";
+	return info;
+}
+
+function makeNewCrossword(){
+	//$('#viewCrosswordTotal').dialog();
+	//show x / y size
+	var inputString="<table><th>"
+	inputString+="<input type='number' max='12' min='1' placeHolder='Y' id='txtYaxis'/>";
+	inputString+="</th><th>";
+	inputString+="<input type='number' max='12' min='1' placeHolder='X' id='txtXaxis'/>";
+	inputString+="</th><th><button onclick='generateNewCrosswordSize()'>Generate</button>";
+	inputString+="</th><th><button onclick='saveEditedCrosswordQuestion()'>Save</button></th></table>";
+	inputString+="<br><div id='newCrossSpot'></div><hr><div id='addAnswerTd'></div>";
+	$('#viewCrosswordTotal').html(inputString).dialog();
+	$('#addAnswerTd').hide();
+
+
+}
+function generateNewCrosswordSize(){
+	
+	var xSize=$('#txtXaxis').val();
+	var ySize=$('#txtYaxis').val();
+	if (xSize >12 || ySize >12){
+		alert("maximum of 12x12");
+		return;
+	}
+	//reset old value
+	crosswordQuestionArray=[];
+	//get topic ID
+	crosswordQuestionArray.push([topicSelection,xSize, ySize]);
+	$('#newCrossSpot').html(makeTableClass(xSize,ySize,'itemSpot'));
+
+}
+function addCrossAns(tdItem){
+	var xSize=$('#txtXaxis').val();
+	var ySize=$('#txtYaxis').val();
+	var sqID=$(tdItem).attr('title');
+
+	$(tdItem).text("##");
+
+	//add input boxes to addAnswerTd
+	var inputString="Adding answer to square: <span id='sqIDUsage'>"+sqID+"</span><br>";
+	inputString+="<table><tr style='background: transparent;'><td><input placeholder='Question' type='text' id='crossAddQues'/> </td></tr>";
+	inputString+="<tr style='background: transparent;'><td><input placeholder='Answer' type='text' id='crossAddAns'/></td> </tr>";
+	inputString+='<tr style="background: transparent;"><td><input type="checkbox" id="chkDown" value="Down"><span style="color:white;">Down?</span></td></tr>';
+	inputString+="<tr style='background:transparent;'><td><button onclick='addAnsToTable();'>Add</button>";
+	inputString+="</table>";
+	$('#addAnswerTd').html(inputString).show();
+}
+var crosswordQuestionArray=[];
+
+function addAnsToTable(){
+	var ques=$('#crossAddQues').val();
+	var ans=$('#crossAddAns').val();
+	var down=$('#chkDown').is(":checked");
+	var sqID=$('#sqIDUsage').text();
+
+	//maximum x and y values
+	var ySq=$('#txtYaxis').val();
+	ySq=parseInt(ySq);
+	var xSq=$('#txtXaxis').val();
+	xSq=parseInt(xSq);
+
+	sqID=parseInt(sqID);
+	log(ques+" "+ans+" "+down);
+
+	$('#addAnswerTd').hide();
+//ensure that the word does not go over maximum horizonatal
+	//get the modulus of the sqID and y line length
+	var maximumRight=(1+sqID)%ySq;
+	var positionAfterDown=sqID+((ans.length-1)*xSq);
+
+	if(!down){
+		if(ans.length>ySq-maximumRight){
+			alert('word too long');
+			return;
+		}
+	}else{
+		if((xSq*ySq)-1<positionAfterDown){
+			alert('word too long');
+			return;
+		}
+	}
+
+	
+	crosswordQuestionArray.push([sqID,down,ans,ques]);
+	log(crosswordQuestionArray);
+
+	//get array of answer
+	var wordArray=ans.split("");
+
+	var count= parseInt(sqID);
+	wordArray.forEach(function(entry) {
+	    $('#itemSpot'+count).text(entry);
+	    console.log(count+" _____ "+entry);
+
+	    //if down, we go forward xSq spots (down), else go forawrd ++ (across)
+	    if(down)	count+=ySq;
+	    else	count++;
+	});
+}
+
+
+function saveEditedCrosswordQuestion(){
+	// JSON
+	var arr=JSON.stringify(crosswordQuestionArray);
+	var data={
+		crosswordQuestionArray:crosswordQuestionArray,
+		saveEditedCrossword:true
+	};
+	getPOST('../dal/topicFunctions.php',data)
+	.fail(function(data){
+		console.log(data);
+	}).success(function(data){
+		console.log(data);
+	});
+console.log(arr);
+	//
 }
