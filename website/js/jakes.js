@@ -567,6 +567,7 @@ function viewCrossword(crosswordID){
 
 		// }
 		var tdID="amazingID";
+		var tableQuestionAnsCross="<br><table><tr><th>sq ID</th><th>down</th><th>question</th><th>answer</th></tr>";
 		$('#viewCrosswordTotal').html(makeTable(xSq,ySq,tdID)).dialog();
 		// windowReszie();
 		//loop through each and every sq
@@ -574,7 +575,6 @@ function viewCrossword(crosswordID){
 			//go through the data we have for each sq
 			for(z in data){
 				if(z==0) continue; // skip crossword settings (0)
-
 				// if the id of the sq is the same at ans id...
 				if(data[z].square_ID==i){
 					//split its word into an array of chars
@@ -595,6 +595,18 @@ function viewCrossword(crosswordID){
 				}
 			}
 		}
+		// add the question / answer pairs to bottom of page
+		for(z in data){
+			if(z==0) continue; // skip crossword settings (0)
+			tableQuestionAnsCross+="<tr><td>"+data[z].square_ID+"</td>";
+			if(data[z].isDown==true) tableQuestionAnsCross+="<td>true</td>";
+			else 	tableQuestionAnsCross+="<td>false</td>";
+			tableQuestionAnsCross+="<td>"+data[z].question+"</td>";
+			tableQuestionAnsCross+="<td>"+data[z].answer+"</td></tr>";
+
+		}
+		tableQuestionAnsCross+="</table>";
+		$('#viewCrosswordTotal').append(tableQuestionAnsCross);
 		console.log("z:: "+z);
 		//console.log(makeTable(xSq,ySq,"amazingID"));
 		// $('#viewCrosswordTotal').append(data);
