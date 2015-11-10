@@ -499,6 +499,7 @@ function saveNewCrossword($data){
 		foreach($data as $word){
 			//skipping the settings [0]
 			if($data[0]==$word) continue;
+			
 			$sqID=$word[0];
 			$isDown=$word[1];
 			$ans=$word[2];

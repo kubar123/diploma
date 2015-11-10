@@ -689,6 +689,7 @@ function addCrossAns(tdItem){
 	inputString+="<table><tr style='background: transparent;'><td><input placeholder='Question' type='text' id='crossAddQues'/> </td></tr>";
 	inputString+="<tr style='background: transparent;'><td><input placeholder='Answer' type='text' id='crossAddAns'/></td> </tr>";
 	inputString+='<tr style="background: transparent;"><td><input type="checkbox" id="chkDown" value="Down"><span style="color:white;">Down?</span></td></tr>';
+	// inputString+="<tr style='background: transparent;'><td><select id='crosswordDiffSetting'><option value='1'>Easy</option><option value='2'>Medium</"
 	inputString+="<tr style='background:transparent;'><td><button onclick='addAnsToTable();'>Add</button>";
 	inputString+="</table>";
 	$('#addAnswerTd').html(inputString).show();
@@ -715,12 +716,15 @@ function addAnsToTable(){
 
 	// hide the addAnswer td
 	$('#addAnswerTd').hide();
+
+
 //~~~~ valid checking ~~~~
 //ensure that the word does not go over maximum horizonatal
 	//get the modulus of the sqID and y line length
 	var maximumRight=(1+sqID)%ySq;
 	var positionAfterDown=sqID+((ans.length-1)*xSq);
 
+	//length validation checkiing
 	if(!down){
 		if(ans.length-1>ySq-maximumRight){
 			alert('word too long');
@@ -733,6 +737,8 @@ function addAnsToTable(){
 		}
 	}
 // ~~~~ end of valid checking ~~~~
+
+
 	
 	//add the answer/question pair to an array of all question/answers
 	//used for 'crossword' table in DB
@@ -744,14 +750,32 @@ function addAnsToTable(){
 
 	//for each letter in the word array, add it to the crossword
 	var count= parseInt(sqID);
+	var iterator=0;
+try{
 	wordArray.forEach(function(entry) {
-	    $('#itemSpot'+count).text(entry);
-	    console.log(count+" _____ "+entry);
-
+		if($('#itemSpot'+count).text()!=="##" && $('#itemSpot'+count).text() !==entry && $('#itemSpot'+count).text()!==""){
+			console.log($('#itemSpot'+count).text());
+			console.log($('#itemSpot'+count).text()!="##");
+			throw breakException;
+		}else{
+			$('#itemSpot'+count).text(entry);
+			iterator++;
+	    	console.log(count+" _____ "+entry);
+		}
 	    //if down, we go forward xSq spots (down), else go forawrd ++ (across)
 	    if(down)	count+=ySq;
 	    else	count++;
 	});
+}catch(e){
+	alert("Letters do not match: ");
+	//retract steps, and remove changed squares to empty
+	for(var a=0; a<iterator; a++){
+		if(down)	count-=ySq;
+	    else	count--;
+		$('#itemSpot'+count).text("");
+		
+	}
+}
 }
 
 //save edited crossword question in the database 
@@ -767,8 +791,7 @@ function saveEditedCrosswordQuestion(){
 		console.log(data);
 		alert('some error occured!');
 	}).success(function(data){
+		$('#viewCrosswordTotal').dialog('close');
 		crosswordView(topicSelection);
 	});
-		//console.log(arr);
-	//
 }
